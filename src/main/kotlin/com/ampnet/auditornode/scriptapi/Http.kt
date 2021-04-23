@@ -4,23 +4,20 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.graalvm.polyglot.HostAccess.Export
 
-object Http {
+object Http : JavaScriptApi {
 
     private val client = OkHttpClient()
 
     @Export
     @JvmStatic
-    fun request(method: String, url: String): String? {
+    fun get(url: String): String? {
         val req = Request.Builder()
-            .method(method, null)
+            .get()
             .url(url)
             .build()
 
         client.newCall(req).execute().use {
-            val responseBody = it.body?.string()?.split("\n")?.firstOrNull()
-            println("Got HTTP body:")
-            println(responseBody)
-            return responseBody
+            return it.body?.string();
         }
     }
 
