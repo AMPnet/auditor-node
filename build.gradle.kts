@@ -27,7 +27,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
-    implementation("org.graalvm.sdk:graal-sdk:21.1.0")
+    implementation("org.graalvm.sdk:graal-sdk:21.0.0")
 }
 
 testSets {
