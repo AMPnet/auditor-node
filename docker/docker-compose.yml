@@ -1,6 +1,7 @@
 version: "3.9"
 services:
-  ipfs-host:
+  ipfs-node:
+    container_name: ipfs-node
     image: "ipfs/go-ipfs:latest"
     environment:
       IPFS_PROFILE: server

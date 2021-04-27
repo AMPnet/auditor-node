@@ -25,13 +25,13 @@ You can either download [IPFS](https://ipfs.io/) desktop application and start i
 Compose. To start IPFS via Docker Compose, position yourself into the `docker` directory and run `docker-compose up -d`.
 To upload a file to your local IPFS, first place it in the `ipfs-staging` directory which was created when you started
 Docker Compose. After that, you can add the file to IPFS like this:
-`docker exec <ipfs-docker-container-name> ipfs add /export/<your-file-name>`.  
+`docker exec ipfs-node ipfs add /export/<your-file-name>`.  
 
 #### Testing
 You can upload the test JavaScript file located in `src/integTest/resources/` to IPFS to try out the application. To do
 so, execute the following commands from the project root:  
 `cp src/integTest/resources/test-script.js docker/ipfs-staging/`  
-`docker exec docker_ipfs-host_1 ipfs add /export/test-script.js`  
+`docker exec ipfs-node ipfs add /export/test-script.js`  
 
 The second command will print the IPFS file hash you can use to fetch the file. This hash must be provided as a program
 argument. Current version of the script file should produce the hash value of
