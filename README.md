@@ -22,18 +22,15 @@ JS compatibility: https://www.graalvm.org/reference-manual/js/JavaScriptCompatib
 
 ### IPFS server
 You can either download [IPFS](https://ipfs.io/) desktop application and start it manually or run IPFS via Docker
-Compose. To start IPFS via Docker Compose, position yourself in the `docker` directory and run `docker-compose up -d`.
+Compose. To start IPFS via Docker Compose, position yourself into the `docker` directory and run `docker-compose up -d`.
 To upload a file to your local IPFS, first place it in the `ipfs-staging` directory which was created when you started
 Docker Compose. After that, you can add the file to IPFS like this:
 `docker exec <ipfs-docker-container-name> ipfs add /export/<your-file-name>`.  
 
-For example, if you want to add the test script to IPFS you should do the following (assuming you are still positioned
-in the `docker` directory):  
-`cp ../src/main/resources/test-script.js ipfs-staging/`
-
-For example, if you are still located in the `docker` directory, you can upload the test JavaScript file
-like this:  
-`cp src/main/resources/test-script.js docker/ipfs-staging/`  
+#### Testing
+You can upload the test JavaScript file located in `src/integTest/resources/` to IPFS to try out the application. To do
+so, execute the following commands from the project root:  
+`cp src/integTest/resources/test-script.js docker/ipfs-staging/`  
 `docker exec docker_ipfs-host_1 ipfs add /export/test-script.js`  
 
 The second command will print the IPFS file hash you can use to fetch the file. This hash must be provided as a program
