@@ -168,3 +168,7 @@ gradle-app.setting
 
 # Ignore generated docs
 src/main/resources/static/docs
+
+### IPFS Docker volumes
+**/ipfs-data/**
+**/ipfs-staging/**

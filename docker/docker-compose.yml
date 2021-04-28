@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  ipfs-node:
+    container_name: ipfs-node
+    image: "ipfs/go-ipfs:latest"
+    environment:
+      IPFS_PROFILE: server
+    ports:
+      - "4001:4001"
+      - "5001:5001"
+#      - "8080:8080" # if you want to expose IPFS gateway
+    volumes:
+      - ./ipfs-staging:/export
+      - ./ipfs-data:/data/ipfs

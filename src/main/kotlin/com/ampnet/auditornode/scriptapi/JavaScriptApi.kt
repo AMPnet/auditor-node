@@ -7,5 +7,4 @@ interface JavaScriptApi {
         val fullClassName = javaClass.name
         return "const $apiObjectName = Java.type('$fullClassName');"
     }
-
 }
