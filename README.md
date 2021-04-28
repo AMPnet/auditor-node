@@ -21,8 +21,8 @@ Polyglot programming: https://www.graalvm.org/reference-manual/polyglot-programm
 JS compatibility: https://www.graalvm.org/reference-manual/js/JavaScriptCompatibility/  
 
 ### IPFS/Geth nodes
-You can either download [IPFS](https://ipfs.io/) desktop application and [Geth](https://geth.ethereum.org/) and  start
-them manually or them via Docker Compose.
+You can either download [IPFS](https://ipfs.io/) desktop application and [Geth](https://geth.ethereum.org/) and start
+them manually or run them via Docker Compose.
 
 To start IPFS and Geth via Docker Compose, position yourself into the `docker` directory and run `docker-compose up -d`.
 To upload a file to your local IPFS, first place it in the `ipfs-staging` directory which was created when you started
