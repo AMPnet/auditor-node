@@ -1,5 +1,17 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+buildscript {
+    repositories {
+        maven("https://jitpack.io")
+    }
+
+    dependencies {
+        classpath("com.github.komputing:kethabi:0.1.9")
+    }
+}
+
+apply(plugin = "kethabi")
+
 plugins {
     val kotlinVersion = "1.4.31"
     kotlin("jvm").version(kotlinVersion)
@@ -28,6 +40,11 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     implementation("org.graalvm.sdk:graal-sdk:21.0.0")
+
+    val web3jVersion = "4.8.4"
+
+    implementation("org.web3j:core:$web3jVersion")
+    implementation("org.web3j:abi:$web3jVersion")
 }
 
 testSets {
