@@ -20,7 +20,7 @@ Kotlin/JavaScript interoperability via GraalVM: https://www.graalvm.org/referenc
 Polyglot programming: https://www.graalvm.org/reference-manual/polyglot-programming/  
 JS compatibility: https://www.graalvm.org/reference-manual/js/JavaScriptCompatibility/  
 
-### IPFS/Geth nodes
+### IPFS & Geth nodes
 You can either download [IPFS](https://ipfs.io/) desktop application and [Geth](https://geth.ethereum.org/) and start
 them manually or run them via Docker Compose.
 
