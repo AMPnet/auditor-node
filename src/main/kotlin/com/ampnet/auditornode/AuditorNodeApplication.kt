@@ -50,9 +50,9 @@ fun main(args: Array<String>) {
 
     val fetchFromIpfs =
         if (args.contains("--ipfs-gateway")) {
-            { hash: String -> Http.get("https://ipfs.io/ipfs/$hash") }
+            { hash: String -> Http.get(ipfsBaseUrl.replace("{ipfsHash}", hash)) }
         } else {
-            { hash: String -> Http.post("http://localhost:5001/api/v0/cat?arg=$hash") }
+            { hash: String -> Http.post(ipfsBaseUrl.replace("{ipfsHash}", hash)) }
         }
 
     val ipfsFile = try {
