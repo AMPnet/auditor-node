@@ -50,8 +50,6 @@ will then be displayed there.
 
 When the application is started without any program arguments, it will first try to fetch IPFS file hash stored in the
 Ethereum contract with address `0x7FE38DAeeE945c53AC6CbbeD81c4e3cf7FF88Ac0` on Ropsten testnet. After that, file will be
-fetched via the local IPFS client. This option requires that you have both IPFS and Geth nodes running locally. If for
-any reason you don't want to run IPFS and Geth locally, you can specify `--infura` and `--ipfs-gateway` as program
-arguments - the former will make the application use Infura Ropsten node
-(`https://ropsten.infura.io/v3/08664baf7af14eda956db2b71a79f12f`) and the latter will fetch IPFS file via public gateway
-(`https://ipfs.io/ipfs/`).
+fetched via public IPFS gateway (`https://ipfs.io/ipfs/`). The stored hash value will be fetched from contract via the
+Infura node on Ropsten network (`https://ropsten.infura.io/v3/08664baf7af14eda956db2b71a79f12f`). If you want to use
+local IPFS and Geth nodes instead, you can specify `--local-ipfs` and `--local-geth` respectively.

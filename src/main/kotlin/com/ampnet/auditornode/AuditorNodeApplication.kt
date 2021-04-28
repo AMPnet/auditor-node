@@ -19,7 +19,7 @@ const val IPFS_GATEWAY = "https://ipfs.io/ipfs/{ipfsHash}"
 const val LOCAL_IPFS_CLIENT = "http://localhost:5001/api/v0/cat?arg={ipfsHash}"
 
 fun main(args: Array<String>) {
-    val rpcBaseUrl = if (args.contains("--infura")) INFURA_RPC_URL else LOCAL_RPC_URL
+    val rpcBaseUrl = if (args.contains("--local-geth")) LOCAL_RPC_URL else INFURA_RPC_URL
     println("RPC base URL: $rpcBaseUrl")
 
     val web3 = Web3j.build(HttpService(rpcBaseUrl))
@@ -45,14 +45,14 @@ fun main(args: Array<String>) {
 
     println("Input IPFS hash: $ipfsFileHash")
 
-    val ipfsBaseUrl = if (args.contains("--ipfs-gateway")) IPFS_GATEWAY else LOCAL_IPFS_CLIENT
+    val ipfsBaseUrl = if (args.contains("--local-ipfs")) LOCAL_IPFS_CLIENT else IPFS_GATEWAY
     println("IPFS base URL: $ipfsBaseUrl")
 
     val fetchFromIpfs =
-        if (args.contains("--ipfs-gateway")) {
-            { hash: String -> Http.get(ipfsBaseUrl.replace("{ipfsHash}", hash)) }
-        } else {
+        if (args.contains("--local-ipfs")) {
             { hash: String -> Http.post(ipfsBaseUrl.replace("{ipfsHash}", hash)) }
+        } else {
+            { hash: String -> Http.get(ipfsBaseUrl.replace("{ipfsHash}", hash)) }
         }
 
     val ipfsFile = try {
