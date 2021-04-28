@@ -40,7 +40,7 @@ fun main(args: Array<String>) {
 
     requireNotNull(ipfsFileHash) {
         "Could not retrieve IPFS file hash; make sure your local ethereum light client is " +
-                "fully synced with Ropsten testnet"
+            "fully synced with Ropsten testnet"
     }
 
     println("Input IPFS hash: $ipfsFileHash")
