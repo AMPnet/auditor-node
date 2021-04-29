@@ -1,4 +1,17 @@
+import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+buildscript {
+    repositories {
+        maven("https://jitpack.io")
+    }
+
+    dependencies {
+        classpath("com.github.komputing:kethabi:0.1.9")
+    }
+}
+
+apply(plugin = "kethabi")
 
 plugins {
     val kotlinVersion = "1.4.31"
@@ -28,6 +41,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     implementation("org.graalvm.sdk:graal-sdk:21.0.0")
+    implementation("org.web3j:core:4.8.4")
 }
 
 testSets {
@@ -72,7 +86,7 @@ tasks.withType<JacocoReport> {
     sourceDirectories.setFrom(listOf(file("${project.projectDir}/src/main/kotlin")))
     classDirectories.setFrom(
         fileTree("$buildDir/classes/kotlin/main").apply {
-            exclude("**/pojo/**")
+            exclude("com/ampnet/auditornode/contract/**")
         }
     )
     dependsOn(tasks.test)
@@ -91,6 +105,15 @@ tasks.withType<JacocoCoverageVerification> {
 detekt {
     input = files("src/main/kotlin")
     config = files("detekt-config.yml")
+}
+tasks.withType<Detekt> {
+    exclude("com/ampnet/auditornode/contract/**")
+}
+
+ktlint {
+    filter {
+        exclude("com/ampnet/auditornode/contract/**")
+    }
 }
 
 task("qualityCheck") {

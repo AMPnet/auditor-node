@@ -12,3 +12,15 @@ services:
     volumes:
       - ./ipfs-staging:/export
       - ./ipfs-data:/data/ipfs
+
+  geth-node:
+    container_name: geth-node
+    image: "ethereum/client-go:latest"
+    entrypoint: ["/entrypoint.sh"]
+    ports:
+      - "8545:8545"
+      - "30303:30303"
+    volumes:
+      - ./geth:/root
+      - ./geth-entrypoint.sh:/entrypoint.sh
+      - ./geth-bootnodes:/bootnodes
