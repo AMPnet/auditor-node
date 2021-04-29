@@ -42,6 +42,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     implementation("org.graalvm.sdk:graal-sdk:21.0.0")
     implementation("org.web3j:core:4.8.4")
+    implementation("io.arrow-kt:arrow-core:0.13.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
 }
 
 testSets {

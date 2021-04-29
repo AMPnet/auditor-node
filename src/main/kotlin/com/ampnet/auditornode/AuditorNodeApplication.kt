@@ -1,8 +1,9 @@
 package com.ampnet.auditornode
 
 import com.ampnet.auditornode.contract.ExampleStorageContractRPCConnector
-import com.ampnet.auditornode.scriptapi.Http
-import com.ampnet.auditornode.scriptapi.JavaScriptApi
+import com.ampnet.auditornode.script.api.Http
+import com.ampnet.auditornode.script.api.JavaScriptApi
+import com.ampnet.auditornode.script.evaluation.JavaScriptEvaluator
 import org.graalvm.polyglot.Context
 import org.graalvm.polyglot.HostAccess
 import org.graalvm.polyglot.Source
@@ -64,14 +65,5 @@ fun main(args: Array<String>) {
 
     requireNotNull(ipfsFile) { "No IPFS file content" }
 
-    Context.newBuilder("js")
-        .allowHostAccess(HostAccess.EXPLICIT)
-        .allowHostClassLookup { fullClassName -> fullClassName.startsWith(JavaScriptApi::class.java.`package`.name) }
-        .build()
-        .use {
-            val apiObjects = listOf(Http.createJavaScriptApiObject()).joinToString(separator = "\n")
-            val scriptSource = "$apiObjects\n$ipfsFile"
-            val source = Source.create("js", scriptSource)
-            it.eval(source)
-        }
+    println(JavaScriptEvaluator.evaluate(ipfsFile))
 }

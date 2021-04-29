@@ -41,7 +41,7 @@ so, execute the following commands from the project root:
 
 The second command will print the IPFS file hash you can use to fetch the file. This hash must be provided as a program
 argument. Current version of the script file should produce the hash value of
-`QmcUq5zoErvE63anX4NpS6NYTeHX6Gp1RNs1U2Jb43gpYq`.  
+`QmSuwCUCZXzPunnrCWL7CnSLixboTa7HftVBjcVgi3TMaK`.  
 
 While the Docker IPFS container is running, you can access its web-ui via `http://localhost:5001/webui`.  
 
