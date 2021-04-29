@@ -2,7 +2,7 @@ package com.ampnet.auditornode.error
 
 import arrow.core.Either
 
-abstract class ApplicationError(val message: String, val cause: Throwable?) {
+open class ApplicationError(val message: String, val cause: Throwable?) {
     override fun toString(): String = "${javaClass.simpleName}($message)"
 }
 

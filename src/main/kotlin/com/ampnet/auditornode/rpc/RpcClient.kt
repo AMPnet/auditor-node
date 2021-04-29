@@ -16,5 +16,4 @@ class RpcClient(private val rpcBaseUrl: String) {
             web3.ethBlockNumber().send().blockNumber
         }
             .mapLeft { RpcError.RpcConnectionError(rpcBaseUrl, it) }
-
 }
