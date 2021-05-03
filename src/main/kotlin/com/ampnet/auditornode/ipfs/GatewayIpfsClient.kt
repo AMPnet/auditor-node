@@ -5,6 +5,7 @@ import arrow.core.flatMap
 import arrow.core.left
 import arrow.core.right
 import com.ampnet.auditornode.error.IpfsError
+import com.ampnet.auditornode.error.IpfsError.IpfsEmptyResponseError
 import com.ampnet.auditornode.error.Try
 import com.ampnet.auditornode.script.api.Http
 
@@ -17,10 +18,5 @@ object GatewayIpfsClient : IpfsClient {
             Http.get(URL.replace("{ipfsHash}", hash))
         }
             .mapLeft { IpfsError.IpfsHttpError(it) }
-            .flatMap {
-                when (it) {
-                    null -> IpfsError.IpfsEmptyResponseError(hash).left()
-                    else -> it.right()
-                }
-            }
+            .flatMap { it?.right() ?: IpfsEmptyResponseError(hash).left() }
 }

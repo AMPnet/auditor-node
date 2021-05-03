@@ -18,10 +18,5 @@ object LocalIpfsClient : IpfsClient {
             Http.post(URL.replace("{ipfsHash}", hash))
         }
             .mapLeft { IpfsHttpError(it) }
-            .flatMap {
-                when (it) {
-                    null -> IpfsEmptyResponseError(hash).left()
-                    else -> it.right()
-                }
-            }
+            .flatMap { it?.right() ?: IpfsEmptyResponseError(hash).left() }
 }
