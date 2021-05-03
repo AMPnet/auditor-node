@@ -1,4 +1,4 @@
-package com.ampnet.auditornode.error
+package com.ampnet.auditornode.model.error
 
 import com.ampnet.auditornode.persistence.model.IpfsHash
 

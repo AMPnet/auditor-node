@@ -1,4 +1,4 @@
-package com.ampnet.auditornode.error
+package com.ampnet.auditornode.model.error
 
 sealed class RpcError(message: String, cause: Throwable?) : ApplicationError(message, cause) {
 

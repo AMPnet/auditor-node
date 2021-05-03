@@ -2,8 +2,8 @@ package com.ampnet.auditornode.contract
 
 import arrow.core.left
 import arrow.core.right
-import com.ampnet.auditornode.error.RpcError.ContractReadError
-import com.ampnet.auditornode.error.Try
+import com.ampnet.auditornode.model.error.RpcError.ContractReadError
+import com.ampnet.auditornode.model.error.Try
 import org.kethereum.model.Address
 import org.kethereum.model.Transaction
 import org.kethereum.rpc.HttpEthereumRPC

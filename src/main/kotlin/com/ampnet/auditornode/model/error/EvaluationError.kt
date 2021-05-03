@@ -1,4 +1,4 @@
-package com.ampnet.auditornode.error
+package com.ampnet.auditornode.model.error
 
 import kotlin.reflect.KClass
 

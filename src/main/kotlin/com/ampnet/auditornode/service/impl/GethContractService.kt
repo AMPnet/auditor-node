@@ -6,9 +6,9 @@ import arrow.core.right
 import com.ampnet.auditornode.configuration.AuditorConfiguration
 import com.ampnet.auditornode.contract.ExampleStorageContractRPCConnector
 import com.ampnet.auditornode.contract.ExampleStorageContractTransactionGenerator
-import com.ampnet.auditornode.error.RpcError
-import com.ampnet.auditornode.error.RpcError.ContractReadError
-import com.ampnet.auditornode.error.Try
+import com.ampnet.auditornode.model.error.RpcError
+import com.ampnet.auditornode.model.error.RpcError.ContractReadError
+import com.ampnet.auditornode.model.error.Try
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.service.ContractService
 import org.kethereum.model.Address

@@ -1,9 +1,9 @@
 package com.ampnet.auditornode
 
 import arrow.core.computations.either
-import com.ampnet.auditornode.error.ApplicationError
+import com.ampnet.auditornode.model.error.ApplicationError
 import com.ampnet.auditornode.persistence.repository.IpfsRepository
-import com.ampnet.auditornode.script.evaluation.JavaScriptEvaluator
+import com.ampnet.auditornode.service.AuditingService
 import com.ampnet.auditornode.service.ContractService
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
@@ -15,7 +15,8 @@ import javax.inject.Inject
 @Controller("/hello") // TODO for example only, remove later
 class HelloController @Inject constructor(
     private val contractService: ContractService,
-    private val ipfsClientService: IpfsRepository
+    private val ipfsClientService: IpfsRepository,
+    private val auditingService: AuditingService
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -29,7 +30,7 @@ class HelloController @Inject constructor(
             log.info("Input IPFS hash: $ipfsFileHash")
             val ipfsFile = ipfsClientService.fetchTextFile(ipfsFileHash).bind()
             log.info("Got file from IPFS: $ipfsFile")
-            val evaluationResult = JavaScriptEvaluator.evaluate(ipfsFile.content).bind()
+            val evaluationResult = auditingService.evaluate(ipfsFile.content).bind()
             log.info("Evaluation result: $evaluationResult")
             val transaction = contractService.storeIpfsFileHash(ipfsFileHash)
             """{"to":"${transaction.to}","data":"${transaction.input.toHexString()}"}"""
@@ -37,5 +38,4 @@ class HelloController @Inject constructor(
 
         return result.toString()
     }
-
 }

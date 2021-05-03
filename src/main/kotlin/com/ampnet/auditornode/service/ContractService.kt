@@ -1,6 +1,6 @@
 package com.ampnet.auditornode.service
 
-import com.ampnet.auditornode.error.Try
+import com.ampnet.auditornode.model.error.Try
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import org.kethereum.model.Transaction
 import java.math.BigInteger

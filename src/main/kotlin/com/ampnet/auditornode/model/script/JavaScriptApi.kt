@@ -1,4 +1,4 @@
-package com.ampnet.auditornode.script.api
+package com.ampnet.auditornode.model.script
 
 interface JavaScriptApi {
 

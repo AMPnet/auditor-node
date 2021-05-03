@@ -1,8 +1,8 @@
 package com.ampnet.auditornode.rpc
 
 import arrow.core.Either
-import com.ampnet.auditornode.error.RpcError
-import com.ampnet.auditornode.error.Try
+import com.ampnet.auditornode.model.error.RpcError
+import com.ampnet.auditornode.model.error.Try
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 import java.math.BigInteger

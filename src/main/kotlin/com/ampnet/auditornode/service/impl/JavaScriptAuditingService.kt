@@ -1,25 +1,30 @@
-package com.ampnet.auditornode.script.evaluation
+package com.ampnet.auditornode.service.impl
 
 import arrow.core.Either
 import arrow.core.flatten
 import arrow.core.left
 import arrow.core.right
-import com.ampnet.auditornode.error.EvaluationError.InvalidReturnValueError
-import com.ampnet.auditornode.error.EvaluationError.ScriptExecutionError
-import com.ampnet.auditornode.error.Try
-import com.ampnet.auditornode.script.api.AuditResult
-import com.ampnet.auditornode.script.api.AuditResultApi
-import com.ampnet.auditornode.script.api.Http
-import com.ampnet.auditornode.script.api.JavaScriptApi
+import com.ampnet.auditornode.model.error.EvaluationError.InvalidReturnValueError
+import com.ampnet.auditornode.model.error.EvaluationError.ScriptExecutionError
+import com.ampnet.auditornode.model.error.Try
+import com.ampnet.auditornode.model.script.AuditResult
+import com.ampnet.auditornode.model.script.AuditResultApi
+import com.ampnet.auditornode.model.script.Http
+import com.ampnet.auditornode.model.script.JavaScriptApi
+import com.ampnet.auditornode.service.AuditingService
 import org.graalvm.polyglot.Context
 import org.graalvm.polyglot.HostAccess
 import org.graalvm.polyglot.Source
 import org.graalvm.polyglot.Value
+import javax.inject.Singleton
 
-object JavaScriptEvaluator {
+@Singleton
+class JavaScriptAuditingService : AuditingService {
 
-    private const val TARGET_LANGUAGE = "js"
-    private const val SCRIPT_FUNCTION_CALL = "audit();"
+    companion object {
+        private const val TARGET_LANGUAGE = "js"
+        private const val SCRIPT_FUNCTION_CALL = "audit();"
+    }
 
     private val apiPackagePrefix = JavaScriptApi::class.java.`package`.name
     private val jsContextBuilder =
@@ -31,8 +36,8 @@ object JavaScriptEvaluator {
             it.createJavaScriptApiObject()
         }
 
-    fun evaluate(input: String): Try<AuditResult> {
-        val scriptSource = "$apiObjects\n$input;\n$SCRIPT_FUNCTION_CALL"
+    override fun evaluate(auditingScript: String): Try<AuditResult> {
+        val scriptSource = "$apiObjects\n$auditingScript;\n$SCRIPT_FUNCTION_CALL"
 
         return Either.catch {
             jsContextBuilder.build()
