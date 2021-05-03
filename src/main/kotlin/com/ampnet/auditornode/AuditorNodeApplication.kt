@@ -1,46 +1,19 @@
 package com.ampnet.auditornode
 
-import arrow.core.computations.either
-import com.ampnet.auditornode.contract.ContractAbi
-import com.ampnet.auditornode.error.ApplicationError
-import com.ampnet.auditornode.ipfs.GatewayIpfsClient
-import com.ampnet.auditornode.ipfs.LocalIpfsClient
-import com.ampnet.auditornode.rpc.RpcClient
-import com.ampnet.auditornode.script.evaluation.JavaScriptEvaluator
-import org.komputing.khex.extensions.toHexString
+import com.ampnet.auditornode.configuration.ProgramArgumentPropertyNames
+import io.micronaut.runtime.Micronaut
 
-const val INFURA_RPC_URL = "https://ropsten.infura.io/v3/08664baf7af14eda956db2b71a79f12f"
-const val LOCAL_RPC_URL = "http://localhost:8545"
-const val TEST_SCRIPT_HASH = "QmSuwCUCZXzPunnrCWL7CnSLixboTa7HftVBjcVgi3TMaK"
-const val ANOTHER_SCRIPT_HASH = "QmUjWRsdGdWJ36bUAcdzNikTikXknWSW2VnLtAkKBiEf3d"
+object AuditorNodeApplication {
 
-suspend fun main(args: Array<String>) {
-    val rpcBaseUrl = if (args.contains("--local-geth")) LOCAL_RPC_URL else INFURA_RPC_URL
-    println("RPC base URL: $rpcBaseUrl")
-
-    val ipfsClient = if (args.contains("--local-ipfs")) LocalIpfsClient else GatewayIpfsClient
-    println("Using ${ipfsClient.javaClass.simpleName}")
-
-    val contractAbi = ContractAbi(rpcBaseUrl)
-    val rpcClient = RpcClient(rpcBaseUrl)
-
-    val result = either<ApplicationError, String> {
-        val currentBlockNumber = rpcClient.currentBlockNumber().bind()
-        println("Current block number: $currentBlockNumber")
-        val ipfsFileHash = contractAbi.getIpfsFileHash().bind()
-        println("Input IPFS hash: $ipfsFileHash")
-        val ipfsFile = ipfsClient.fetchFile(ipfsFileHash).bind()
-        val evaluationResult = JavaScriptEvaluator.evaluate(ipfsFile).bind()
-
-        val newIpfsFileHash = if (evaluationResult.success) {
-            ANOTHER_SCRIPT_HASH
-        } else {
-            TEST_SCRIPT_HASH
+    @JvmStatic
+    fun main(args: Array<String>) {
+        if (args.contains("--local-ipfs")) {
+            System.setProperty(ProgramArgumentPropertyNames.USE_LOCAL_IPFS, "true")
         }
 
-        val transaction = contractAbi.storeIpfsFileHash(newIpfsFileHash)
-        """{"to":"${transaction.to}","data":"${transaction.input.toHexString()}"}"""
+        Micronaut.build(*args)
+            .mainClass(AuditorNodeApplication.javaClass)
+            .banner(false)
+            .start()
     }
-
-    println(result)
 }

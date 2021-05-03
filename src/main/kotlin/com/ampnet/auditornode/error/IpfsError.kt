@@ -1,5 +1,7 @@
 package com.ampnet.auditornode.error
 
+import com.ampnet.auditornode.persistence.model.IpfsHash
+
 sealed class IpfsError(message: String, cause: Throwable? = null) : ApplicationError(message, cause) {
 
     class IpfsHttpError(cause: Throwable) : IpfsError(
@@ -7,7 +9,7 @@ sealed class IpfsError(message: String, cause: Throwable? = null) : ApplicationE
         cause = cause
     )
 
-    class IpfsEmptyResponseError(hash: String) : IpfsError(
+    class IpfsEmptyResponseError(hash: IpfsHash) : IpfsError(
         "Could not fetch file from IPFS with hash: $hash"
     )
 }
