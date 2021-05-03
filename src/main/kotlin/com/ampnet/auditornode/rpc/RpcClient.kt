@@ -7,7 +7,8 @@ import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 import java.math.BigInteger
 
-class RpcClient(private val rpcBaseUrl: String) {
+@Deprecated(message = "for removal")
+class RpcClient(private val rpcBaseUrl: String) { // TODO delete this class
 
     private val web3 = Web3j.build(HttpService(rpcBaseUrl))
 

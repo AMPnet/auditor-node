@@ -8,6 +8,7 @@ import org.kethereum.model.Address
 import org.kethereum.model.Transaction
 import org.kethereum.rpc.HttpEthereumRPC
 
+@Deprecated(message = "for removal")
 class ContractAbi(rpcBaseUrl: String) { // TODO delete
 
     private val contractAddress = Address("0x992E8FeA2D91807797717178Aa6abEc7F20c31a8")

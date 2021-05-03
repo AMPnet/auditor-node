@@ -12,6 +12,7 @@ import com.ampnet.auditornode.error.Try
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.service.ContractService
 import org.kethereum.model.Address
+import org.kethereum.model.Transaction
 import org.kethereum.rpc.HttpEthereumRPC
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
@@ -46,9 +47,8 @@ class GethContractService @Inject constructor(
         ).left()
     }
 
-    override fun storeIpfsFileHash(newHash: IpfsHash): String {
-        ExampleStorageContractTransactionGenerator(contractAddress)
-            .updateHash(newHash.value) // TODO
-        TODO("Not yet implemented")
+    override fun storeIpfsFileHash(newHash: IpfsHash): Transaction { // TODO use different model for transaction here
+        return ExampleStorageContractTransactionGenerator(contractAddress)
+            .updateHash(newHash.value)
     }
 }
