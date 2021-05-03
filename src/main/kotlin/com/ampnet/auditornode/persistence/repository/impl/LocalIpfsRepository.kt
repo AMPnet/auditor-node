@@ -8,10 +8,10 @@ import com.ampnet.auditornode.configuration.ProgramArgumentPropertyNames
 import com.ampnet.auditornode.model.error.IpfsError.IpfsEmptyResponseError
 import com.ampnet.auditornode.model.error.IpfsError.IpfsHttpError
 import com.ampnet.auditornode.model.error.Try
+import com.ampnet.auditornode.model.script.Http
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.persistence.model.IpfsTextFile
 import com.ampnet.auditornode.persistence.repository.IpfsRepository
-import com.ampnet.auditornode.model.script.Http
 import io.micronaut.context.annotation.Requires
 import javax.inject.Singleton
 

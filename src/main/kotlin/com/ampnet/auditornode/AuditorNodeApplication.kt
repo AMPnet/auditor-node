@@ -6,7 +6,7 @@ import io.micronaut.runtime.Micronaut
 object AuditorNodeApplication {
 
     @JvmStatic
-    fun main(args: Array<String>) {
+    fun main(vararg args: String) {
         if (args.contains("--local-ipfs")) {
             System.setProperty(ProgramArgumentPropertyNames.USE_LOCAL_IPFS, "true")
         }
