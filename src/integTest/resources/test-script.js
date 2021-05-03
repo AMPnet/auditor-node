@@ -1,9 +1,11 @@
-try {
-    var response = http.get("https://bb.dom-l.at/");
-    console.log("Response body:");
-    console.log(response);
-    console.log("JSON:");
-    console.log(JSON.parse("{\"test\":1}").test);
-} catch (e) {
-    console.log("Error: " + e);
+function audit() {
+    try {
+        let response = http.get("https://bb.dom-l.at/");
+        console.log("Response body:");
+        console.log(response);
+        return AuditResult.of(true);
+    } catch (e) {
+        console.log("Error: " + e);
+        return AuditResult.of(false);
+    }
 }

@@ -1,77 +1,46 @@
 package com.ampnet.auditornode
 
-import com.ampnet.auditornode.contract.ExampleStorageContractRPCConnector
-import com.ampnet.auditornode.scriptapi.Http
-import com.ampnet.auditornode.scriptapi.JavaScriptApi
-import org.graalvm.polyglot.Context
-import org.graalvm.polyglot.HostAccess
-import org.graalvm.polyglot.Source
-import org.kethereum.model.Address
-import org.kethereum.rpc.HttpEthereumRPC
-import org.web3j.protocol.Web3j
-import org.web3j.protocol.http.HttpService
-import java.net.ConnectException
+import arrow.core.computations.either
+import com.ampnet.auditornode.contract.ContractAbi
+import com.ampnet.auditornode.error.ApplicationError
+import com.ampnet.auditornode.ipfs.GatewayIpfsClient
+import com.ampnet.auditornode.ipfs.LocalIpfsClient
+import com.ampnet.auditornode.rpc.RpcClient
+import com.ampnet.auditornode.script.evaluation.JavaScriptEvaluator
+import org.komputing.khex.extensions.toHexString
 
 const val INFURA_RPC_URL = "https://ropsten.infura.io/v3/08664baf7af14eda956db2b71a79f12f"
 const val LOCAL_RPC_URL = "http://localhost:8545"
-const val CONTRACT_ADDRESS = "0x7FE38DAeeE945c53AC6CbbeD81c4e3cf7FF88Ac0"
-const val IPFS_GATEWAY = "https://ipfs.io/ipfs/{ipfsHash}"
-const val LOCAL_IPFS_CLIENT = "http://localhost:5001/api/v0/cat?arg={ipfsHash}"
+const val TEST_SCRIPT_HASH = "QmSuwCUCZXzPunnrCWL7CnSLixboTa7HftVBjcVgi3TMaK"
+const val ANOTHER_SCRIPT_HASH = "QmUjWRsdGdWJ36bUAcdzNikTikXknWSW2VnLtAkKBiEf3d"
 
-fun main(args: Array<String>) {
+suspend fun main(args: Array<String>) {
     val rpcBaseUrl = if (args.contains("--local-geth")) LOCAL_RPC_URL else INFURA_RPC_URL
     println("RPC base URL: $rpcBaseUrl")
 
-    val web3 = Web3j.build(HttpService(rpcBaseUrl))
+    val ipfsClient = if (args.contains("--local-ipfs")) LocalIpfsClient else GatewayIpfsClient
+    println("Using ${ipfsClient.javaClass.simpleName}")
 
-    try {
-        val currentBlockNumber = web3.ethBlockNumber().send().blockNumber
+    val contractAbi = ContractAbi(rpcBaseUrl)
+    val rpcClient = RpcClient(rpcBaseUrl)
+
+    val result = either<ApplicationError, String> {
+        val currentBlockNumber = rpcClient.currentBlockNumber().bind()
         println("Current block number: $currentBlockNumber")
-    } catch (e: ConnectException) {
-        println("Cannot connect to RPC: $rpcBaseUrl")
-        throw e
-    }
+        val ipfsFileHash = contractAbi.getIpfsFileHash().bind()
+        println("Input IPFS hash: $ipfsFileHash")
+        val ipfsFile = ipfsClient.fetchFile(ipfsFileHash).bind()
+        val evaluationResult = JavaScriptEvaluator.evaluate(ipfsFile).bind()
 
-    val ipfsFileHash = ExampleStorageContractRPCConnector(
-        Address(CONTRACT_ADDRESS),
-        HttpEthereumRPC(baseURL = rpcBaseUrl)
-    )
-        .hash()
-
-    requireNotNull(ipfsFileHash) {
-        "Could not retrieve IPFS file hash; make sure your local ethereum light client is " +
-            "fully synced with Ropsten testnet"
-    }
-
-    println("Input IPFS hash: $ipfsFileHash")
-
-    val ipfsBaseUrl = if (args.contains("--local-ipfs")) LOCAL_IPFS_CLIENT else IPFS_GATEWAY
-    println("IPFS base URL: $ipfsBaseUrl")
-
-    val fetchFromIpfs =
-        if (args.contains("--local-ipfs")) {
-            { hash: String -> Http.post(ipfsBaseUrl.replace("{ipfsHash}", hash)) }
+        val newIpfsFileHash = if (evaluationResult.success) {
+            ANOTHER_SCRIPT_HASH
         } else {
-            { hash: String -> Http.get(ipfsBaseUrl.replace("{ipfsHash}", hash)) }
+            TEST_SCRIPT_HASH
         }
 
-    val ipfsFile = try {
-        fetchFromIpfs(ipfsFileHash)
-    } catch (e: ConnectException) {
-        println("Cannot fetch file from IPFS client/gateway: $ipfsBaseUrl")
-        throw e
+        val transaction = contractAbi.storeIpfsFileHash(newIpfsFileHash)
+        """{"to":"${transaction.to}","data":"${transaction.input.toHexString()}"}"""
     }
 
-    requireNotNull(ipfsFile) { "No IPFS file content" }
-
-    Context.newBuilder("js")
-        .allowHostAccess(HostAccess.EXPLICIT)
-        .allowHostClassLookup { fullClassName -> fullClassName.startsWith(JavaScriptApi::class.java.`package`.name) }
-        .build()
-        .use {
-            val apiObjects = listOf(Http.createJavaScriptApiObject()).joinToString(separator = "\n")
-            val scriptSource = "$apiObjects\n$ipfsFile"
-            val source = Source.create("js", scriptSource)
-            it.eval(source)
-        }
+    println(result)
 }

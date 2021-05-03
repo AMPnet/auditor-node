@@ -1,4 +1,4 @@
-package com.ampnet.auditornode.scriptapi
+package com.ampnet.auditornode.script.api
 
 import okhttp3.OkHttpClient
 import okhttp3.Request
