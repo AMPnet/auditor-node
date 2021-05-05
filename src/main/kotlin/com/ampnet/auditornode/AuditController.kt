@@ -1,5 +1,6 @@
 package com.ampnet.auditornode
 
+import arrow.core.Either
 import arrow.core.computations.either
 import com.ampnet.auditornode.model.error.ApplicationError
 import com.ampnet.auditornode.persistence.repository.IpfsRepository
@@ -12,8 +13,8 @@ import org.komputing.khex.extensions.toHexString
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
-@Controller("/hello") // TODO for example only, remove later
-class HelloController @Inject constructor(
+@Controller("/audit") // TODO for example only, remove later
+class AuditController @Inject constructor(
     private val contractService: ContractService,
     private val ipfsClientService: IpfsRepository,
     private val auditingService: AuditingService
@@ -25,15 +26,19 @@ class HelloController @Inject constructor(
     suspend fun index(): String {
         val result = either<ApplicationError, String> {
             val currentBlockNumber = contractService.currentBlockNumber().bind()
-            log.info("Current block number: $currentBlockNumber")
+            log.info("Current block number: {}", currentBlockNumber)
             val ipfsFileHash = contractService.getIpfsFileHash().bind()
-            log.info("Input IPFS hash: $ipfsFileHash")
+            log.info("Input IPFS hash: {}", ipfsFileHash)
             val ipfsFile = ipfsClientService.fetchTextFile(ipfsFileHash).bind()
-            log.info("Got file from IPFS: $ipfsFile")
+            log.info("Got file from IPFS: {}", ipfsFile)
             val evaluationResult = auditingService.evaluate(ipfsFile.content).bind()
-            log.info("Evaluation result: $evaluationResult")
+            log.info("Evaluation result: {}", evaluationResult)
             val transaction = contractService.storeIpfsFileHash(ipfsFileHash)
             """{"to":"${transaction.to}","data":"${transaction.input.toHexString()}"}"""
+        }
+
+        if (result is Either.Left) {
+            log.error(result.value.message, result.value.cause)
         }
 
         return result.toString()

@@ -1,37 +1,24 @@
 package com.ampnet.auditornode.model.script
 
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.internal.EMPTY_REQUEST
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.client.HttpClient
 import org.graalvm.polyglot.HostAccess.Export
+import javax.inject.Singleton
 
-object Http : JavaScriptApi {
+@Singleton
+class Http(client: HttpClient) : JavaScriptApi { // TODO refactoring
 
-    private val client = OkHttpClient()
+    private val blockingClient = client.toBlocking()
 
     @Export
-    @JvmStatic
     fun get(url: String): String? {
-        val req = Request.Builder()
-            .get()
-            .url(url)
-            .build()
-
-        client.newCall(req).execute().use {
-            return it.body?.string()
-        }
+        val request = HttpRequest.GET<String>(url)
+        return blockingClient.retrieve(request)
     }
 
     @Export
-    @JvmStatic
     fun post(url: String): String? {
-        val req = Request.Builder()
-            .post(body = EMPTY_REQUEST)
-            .url(url)
-            .build()
-
-        client.newCall(req).execute().use {
-            return it.body?.string()
-        }
+        val request = HttpRequest.POST(url, "")
+        return blockingClient.retrieve(request)
     }
 }

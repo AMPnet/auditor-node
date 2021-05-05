@@ -2,6 +2,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import io.gitlab.arturbosch.detekt.Detekt
 import io.micronaut.gradle.MicronautRuntime
 import io.micronaut.gradle.MicronautTestRuntime
+import io.micronaut.gradle.graalvm.NativeImageTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
@@ -17,7 +18,7 @@ buildscript {
 apply(plugin = "kethabi")
 
 plugins {
-    val kotlinVersion = "1.4.31"
+    val kotlinVersion = "1.4.0"
     kotlin("jvm").version(kotlinVersion)
     kotlin("kapt").version(kotlinVersion)
 
@@ -117,6 +118,14 @@ tasks.withType<ShadowJar> {
     mergeServiceFiles()
 }
 
+tasks.withType<NativeImageTask>() {
+    args(
+        "-H:ReflectionConfigurationFiles=${project.rootDir}/native-image/reflection-config.json",
+        "--initialize-at-build-time",
+        "--language:js"
+    )
+}
+
 jib {
     val dockerUsername: String = System.getenv("DOCKER_USERNAME") ?: "DOCKER_USERNAME"
     val dockerPassword: String = System.getenv("DOCKER_PASSWORD") ?: "DOCKER_PASSWORD"
@@ -128,8 +137,15 @@ jib {
         }
         tags = setOf("latest")
     }
+    val baseImage = "ghcr.io/graalvm/graalvm-ce"
+    val tag = "ol8-java8-21.0.0.2"
+    val digest = "sha256:2754d08ca9ca494d6947f214d66e02ab7bd02192ee13ed9e2f5c802d588040e0"
+    from {
+        image = "$baseImage:$tag@$digest"
+    }
     container {
         creationTime = "USE_CURRENT_TIMESTAMP"
+        ports = listOf("8080")
     }
 }
 

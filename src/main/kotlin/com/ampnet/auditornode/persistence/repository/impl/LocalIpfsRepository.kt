@@ -13,19 +13,25 @@ import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.persistence.model.IpfsTextFile
 import com.ampnet.auditornode.persistence.repository.IpfsRepository
 import io.micronaut.context.annotation.Requires
+import org.slf4j.LoggerFactory
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 @Requires(property = ProgramArgumentPropertyNames.USE_LOCAL_IPFS)
-class LocalIpfsRepository : IpfsRepository {
+class LocalIpfsRepository @Inject constructor(private val http: Http) : IpfsRepository {
 
     companion object {
         private const val URL = "http://localhost:5001/api/v0/cat?arg={ipfsHash}"
     }
 
+    private val log = LoggerFactory.getLogger(javaClass)
+
     override fun fetchTextFile(hash: IpfsHash): Try<IpfsTextFile> =
         Either.catch {
-            Http.post(URL.replace("{ipfsHash}", hash.value))
+            val url = URL.replace("{ipfsHash}", hash.value)
+            log.info("Fetching file from IPFS: POST {}", url)
+            http.post(url)
         }
             .mapLeft { IpfsHttpError(it) }
             .flatMap { it?.right() ?: IpfsEmptyResponseError(hash).left() }

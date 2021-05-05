@@ -16,32 +16,42 @@ import org.graalvm.polyglot.Context
 import org.graalvm.polyglot.HostAccess
 import org.graalvm.polyglot.Source
 import org.graalvm.polyglot.Value
+import org.slf4j.LoggerFactory
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class JavaScriptAuditingService : AuditingService {
+class JavaScriptAuditingService @Inject constructor(http: Http) : AuditingService { // TODO refactoring
 
     companion object {
         private const val TARGET_LANGUAGE = "js"
         private const val SCRIPT_FUNCTION_CALL = "audit();"
     }
 
+    private val log = LoggerFactory.getLogger(javaClass)
     private val apiPackagePrefix = JavaScriptApi::class.java.`package`.name
     private val jsContextBuilder =
         Context.newBuilder(TARGET_LANGUAGE)
             .allowHostAccess(HostAccess.EXPLICIT)
             .allowHostClassLookup { fullClassName -> fullClassName.startsWith(apiPackagePrefix) }
-    private val apiObjects = listOf(Http, AuditResultApi)
-        .joinToString(separator = "\n") {
-            it.createJavaScriptApiObject()
-        }
+
+    private val apiObjects = listOf(AuditResultApi)
+        .joinToString(separator = "\n") { it.createJavaScriptApiObject() }
+    private val apiClasses = mapOf<String, Any>(
+        "http" to http
+    )
 
     override fun evaluate(auditingScript: String): Try<AuditResult> {
         val scriptSource = "$apiObjects\n$auditingScript;\n$SCRIPT_FUNCTION_CALL"
+        log.info("Evaluating auditing script: {}", auditingScript)
 
         return Either.catch {
             jsContextBuilder.build()
                 .use {
+                    val apiBindings = it.getBindings(TARGET_LANGUAGE)
+
+                    apiClasses.map { (identifier, value) -> apiBindings.putMember(identifier, value) }
+
                     val source = Source.create(TARGET_LANGUAGE, scriptSource)
                     val result = it.eval(source)
                     asAuditResult(result)
