@@ -1,4 +1,4 @@
-package com.ampnet.auditornode
+package com.ampnet.auditornode.controller
 
 import arrow.core.Either
 import arrow.core.computations.either

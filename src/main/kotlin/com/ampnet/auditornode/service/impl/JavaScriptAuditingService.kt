@@ -21,7 +21,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class JavaScriptAuditingService @Inject constructor(http: Http) : AuditingService { // TODO refactoring
+class JavaScriptAuditingService @Inject constructor(http: Http) : AuditingService {
 
     companion object {
         private const val TARGET_LANGUAGE = "js"

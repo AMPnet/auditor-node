@@ -1,6 +1,6 @@
 package com.ampnet.auditornode
 
-import com.ampnet.auditornode.configuration.ProgramArgumentPropertyNames
+import com.ampnet.auditornode.configuration.properties.ProgramArgumentPropertyNames
 import io.micronaut.runtime.Micronaut
 
 object AuditorNodeApplication {

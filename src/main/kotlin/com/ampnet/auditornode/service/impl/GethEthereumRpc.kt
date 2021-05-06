@@ -12,12 +12,19 @@ import org.slf4j.LoggerFactory
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameter
 import java.math.BigInteger
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class GethEthereumRpc(private val web3j: Web3j) : EthereumRPC { // TODO expose and initialize as bean
+@Singleton
+class GethEthereumRpc @Inject constructor(private val web3j: Web3j) : EthereumRPC {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    override fun blockNumber(): BigInteger = TODO("Unsupported method")
+    private fun notImplemented(): Nothing = throw NotImplementedError(
+        "Requested method is not implemented; either implement it or use Web3j instance if possible"
+    )
+
+    override fun blockNumber(): BigInteger = notImplemented()
 
     override fun call(transaction: Transaction, block: String): HexString? {
         val web3jTransaction = org.web3j.protocol.core.methods.request.Transaction.createEthCallTransaction(
@@ -36,25 +43,25 @@ class GethEthereumRpc(private val web3j: Web3j) : EthereumRPC { // TODO expose a
         return result?.let { HexString(it) }
     }
 
-    override fun chainId(): ChainId = TODO("Unsupported method")
+    override fun chainId(): ChainId = notImplemented()
 
-    override fun clientVersion(): String = TODO("Unsupported method")
+    override fun clientVersion(): String = notImplemented()
 
-    override fun estimateGas(transaction: Transaction): BigInteger = TODO("Unsupported method")
+    override fun estimateGas(transaction: Transaction): BigInteger = notImplemented()
 
-    override fun gasPrice(): BigInteger = TODO("Unsupported method")
+    override fun gasPrice(): BigInteger = notImplemented()
 
-    override fun getBalance(address: Address, block: String): BigInteger = TODO("Unsupported method")
+    override fun getBalance(address: Address, block: String): BigInteger = notImplemented()
 
-    override fun getBlockByNumber(number: BigInteger): BlockInformation = TODO("Unsupported method")
+    override fun getBlockByNumber(number: BigInteger): BlockInformation = notImplemented()
 
-    override fun getCode(address: String, block: String): HexString = TODO("Unsupported method")
+    override fun getCode(address: String, block: String): HexString = notImplemented()
 
-    override fun getStorageAt(address: String, position: String, block: String): HexString = TODO("Unsupported method")
+    override fun getStorageAt(address: String, position: String, block: String): HexString = notImplemented()
 
-    override fun getTransactionByHash(hash: String): SignedTransaction = TODO("Unsupported method")
+    override fun getTransactionByHash(hash: String): SignedTransaction = notImplemented()
 
-    override fun getTransactionCount(address: String, block: String): BigInteger = TODO("Unsupported method")
+    override fun getTransactionCount(address: String, block: String): BigInteger = notImplemented()
 
-    override fun sendRawTransaction(data: String): String = TODO("Unsupported method")
+    override fun sendRawTransaction(data: String): String = notImplemented()
 }
