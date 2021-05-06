@@ -15,6 +15,7 @@ import java.math.BigInteger
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@Suppress("TooManyFunctions")
 @Singleton
 class GethEthereumRpc @Inject constructor(private val web3j: Web3j) : EthereumRPC {
 
