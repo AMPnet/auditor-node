@@ -72,7 +72,7 @@ class LocalIpfsRepositoryTest : TestBase() {
     @Test
     fun `must correctly substitute {ipfsHash}, use provided port and return a file`() {
         val hash = IpfsHash("testHash")
-        val expectedFileUrl = "http://localhost:${testPort}/api/v0/cat?arg=${hash.value}"
+        val expectedFileUrl = "http://localhost:$testPort/api/v0/cat?arg=${hash.value}"
         val request = HttpRequest.POST(expectedFileUrl, "")
         val response = "example file data"
 
