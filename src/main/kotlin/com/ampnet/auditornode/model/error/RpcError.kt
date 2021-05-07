@@ -2,9 +2,9 @@ package com.ampnet.auditornode.model.error
 
 sealed class RpcError(message: String, cause: Throwable?) : ApplicationError(message, cause) {
 
-    class ContractReadError(message: String) : RpcError(message, null)
+    data class ContractReadError(override val message: String) : RpcError(message, null)
 
-    class RpcConnectionError(rpcBaseUrl: String, cause: Throwable) : RpcError(
+    data class RpcConnectionError(val rpcBaseUrl: String, override val cause: Throwable) : RpcError(
         message = "Cannot connect to RPC: $rpcBaseUrl",
         cause = cause
     )

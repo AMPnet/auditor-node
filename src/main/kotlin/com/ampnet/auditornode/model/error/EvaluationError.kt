@@ -1,14 +1,16 @@
 package com.ampnet.auditornode.model.error
 
-import kotlin.reflect.KClass
+import com.ampnet.auditornode.model.script.AuditResult
 
 sealed class EvaluationError(message: String, cause: Throwable? = null) : ApplicationError(message, cause) {
 
-    class InvalidReturnValueError(expectedType: KClass<*>) : EvaluationError(
-        "Expected script to return value of type '${expectedType.qualifiedName}'"
-    )
+    data class InvalidReturnValueError(val actualType: String) : EvaluationError(
+        "Expected script to return value of type '${AuditResult::class.qualifiedName}' but was '$actualType'"
+    ) {
+        constructor(actualClass: Class<*>) : this(actualClass.name ?: "unknown")
+    }
 
-    class ScriptExecutionError(script: String, cause: Throwable?) : EvaluationError(
+    data class ScriptExecutionError(val script: String, override val cause: Throwable?) : EvaluationError(
         message = "Error while executing provided script: $script",
         cause = cause
     )

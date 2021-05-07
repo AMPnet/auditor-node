@@ -9,7 +9,6 @@ import com.ampnet.auditornode.service.ContractService
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
-import org.komputing.khex.extensions.toHexString
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -34,7 +33,7 @@ class AuditController @Inject constructor(
             val evaluationResult = auditingService.evaluate(ipfsFile.content).bind()
             log.info("Evaluation result: {}", evaluationResult)
             val transaction = contractService.storeIpfsFileHash(ipfsFileHash)
-            """{"to":"${transaction.to}","data":"${transaction.input.toHexString()}"}"""
+            transaction.toJson()
         }
 
         if (result is Either.Left) {

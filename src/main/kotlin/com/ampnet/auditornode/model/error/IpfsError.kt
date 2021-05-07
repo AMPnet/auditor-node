@@ -4,12 +4,12 @@ import com.ampnet.auditornode.persistence.model.IpfsHash
 
 sealed class IpfsError(message: String, cause: Throwable? = null) : ApplicationError(message, cause) {
 
-    class IpfsHttpError(cause: Throwable) : IpfsError(
+    data class IpfsHttpError(override val cause: Throwable) : IpfsError(
         message = "HTTP error while fetching file via IPFS",
         cause = cause
     )
 
-    class IpfsEmptyResponseError(hash: IpfsHash) : IpfsError(
+    data class IpfsEmptyResponseError(val hash: IpfsHash) : IpfsError(
         "Could not fetch file from IPFS with hash: $hash"
     )
 }

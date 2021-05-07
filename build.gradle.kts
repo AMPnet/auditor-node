@@ -77,6 +77,8 @@ dependencies {
     testImplementation(platform("io.micronaut:micronaut-bom:${micronaut.version}"))
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("io.micronaut.test:micronaut-test-junit5")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
+    testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.24")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 

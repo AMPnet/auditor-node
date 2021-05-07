@@ -1,20 +1,23 @@
 package com.ampnet.auditornode.service.impl
 
 import arrow.core.Either
+import arrow.core.flatMap
 import arrow.core.left
 import arrow.core.right
 import com.ampnet.auditornode.configuration.properties.AuditorProperties
 import com.ampnet.auditornode.configuration.properties.RpcProperties
 import com.ampnet.auditornode.contract.ExampleStorageContractRPCConnector
 import com.ampnet.auditornode.contract.ExampleStorageContractTransactionGenerator
+import com.ampnet.auditornode.model.EthereumAddress
+import com.ampnet.auditornode.model.EthereumTransaction
 import com.ampnet.auditornode.model.error.RpcError.ContractReadError
 import com.ampnet.auditornode.model.error.RpcError.RpcConnectionError
 import com.ampnet.auditornode.model.error.Try
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.service.ContractService
 import org.kethereum.model.Address
-import org.kethereum.model.Transaction
 import org.kethereum.rpc.EthereumRPC
+import org.komputing.khex.extensions.toHexString
 import org.slf4j.LoggerFactory
 import org.web3j.protocol.Web3j
 import java.math.BigInteger
@@ -41,20 +44,28 @@ class GethContractService @Inject constructor(
         }
             .mapLeft { RpcConnectionError(rpcProperties.url, it) }
 
-    override fun getIpfsFileHash(): Try<IpfsHash> {
-        log.info("Fetching IPFS file hash from contract address: $contractAddress")
-        val hash = contractConnector.getHash()
-            ?.right()
-            ?.map { IpfsHash(it) }
-        log.info("Got IPFS hash: {}", hash)
+    override fun getIpfsFileHash(): Try<IpfsHash> =
+        Either.catch {
+            log.info("Fetching IPFS file hash from contract address: $contractAddress")
+            val hash = contractConnector.getHash()
+                ?.right()
+                ?.map { IpfsHash(it) }
+            log.info("Got IPFS hash: {}", hash)
+            hash
+        }
+            .mapLeft { RpcConnectionError(rpcProperties.url, it) }
+            .flatMap {
+                it ?: ContractReadError(
+                    "Could not retrieve IPFS file hash; make sure your local ethereum light client is " +
+                        "fully synced with Ropsten testnet"
+                ).left()
+            }
 
-        return hash ?: ContractReadError(
-            "Could not retrieve IPFS file hash; make sure your local ethereum light client is " +
-                "fully synced with Ropsten testnet"
-        ).left()
-    }
-
-    override fun storeIpfsFileHash(newHash: IpfsHash): Transaction { // TODO use different model for transaction here
-        return contractTransactionGenerator.updateHash(newHash.value)
+    override fun storeIpfsFileHash(newHash: IpfsHash): EthereumTransaction {
+        val transaction = contractTransactionGenerator.updateHash(newHash.value)
+        return EthereumTransaction(
+            to = EthereumAddress(contractAddress.hex),
+            data = transaction.input.toHexString()
+        )
     }
 }

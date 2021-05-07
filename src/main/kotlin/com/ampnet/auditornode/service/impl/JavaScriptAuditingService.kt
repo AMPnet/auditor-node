@@ -1,6 +1,7 @@
 package com.ampnet.auditornode.service.impl
 
 import arrow.core.Either
+import arrow.core.flatMap
 import arrow.core.flatten
 import arrow.core.left
 import arrow.core.right
@@ -57,19 +58,20 @@ class JavaScriptAuditingService @Inject constructor(http: Http) : AuditingServic
                     asAuditResult(result)
                 }
         }
-            .mapLeft { ScriptExecutionError(scriptSource, it) }
+            .mapLeft { ScriptExecutionError(auditingScript, it) }
             .flatten()
     }
 
-    private fun asAuditResult(result: Value): Try<AuditResult> {
-        val hostObject = when (result.isHostObject) {
-            true -> result.asHostObject<Any>()
-            false -> Unit
-        }
-
-        return when (hostObject) {
-            is AuditResult -> hostObject.right()
-            else -> InvalidReturnValueError(AuditResult::class).left()
-        }
-    }
+    private fun asAuditResult(result: Value): Try<AuditResult> =
+        Either.conditionally(
+            test = result.isHostObject,
+            ifTrue = { result.asHostObject<Any>() },
+            ifFalse = { InvalidReturnValueError("<native value>") }
+        )
+            .flatMap {
+                when (it) {
+                    is AuditResult -> it.right()
+                    else -> InvalidReturnValueError(it.javaClass).left()
+                }
+            }
 }
