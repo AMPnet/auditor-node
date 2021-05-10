@@ -30,8 +30,12 @@ import java.math.BigInteger
 
 class GethContractServiceTest : TestBase() {
 
-    private val auditorProperties = AuditorProperties()
-    private val rpcProperties = RpcProperties()
+    private val auditorProperties = mock<AuditorProperties> {
+        on { contractAddress } doReturn "0xTestContractAddress"
+    }
+    private val rpcProperties = mock<RpcProperties> {
+        on { url } doReturn "http://localhost:8080/test-url"
+    }
     private val web3j = mock<Web3j>()
     private val rpc = mock<EthereumRPC>()
     private val service = GethContractService(auditorProperties, rpcProperties, web3j, rpc)

@@ -24,20 +24,16 @@ import java.util.Optional
 
 class LocalIpfsRepositoryTest : TestBase() {
 
-    private val testPort = 1234
-    private val properties = IpfsProperties()
+    private val properties = mock<IpfsProperties>()
     private val client = mock<BlockingHttpClient>()
     private val ipfs = LocalIpfsRepository(
-        run {
-            properties.localClientPort = testPort
-            properties
-        },
+        properties,
         client
     )
 
     @BeforeEach
     fun beforeEach() {
-        reset(client)
+        reset(client, properties)
     }
 
     @Test
@@ -47,6 +43,8 @@ class LocalIpfsRepositoryTest : TestBase() {
         suppose("HTTP client will throw an exception") {
             given(client.retrieve(any<HttpRequest<String>>()))
                 .willThrow(exception)
+            given(properties.localClientPort)
+                .willReturn(5001)
         }
 
         verify("IpfsHttpError is returned") {
@@ -60,6 +58,8 @@ class LocalIpfsRepositoryTest : TestBase() {
         suppose("HTTP client will return a null response") {
             given(client.retrieve(any<HttpRequest<String>>()))
                 .willReturn(null)
+            given(properties.localClientPort)
+                .willReturn(5001)
         }
 
         verify("IpfsEmptyResponseError is returned") {
@@ -71,6 +71,7 @@ class LocalIpfsRepositoryTest : TestBase() {
 
     @Test
     fun `must correctly substitute {ipfsHash}, use provided port and return a file`() {
+        val testPort = 1234
         val hash = IpfsHash("testHash")
         val expectedFileUrl = "http://localhost:$testPort/api/v0/cat?arg=${hash.value}"
         val request = HttpRequest.POST(expectedFileUrl, "")
@@ -80,6 +81,8 @@ class LocalIpfsRepositoryTest : TestBase() {
             val httpRequestMatcher: (HttpRequest<String>) -> Boolean = { arg ->
                 arg.uri == request.uri && arg.method == HttpMethod.POST && arg.body == Optional.of("")
             }
+            given(properties.localClientPort)
+                .willReturn(testPort)
             given(client.retrieve(argThat(httpRequestMatcher)))
                 .willReturn(response)
         }
