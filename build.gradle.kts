@@ -71,6 +71,7 @@ dependencies {
     implementation("org.web3j:core:4.8.4")
     implementation("io.arrow-kt:arrow-core:0.13.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.6")
 
     kaptTest(platform("io.micronaut:micronaut-bom:${micronaut.version}"))
     kaptTest("io.micronaut:micronaut-inject-java")

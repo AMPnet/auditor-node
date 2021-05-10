@@ -15,9 +15,11 @@ import com.ampnet.auditornode.persistence.repository.IpfsRepository
 import io.micronaut.context.annotation.Requires
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.client.BlockingHttpClient
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private val logger = KotlinLogging.logger {}
 
 @Singleton
 @Requires(property = ProgramArgumentPropertyNames.USE_LOCAL_IPFS)
@@ -26,13 +28,12 @@ class LocalIpfsRepository @Inject constructor(
     private val blockingHttpClient: BlockingHttpClient
 ) : IpfsRepository {
 
-    private val log = LoggerFactory.getLogger(javaClass)
     private val url = "http://localhost:${ipfsProperties.localClientPort}/api/v0/cat?arg={ipfsHash}"
 
     override fun fetchTextFile(hash: IpfsHash): Try<IpfsTextFile> =
         Either.catch {
             val fileUrl = url.replace("{ipfsHash}", hash.value)
-            log.info("Fetching file from IPFS: POST {}", fileUrl)
+            logger.info { "Fetching file from IPFS: POST $fileUrl" }
             val request = HttpRequest.POST(fileUrl, "")
             blockingHttpClient.retrieve(request)
         }

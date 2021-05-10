@@ -1,5 +1,6 @@
 package com.ampnet.auditornode.service.impl
 
+import mu.KotlinLogging
 import org.kethereum.model.Address
 import org.kethereum.model.ChainId
 import org.kethereum.model.SignedTransaction
@@ -8,18 +9,17 @@ import org.kethereum.rpc.EthereumRPC
 import org.kethereum.rpc.model.BlockInformation
 import org.komputing.khex.extensions.toHexString
 import org.komputing.khex.model.HexString
-import org.slf4j.LoggerFactory
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameter
 import java.math.BigInteger
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private val logger = KotlinLogging.logger {}
+
 @Suppress("TooManyFunctions")
 @Singleton
 class GethEthereumRpc @Inject constructor(private val web3j: Web3j) : EthereumRPC {
-
-    private val log = LoggerFactory.getLogger(javaClass)
 
     private fun notImplemented(): Nothing = throw NotImplementedError(
         "Requested method is not implemented; either implement it or use Web3j instance if possible"
@@ -33,13 +33,13 @@ class GethEthereumRpc @Inject constructor(private val web3j: Web3j) : EthereumRP
             transaction.to?.hex,
             transaction.input.toHexString()
         )
-        log.info(
-            "Geth RPC call: eth_call(from: {}, to: {}, data: {})",
-            web3jTransaction.from, web3jTransaction.to, web3jTransaction.data
-        )
+        logger.info {
+            "Geth RPC call: eth_call(from: ${web3jTransaction.from}, to: ${web3jTransaction.to}," +
+                " data: ${web3jTransaction.data})"
+        }
 
         val result = web3j.ethCall(web3jTransaction, DefaultBlockParameter.valueOf(block))?.send()?.value
-        log.info("Got result for eth_call: {}", result)
+        logger.info { "Got result for eth_call: $result" }
 
         return result?.let { HexString(it) }
     }

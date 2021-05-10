@@ -15,14 +15,16 @@ import com.ampnet.auditornode.model.error.RpcError.RpcConnectionError
 import com.ampnet.auditornode.model.error.Try
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.service.ContractService
+import mu.KotlinLogging
 import org.kethereum.model.Address
 import org.kethereum.rpc.EthereumRPC
 import org.komputing.khex.extensions.toHexString
-import org.slf4j.LoggerFactory
 import org.web3j.protocol.Web3j
 import java.math.BigInteger
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private val logger = KotlinLogging.logger {}
 
 @Singleton
 class GethContractService @Inject constructor(
@@ -32,25 +34,24 @@ class GethContractService @Inject constructor(
     rpc: EthereumRPC
 ) : ContractService {
 
-    private val log = LoggerFactory.getLogger(javaClass)
     private val contractAddress = Address(auditorProperties.contractAddress)
     private val contractConnector = ExampleStorageContractRPCConnector(contractAddress, rpc)
     private val contractTransactionGenerator = ExampleStorageContractTransactionGenerator(contractAddress)
 
     override fun currentBlockNumber(): Try<BigInteger> =
         Either.catch {
-            log.info("Fetching block number")
+            logger.info { "Fetching block number" }
             web3j.ethBlockNumber().send().blockNumber
         }
             .mapLeft { RpcConnectionError(rpcProperties.url, it) }
 
     override fun getIpfsFileHash(): Try<IpfsHash> =
         Either.catch {
-            log.info("Fetching IPFS file hash from contract address: $contractAddress")
+            logger.info { "Fetching IPFS file hash from contract address: $contractAddress" }
             val hash = contractConnector.getHash()
                 ?.right()
                 ?.map { IpfsHash(it) }
-            log.info("Got IPFS hash: {}", hash)
+            logger.info { "Got IPFS hash: $hash" }
             hash
         }
             .mapLeft { RpcConnectionError(rpcProperties.url, it) }

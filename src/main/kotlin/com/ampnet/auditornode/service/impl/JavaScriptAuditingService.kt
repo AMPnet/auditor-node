@@ -13,13 +13,15 @@ import com.ampnet.auditornode.model.script.AuditResultApi
 import com.ampnet.auditornode.model.script.Http
 import com.ampnet.auditornode.model.script.JavaScriptApi
 import com.ampnet.auditornode.service.AuditingService
+import mu.KotlinLogging
 import org.graalvm.polyglot.Context
 import org.graalvm.polyglot.HostAccess
 import org.graalvm.polyglot.Source
 import org.graalvm.polyglot.Value
-import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private val logger = KotlinLogging.logger {}
 
 @Singleton
 class JavaScriptAuditingService @Inject constructor(http: Http) : AuditingService {
@@ -29,7 +31,6 @@ class JavaScriptAuditingService @Inject constructor(http: Http) : AuditingServic
         private const val SCRIPT_FUNCTION_CALL = "audit();"
     }
 
-    private val log = LoggerFactory.getLogger(javaClass)
     private val apiPackagePrefix = JavaScriptApi::class.java.`package`.name
     private val jsContextBuilder =
         Context.newBuilder(TARGET_LANGUAGE)
@@ -44,7 +45,7 @@ class JavaScriptAuditingService @Inject constructor(http: Http) : AuditingServic
 
     override fun evaluate(auditingScript: String): Try<AuditResult> {
         val scriptSource = "$apiObjects\n$auditingScript;\n$SCRIPT_FUNCTION_CALL"
-        log.info("Evaluating auditing script: {}", auditingScript)
+        logger.info { "Evaluating auditing script: $auditingScript" }
 
         return Either.catch {
             jsContextBuilder.build()
