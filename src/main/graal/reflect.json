@@ -81,17 +81,42 @@
         "allPublicClasses": true
     },
     {
-        "name": "com.ampnet.auditornode.model.script.Http",
+        "name": "com.ampnet.auditornode.script.api.classes.HttpClient",
         "allPublicFields": true,
         "allPublicMethods": true
     },
     {
-        "name": "com.ampnet.auditornode.model.script.AuditResultApi",
+        "name": "com.ampnet.auditornode.script.api.objects.AuditResultApi",
         "allPublicFields": true,
         "allPublicMethods": true
     },
     {
-        "name": "com.ampnet.auditornode.model.script.AuditResult",
+        "name": "com.ampnet.auditornode.script.api.objects.Properties",
+        "allPublicFields": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.ampnet.auditornode.script.api.model.AuditResult",
+        "allPublicFields": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.ampnet.auditornode.script.api.model.ListApi",
+        "allPublicFields": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.ampnet.auditornode.script.api.model.MapApi",
+        "allPublicFields": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.ampnet.auditornode.script.api.model.HttpCookie",
+        "allPublicFields": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.ampnet.auditornode.script.api.model.HttpResponse",
         "allPublicFields": true,
         "allPublicMethods": true
     }

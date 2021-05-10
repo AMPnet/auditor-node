@@ -1,8 +1,7 @@
 package com.ampnet.auditornode.script.api.objects
 
+import com.ampnet.auditornode.script.api.model.AuditResult
 import org.graalvm.polyglot.HostAccess.Export
-
-data class AuditResult(val success: Boolean)
 
 object AuditResultApi : JavaScriptApiObject {
 

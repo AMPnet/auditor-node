@@ -4,7 +4,8 @@ import assertk.assertThat
 import com.ampnet.auditornode.TestBase
 import com.ampnet.auditornode.configuration.properties.ScriptProperties
 import com.ampnet.auditornode.isRightContaining
-import com.ampnet.auditornode.script.api.classes.Http
+import com.ampnet.auditornode.script.api.classes.HttpClient
+import com.ampnet.auditornode.script.api.model.AuditResult
 import com.ampnet.auditornode.service.impl.JavaScriptAuditingService
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
@@ -13,7 +14,7 @@ import org.mockito.kotlin.mock
 
 class PropertiesJavaScriptApiTest : TestBase() {
 
-    private val http = Http(mock())
+    private val httpClient = HttpClient(mock())
 
     @Test
     fun `must correctly read provided environment API object`() {
@@ -31,7 +32,7 @@ class PropertiesJavaScriptApiTest : TestBase() {
         }
 
         val properties = Properties(mockProperties)
-        val service = JavaScriptAuditingService(http, properties)
+        val service = JavaScriptAuditingService(httpClient, properties)
 
         verify("JavaScript properties variables are accessible in the script") {
             @Language("JavaScript") val scriptSource = """

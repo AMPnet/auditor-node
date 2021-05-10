@@ -8,8 +8,8 @@ import arrow.core.right
 import com.ampnet.auditornode.model.error.EvaluationError.InvalidReturnValueError
 import com.ampnet.auditornode.model.error.EvaluationError.ScriptExecutionError
 import com.ampnet.auditornode.model.error.Try
-import com.ampnet.auditornode.script.api.classes.Http
-import com.ampnet.auditornode.script.api.objects.AuditResult
+import com.ampnet.auditornode.script.api.classes.HttpClient
+import com.ampnet.auditornode.script.api.model.AuditResult
 import com.ampnet.auditornode.script.api.objects.AuditResultApi
 import com.ampnet.auditornode.script.api.objects.JavaScriptApiObject
 import com.ampnet.auditornode.script.api.objects.Properties
@@ -25,7 +25,7 @@ import javax.inject.Singleton
 private val logger = KotlinLogging.logger {}
 
 @Singleton
-class JavaScriptAuditingService @Inject constructor(http: Http, properties: Properties) : AuditingService {
+class JavaScriptAuditingService @Inject constructor(httpClient: HttpClient, properties: Properties) : AuditingService {
 
     companion object {
         private const val TARGET_LANGUAGE = "js"
@@ -41,7 +41,7 @@ class JavaScriptAuditingService @Inject constructor(http: Http, properties: Prop
     private val apiObjects = listOf(AuditResultApi, properties)
         .joinToString(separator = "\n") { it.createJavaScriptApiObject() }
     private val apiClasses = mapOf<String, Any>(
-        "http" to http
+        "HttpClient" to httpClient
     )
 
     override fun evaluate(auditingScript: String): Try<AuditResult> {
