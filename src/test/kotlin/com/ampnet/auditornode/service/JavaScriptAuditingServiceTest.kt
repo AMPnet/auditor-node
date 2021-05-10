@@ -12,6 +12,7 @@ import com.ampnet.auditornode.model.error.EvaluationError.ScriptExecutionError
 import com.ampnet.auditornode.model.script.AuditResult
 import com.ampnet.auditornode.model.script.Http
 import com.ampnet.auditornode.service.impl.JavaScriptAuditingService
+import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 
@@ -35,7 +36,7 @@ class JavaScriptAuditingServiceTest : TestBase() {
     @Test
     fun `must return InvalidReturnValueError when JavaScript source returns native value`() {
         verify("InvalidReturnValueError is returned") {
-            val scriptSource = """
+            @Language("JavaScript") val scriptSource = """
                 function audit() {
                     return { example: true };
                 }
@@ -48,7 +49,7 @@ class JavaScriptAuditingServiceTest : TestBase() {
     @Test
     fun `must return InvalidReturnValueError when JavaScript source returns unexpected JVM object`() {
         verify("InvalidReturnValueError is returned") {
-            val scriptSource = """
+            @Language("JavaScript") val scriptSource = """
                 function audit() {
                     return AuditResult;
                 }
@@ -61,7 +62,7 @@ class JavaScriptAuditingServiceTest : TestBase() {
     @Test
     fun `must return correct AuditResult from JavaScript source`() {
         verify("AuditResult(true) is correctly returned") {
-            val scriptSource = """
+            @Language("JavaScript") val scriptSource = """
                 function audit() {
                     return AuditResult.of(true);
                 }
@@ -71,7 +72,7 @@ class JavaScriptAuditingServiceTest : TestBase() {
         }
 
         verify("AuditResult(false) is correctly returned") {
-            val scriptSource = """
+            @Language("JavaScript") val scriptSource = """
                 function audit() {
                     return AuditResult.of(false);
                 }
