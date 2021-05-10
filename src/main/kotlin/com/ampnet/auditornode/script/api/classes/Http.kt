@@ -1,4 +1,4 @@
-package com.ampnet.auditornode.model.script
+package com.ampnet.auditornode.script.api.classes
 
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.client.BlockingHttpClient

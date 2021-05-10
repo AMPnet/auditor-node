@@ -9,8 +9,9 @@ import com.ampnet.auditornode.isLeftSatisfying
 import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.model.error.EvaluationError.InvalidReturnValueError
 import com.ampnet.auditornode.model.error.EvaluationError.ScriptExecutionError
-import com.ampnet.auditornode.model.script.AuditResult
-import com.ampnet.auditornode.model.script.Http
+import com.ampnet.auditornode.script.api.classes.Http
+import com.ampnet.auditornode.script.api.objects.AuditResult
+import com.ampnet.auditornode.script.api.objects.Properties
 import com.ampnet.auditornode.service.impl.JavaScriptAuditingService
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
@@ -19,7 +20,8 @@ import org.mockito.kotlin.mock
 class JavaScriptAuditingServiceTest : TestBase() {
 
     private val http = Http(mock())
-    private val service = JavaScriptAuditingService(http)
+    private val environment = Properties(mock())
+    private val service = JavaScriptAuditingService(http, environment)
 
     @Test
     fun `must return ScriptExecutionError for invalid JavaScript source`() {

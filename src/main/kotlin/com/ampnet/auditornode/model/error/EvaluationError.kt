@@ -1,6 +1,6 @@
 package com.ampnet.auditornode.model.error
 
-import com.ampnet.auditornode.model.script.AuditResult
+import com.ampnet.auditornode.script.api.objects.AuditResult
 
 sealed class EvaluationError(message: String, cause: Throwable? = null) : ApplicationError(message, cause) {
 

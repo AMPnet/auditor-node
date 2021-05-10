@@ -1,8 +1,8 @@
-package com.ampnet.auditornode.model.script
+package com.ampnet.auditornode.script.api.objects
 
-interface JavaScriptApi {
+interface JavaScriptApiObject {
 
-    fun apiObjectName(): String = javaClass.simpleName.toLowerCase()
+    fun apiObjectName(): String = javaClass.simpleName
 
     fun createJavaScriptApiObject(): String {
         val fullClassName = javaClass.name

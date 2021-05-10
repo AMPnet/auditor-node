@@ -25,3 +25,9 @@ interface RpcProperties {
     @get:Bindable(defaultValue = "https://ropsten.infura.io/v3/08664baf7af14eda956db2b71a79f12f")
     val url: String
 }
+
+@ConfigurationProperties("script")
+interface ScriptProperties {
+    @get:Bindable(defaultValue = "")
+    val properties: Map<String, String>
+}
