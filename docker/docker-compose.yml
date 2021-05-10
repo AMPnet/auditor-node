@@ -2,20 +2,19 @@ version: "3.9"
 services:
   ipfs-node:
     container_name: ipfs-node
-    image: "ipfs/go-ipfs:latest"
+    image: "ipfs/go-ipfs:v0.8.0"
     environment:
       IPFS_PROFILE: server
     ports:
       - "4001:4001"
       - "5001:5001"
-#      - "8080:8080" # if you want to expose IPFS gateway
     volumes:
       - ./ipfs-staging:/export
       - ./ipfs-data:/data/ipfs
 
   geth-node:
     container_name: geth-node
-    image: "ethereum/client-go:latest"
+    image: "ethereum/client-go:v1.10.2"
     entrypoint: ["/entrypoint.sh"]
     ports:
       - "8545:8545"
