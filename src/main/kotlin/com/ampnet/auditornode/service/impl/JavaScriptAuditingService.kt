@@ -11,6 +11,7 @@ import com.ampnet.auditornode.model.error.Try
 import com.ampnet.auditornode.script.api.classes.HttpClient
 import com.ampnet.auditornode.script.api.model.AuditResult
 import com.ampnet.auditornode.script.api.objects.AuditResultApi
+import com.ampnet.auditornode.script.api.objects.Converters
 import com.ampnet.auditornode.script.api.objects.JavaScriptApiObject
 import com.ampnet.auditornode.script.api.objects.Properties
 import com.ampnet.auditornode.service.AuditingService
@@ -38,7 +39,7 @@ class JavaScriptAuditingService @Inject constructor(httpClient: HttpClient, prop
             .allowHostAccess(HostAccess.EXPLICIT)
             .allowHostClassLookup { fullClassName -> fullClassName.startsWith(apiObjectPackagePrefix) }
 
-    private val apiObjects = listOf(AuditResultApi, properties)
+    private val apiObjects = listOf(AuditResultApi, Converters, properties)
         .joinToString(separator = "\n") { it.createJavaScriptApiObject() }
     private val apiClasses = mapOf<String, Any>(
         "HttpClient" to httpClient
@@ -47,6 +48,7 @@ class JavaScriptAuditingService @Inject constructor(httpClient: HttpClient, prop
     override fun evaluate(auditingScript: String): Try<AuditResult> {
         val scriptSource = "$apiObjects\n$auditingScript;\n$SCRIPT_FUNCTION_CALL"
         logger.info { "Evaluating auditing script:\n$auditingScript" }
+        logger.debug { "Full script source:\n$scriptSource" }
 
         return Either.catch {
             jsContextBuilder.build()
@@ -60,7 +62,7 @@ class JavaScriptAuditingService @Inject constructor(httpClient: HttpClient, prop
                     asAuditResult(result)
                 }
         }
-            .mapLeft { ScriptExecutionError(auditingScript, it) }
+            .mapLeft { ScriptExecutionError(it) }
             .flatten()
     }
 

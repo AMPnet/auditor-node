@@ -1,7 +1,6 @@
 package com.ampnet.auditornode.service
 
 import assertk.assertThat
-import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import com.ampnet.auditornode.TestBase
 import com.ampnet.auditornode.isLeftContaining
@@ -30,7 +29,6 @@ class JavaScriptAuditingServiceTest : TestBase() {
             val result = service.evaluate(scriptSource)
             assertThat(result).isLeftSatisfying {
                 assertThat(it).isInstanceOf(ScriptExecutionError::class)
-                assertThat((it as ScriptExecutionError).script).isEqualTo(scriptSource)
             }
         }
     }

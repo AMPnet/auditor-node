@@ -19,8 +19,8 @@ sealed class EvaluationError(message: String, cause: Throwable? = null) : Applic
         "Method call $methodCall expects '$expectedType' as argument with index $argumentIndex but was '$actualType'"
     )
 
-    data class ScriptExecutionError(val script: String, override val cause: Throwable?) : EvaluationError(
-        message = "Error while executing provided script:\n$script",
+    data class ScriptExecutionError(override val cause: Throwable) : EvaluationError(
+        message = "Error while executing provided script:\n${cause.message}",
         cause = cause
     )
 }

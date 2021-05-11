@@ -96,6 +96,11 @@
         "allPublicMethods": true
     },
     {
+        "name": "com.ampnet.auditornode.script.api.objects.Converters",
+        "allPublicFields": true,
+        "allPublicMethods": true
+    },
+    {
         "name": "com.ampnet.auditornode.script.api.model.AuditResult",
         "allPublicFields": true,
         "allPublicMethods": true
