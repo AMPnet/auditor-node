@@ -1,0 +1,5 @@
+script:
+  properties:
+    test-property: example
+    another-test-property: value
+    number-property: 123

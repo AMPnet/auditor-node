@@ -81,7 +81,7 @@ class HttpClientJavaScriptApiTest : TestBase() {
                     assertEquals("response.headers.size", ${responseHeaders.size}, response.headers.size);
 
                     let header1List = response.headers.get("header1");
-                    
+
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
@@ -168,7 +168,7 @@ class HttpClientJavaScriptApiTest : TestBase() {
                     assertEquals("response.headers.size", ${responseHeaders.size}, response.headers.size);
 
                     let header1List = response.headers.get("header1");
-                    
+
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
@@ -274,7 +274,7 @@ class HttpClientJavaScriptApiTest : TestBase() {
                     assertEquals("response.headers.size", ${responseHeaders.size}, response.headers.size);
 
                     let header1List = response.headers.get("header1");
-                    
+
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
@@ -353,7 +353,7 @@ class HttpClientJavaScriptApiTest : TestBase() {
                     assertEquals("response.headers.size", ${responseHeaders.size}, response.headers.size);
 
                     let header1List = response.headers.get("header1");
-                    
+
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
@@ -445,7 +445,7 @@ class HttpClientJavaScriptApiTest : TestBase() {
                     assertEquals("response.headers.size", ${responseHeaders.size}, response.headers.size);
 
                     let header1List = response.headers.get("header1");
-                    
+
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
@@ -552,7 +552,7 @@ class HttpClientJavaScriptApiTest : TestBase() {
                     assertEquals("response.headers.size", ${responseHeaders.size}, response.headers.size);
 
                     let header1List = response.headers.get("header1");
-                    
+
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
@@ -633,7 +633,7 @@ class HttpClientJavaScriptApiTest : TestBase() {
                     assertEquals("response.headers.size", ${responseHeaders.size}, response.headers.size);
 
                     let header1List = response.headers.get("header1");
-                    
+
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
@@ -727,7 +727,7 @@ class HttpClientJavaScriptApiTest : TestBase() {
                     assertEquals("response.headers.size", ${responseHeaders.size}, response.headers.size);
 
                     let header1List = response.headers.get("header1");
-                    
+
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 

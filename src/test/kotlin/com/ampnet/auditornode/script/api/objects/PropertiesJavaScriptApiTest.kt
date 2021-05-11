@@ -39,11 +39,11 @@ class PropertiesJavaScriptApiTest : TestBase() {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit() {
                     console.log(JSON.stringify(Properties));
-                    
+
                     assertEquals("Properties[\"test-key\"]", "testValue", Properties["test-key"]);
                     assertEquals("Properties.another", "one", Properties.another);
                     assertEquals("Properties[\"some-number\"]", "123", Properties["some-number"]);
-                    
+
                     return AuditResult.of(true);
                 }
             """.trimIndent()
