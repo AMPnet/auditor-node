@@ -48,7 +48,7 @@ class HttpClient(private val blockingHttpClient: BlockingHttpClient) { // TODO a
     @JvmOverloads
     fun request(url: String, method: String, body: String = "", headers: Value? = null): HttpResponse {
         val upperCaseMethod = method.toUpperCase()
-        val httpMethod = HttpMethod.valueOf(upperCaseMethod)
+        val httpMethod = HttpMethod.parse(upperCaseMethod)
         return httpRequest(
             headers = headers,
             request = HttpRequest.create<String>(httpMethod, url, upperCaseMethod).apply {
@@ -93,7 +93,7 @@ class HttpClient(private val blockingHttpClient: BlockingHttpClient) { // TODO a
         headers.memberKeys
             .map { Pair(it, headers.getMember(it)) }
             .filter { it.second.isString }
-            .forEach { request.header(it.first, it.second.asString()) }
+            .forEach { request.headers.set(it.first, it.second.asString()) }
     }
 
     private fun convertResponse(response: io.micronaut.http.HttpResponse<String>): HttpResponse {

@@ -8,6 +8,7 @@ class ListApi<out E>(private val underlying: List<E>) {
     operator fun get(index: Int): E = underlying[index]
 
     @Export
+    @JvmField
     val length: Int = underlying.size
 }
 

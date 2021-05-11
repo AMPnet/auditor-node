@@ -4,6 +4,7 @@ import assertk.assertThat
 import com.ampnet.auditornode.TestBase
 import com.ampnet.auditornode.configuration.properties.ScriptProperties
 import com.ampnet.auditornode.isRightContaining
+import com.ampnet.auditornode.jsAssertions
 import com.ampnet.auditornode.script.api.classes.HttpClient
 import com.ampnet.auditornode.script.api.model.AuditResult
 import com.ampnet.auditornode.service.impl.JavaScriptAuditingService
@@ -35,27 +36,15 @@ class PropertiesJavaScriptApiTest : TestBase() {
         val service = JavaScriptAuditingService(httpClient, properties)
 
         verify("JavaScript properties variables are accessible in the script") {
-            @Language("JavaScript") val scriptSource = """
+            @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit() {
                     console.log(JSON.stringify(Properties));
-
-                    if (Properties["test-key"] !== "testValue") {
-                        console.log("Environment[\"test-key\"] mismatch");
-                        return AuditResult.of(false);
-                    }
-
-                    if (Properties.another !== "one") {
-                        console.log("Environment.another mismatch");
-                        return AuditResult.of(false);
-                    }
                     
-                    if (Properties["some-number"] === "123") {
-                        console.log("Success: " + JSON.stringify(Properties));
-                        return AuditResult.of(true);
-                    } else {
-                        console.log("Environment[\"some-number\"] mismatch");
-                        return AuditResult.of(false);
-                    }
+                    assertEquals("Properties[\"test-key\"]", "testValue", Properties["test-key"]);
+                    assertEquals("Properties.another", "one", Properties.another);
+                    assertEquals("Properties[\"some-number\"]", "123", Properties["some-number"]);
+                    
+                    return AuditResult.of(true);
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource)

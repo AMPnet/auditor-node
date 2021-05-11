@@ -46,7 +46,7 @@ class JavaScriptAuditingService @Inject constructor(httpClient: HttpClient, prop
 
     override fun evaluate(auditingScript: String): Try<AuditResult> {
         val scriptSource = "$apiObjects\n$auditingScript;\n$SCRIPT_FUNCTION_CALL"
-        logger.info { "Evaluating auditing script: $auditingScript" }
+        logger.info { "Evaluating auditing script:\n$auditingScript" }
 
         return Either.catch {
             jsContextBuilder.build()

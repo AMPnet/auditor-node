@@ -4,6 +4,7 @@ import arrow.core.Either
 import assertk.Assert
 import assertk.assertions.isEqualTo
 import assertk.assertions.support.expected
+import org.intellij.lang.annotations.Language
 
 fun <A, B> Assert<Either<A, B>>.isLeftSatisfying(assertions: (A) -> Unit) = given { actual ->
     if (actual is Either.Left) {
@@ -26,3 +27,29 @@ fun <A, B> Assert<Either<A, B>>.isLeftContaining(expected: A) =
 
 fun <A, B> Assert<Either<A, B>>.isRightContaining(expected: B) =
     isRightSatisfying { assertThat(it).isEqualTo(expected) }
+
+@Language("JavaScript")
+val jsAssertions = """
+    function assertEquals(name, expected, actual) {
+        if (expected !== actual) {
+            let message = "Assertion failed for '" + name + "'; expected: '" + expected + "', actual: '" + actual + "'";
+            console.log(message);
+            throw message;
+        } else {
+            console.log("Assertion success for '" + name + "', got value: '" + actual + "'");
+        }
+    }
+
+    function assertThrows(name, expected, code) {
+        try {
+            code();
+        } catch (e) {
+            assertEquals("exception thrown by " + name, expected, `${'$'}{e}`);
+            return;
+        }
+
+        let message = "Expected '" + name + "' to throw an exception";
+        console.log(message);
+        throw message;
+    }
+""".trimIndent().plus("\n\n")
