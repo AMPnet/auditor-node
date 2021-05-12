@@ -26,7 +26,7 @@ class HttpCookie(
     val maxAge: Long,
     @Export
     @JvmField
-    val sameSite: String?
+    val sameSite: String
 )
 
 class HttpResponse(

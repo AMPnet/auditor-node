@@ -5,7 +5,7 @@ import org.graalvm.polyglot.HostAccess.Export
 class ListApi<out E>(private val underlying: List<E>) {
 
     @Export
-    operator fun get(index: Int): E = underlying[index]
+    operator fun get(index: Int): E? = underlying.getOrNull(index)
 
     @Export
     @JvmField
