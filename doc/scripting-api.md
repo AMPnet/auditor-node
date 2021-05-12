@@ -166,3 +166,31 @@ be of the `String` type.
 ###### Methods
 
 No methods are available.
+
+### API
+
+Objects which provide various APIs (e.g. HTTP requests).
+
+#### HttpClient
+
+Provides support for making blocking HTTP calls from the auditing scripts. Request and response bodies are always of
+`String` type, and the default request content type is `application/json` if request body is provided. This content
+type can be changed by specifying the `Content-Type` header value.  
+Object name: `HttpClient`
+
+###### Fields
+
+No fields are readable.
+
+###### Methods
+
+| Signature | Description | Example call |
+| --------- | ----------- | ------------ |
+| `get(url: String): HttpResponse` | Sends a `GET` request to the specified URL and returns the response. | `HttpClient.get("http://example.com/");` |
+| `get(url: String, headers: Object): HttpResponse` | Sends a `GET` request with provided headers to the specified URL and returns the response. The headers object should consist of key-value pairs which are of `String` type. | `HttpClient.get("http://example.com/", { "Accept": "application/json" })` |
+| `post(url: String): HttpResponse` | Sends a `POST` request with empty request body to the specified URL and returns the response. | `HttpClient.post("http://example.com/");` |
+| `post(url: String, body: String): HttpResponse` | Sends a `POST` request with provided request body to the specified URL and returns the response. | `HttpClient.post("http://example.com/", "exampleRequestBody");` |
+| `post(url: String, body: String, headers: Object): HttpResponse` | Sends a `POST` request with provided request body and headers to the specified URL and returns the response. The headers object should consist of key-value pairs which are of `String` type. | `HttpClient.post("http://example.com/", "exampleRequestBody", { "Accept": "application/json" });` |
+| `request(url: String, method: String): HttpResponse` | Sends a request with specified HTTP method to the specified URL and returns the response. | `HttpClient.request("http://example.com/", "CUSTOM_METHOD");` |
+| `request(url: String, method: String, body: String): HttpResponse` | Sends a request with specified HTTP method and request body to the specified URL and returns the response. | `HttpClient.request("http://example.com/", "CUSTOM_METHOD", "exampleRequestBody");` |
+| `request(url: String, method: String, body: String, headers: Object): HttpResponse` | Sends a request with specified HTTP method, request body and headers to the specified URL and returns the response. The headers object should consist of key-value pairs which are of `String` type. | `HttpClient.request("http://example.com/", "CUSTOM_METHOD", "exampleRequestBody", { "Accept": "application/json" });` |
