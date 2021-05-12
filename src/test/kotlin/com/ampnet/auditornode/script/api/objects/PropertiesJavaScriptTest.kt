@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 
-class PropertiesJavaScriptApiTest : TestBase() {
+class PropertiesJavaScriptTest : TestBase() {
 
     private val httpClient = HttpClient(mock())
 

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.TestInstance
 import javax.inject.Inject
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-abstract class ApiTestWithPropertiesBase {
+abstract class ApiTestWithPropertiesBase : TestBase() {
 
     @Inject
     // request path must always include serverPath(), e.g. "${serverPath()}/hello"

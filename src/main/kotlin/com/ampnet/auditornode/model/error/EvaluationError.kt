@@ -20,7 +20,7 @@ sealed class EvaluationError(message: String, cause: Throwable? = null) : Applic
     )
 
     data class ScriptExecutionError(override val cause: Throwable) : EvaluationError(
-        message = "Error while executing provided script:\n${cause.message}",
+        message = "Error while executing provided script: ${cause.message}",
         cause = cause
     )
 }

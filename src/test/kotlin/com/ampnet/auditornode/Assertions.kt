@@ -52,4 +52,14 @@ val jsAssertions = """
         console.log(message);
         throw message;
     }
+
+    function assertNonNull(name, value) {
+        if (value === null || value === undefined) {
+            let message = "Assertion failed for '" + name + "'; expected non-null (defined) value";
+            console.log(message);
+            throw message;
+        } else {
+            console.log("Assertion success for '" + name + "', got value: '" + value + "'");
+        }
+    }
 """.trimIndent().plus("\n\n")

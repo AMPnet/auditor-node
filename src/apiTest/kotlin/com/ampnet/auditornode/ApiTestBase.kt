@@ -4,7 +4,7 @@ import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.annotation.Client
 import javax.inject.Inject
 
-abstract class ApiTestBase {
+abstract class ApiTestBase : TestBase() {
 
     @Inject
     @field:Client("/")

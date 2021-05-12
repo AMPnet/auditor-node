@@ -94,6 +94,7 @@ dependencies {
     apiTestImplementation(platform("io.micronaut:micronaut-bom:${micronaut.version}"))
     apiTestImplementation("io.micronaut.test:micronaut-test-junit5")
     apiTestImplementation("io.micronaut.test:micronaut-test-core:2.3.3")
+    apiTestImplementation("com.github.tomakehurst:wiremock-jre8:2.27.2")
     apiTestImplementation(sourceSets.test.get().output)
 }
 

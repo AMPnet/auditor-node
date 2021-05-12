@@ -19,24 +19,26 @@ class PropertiesJavaScriptApiTest : ApiTestWithPropertiesBase() {
 
     @Test
     fun `must correctly execute auditing script which uses script properties`() {
-        @Language("JavaScript") val scriptSource = jsAssertions + """
-            function audit() {
-                console.log(JSON.stringify(Properties));
+        verify("script properties are readable in the script") {
+            @Language("JavaScript") val scriptSource = jsAssertions + """
+                function audit() {
+                    console.log(JSON.stringify(Properties));
 
-                assertEquals("Properties[\"test-property\"]", "example", Properties["test-property"]);
-                assertEquals("Properties[\"another-test-property\"]", "value", Properties["another-test-property"]);
-                assertEquals("Properties[\"number-property\"]", "123", Properties["number-property"]);
+                    assertEquals("Properties[\"test-property\"]", "example", Properties["test-property"]);
+                    assertEquals("Properties[\"another-test-property\"]", "value", Properties["another-test-property"]);
+                    assertEquals("Properties[\"number-property\"]", "123", Properties["number-property"]);
 
-                return AuditResult.of(true);
-            }
-        """.trimIndent()
+                    return AuditResult.of(true);
+                }
+            """.trimIndent()
 
-        val result = client.toBlocking().retrieve(
-            HttpRequest.POST("${serverPath()}/script/execute", scriptSource).apply {
-                contentType(MediaType.TEXT_PLAIN_TYPE)
-            }
-        )
+            val result = client.toBlocking().retrieve(
+                HttpRequest.POST("${serverPath()}/script/execute", scriptSource).apply {
+                    contentType(MediaType.TEXT_PLAIN_TYPE)
+                }
+            )
 
-        assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+        }
     }
 }
