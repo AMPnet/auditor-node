@@ -35,7 +35,7 @@ Object name: `AuditResult`
 
 ###### Fields
 
-No fields are readable in the scripts.
+No fields are readable.
 
 ###### Methods
 
@@ -98,7 +98,7 @@ No static object is provided in the scripts.
 
 ###### Methods
 
-No methods are available in the scripts.
+No methods are available.
 
 #### HttpResponse
 
@@ -116,4 +116,53 @@ No static object is provided in the scripts.
 
 ###### Methods
 
-No methods are available in the scripts.
+No methods are available.
+
+### Utilities
+
+Utility objects provide ease of access between JavaScript and the scripting runtime environment.
+
+#### Converters
+
+Contains utility functions to convert values between JavaScript native objects and script models.  
+Object name: `Converters`
+
+###### Fields
+
+No fields are readable.
+
+###### Methods
+
+| Signature | Description | Example call |
+| --------- | ----------- | ------------ |
+| `arrayToList(array: Array<?>): List<?>` | Converts JavaScript array into a List model. If the provided argument is not an array, empty list will be returned. | `Converters.arrayToList([1, 2, 3]);` |
+| `objectToMap(obj: Object): Map<String, ?>` | Converts JavaScript object into a Map model. If the provided argument is not an object, empty map will be returned. | `Converters.objectToMap({ example: true });` |
+| `listToArray(list: List<?>): Array<?>` | Converts List model into a JavaScript array. If the provided argument is not a List model, this method will either return an empty array or throw an exception. | `Converters.listToArray(someList);` |
+| `mapToObject(map: Map<?, ?>): Object` | Converts Map model into a JavaScript object. If the provided argument is not a Map mode, this method will either return an empty object or throw an exception. | `Converters.mapToObject(someMap);` |
+
+#### Properties
+
+Properties object contains all the application properties with `script.properties` prefix which were defined as
+`-script.properties.<propertyName>=<propertyValue>` program arguments or otherwise. An important note here is that all
+the defined property names will be visible through `kebab-case`. For example, specifying
+`-script.properties.examplePropety=exampleValue` will cause the `example-property` to be visible in the `Properties`
+object:
+
+```javascript
+console.log(Properties["example-property"]); // prints out "exampleValue"
+```
+
+Object name: `Properties`
+
+###### Fields
+
+The fields of this object are dynamic and depend on the available `script.properties` values. All the fields will always
+be of the `String` type.
+
+| Field | Description |
+| ----- | ----------- |
+| `<propertyName>: String` | Value of the property under `<propertyName>` key. |
+
+###### Methods
+
+No methods are available.
