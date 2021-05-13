@@ -17,7 +17,9 @@ import com.ampnet.auditornode.script.api.objects.Properties
 import com.ampnet.auditornode.service.AuditingService
 import mu.KotlinLogging
 import org.graalvm.polyglot.Context
+import org.graalvm.polyglot.EnvironmentAccess
 import org.graalvm.polyglot.HostAccess
+import org.graalvm.polyglot.PolyglotAccess
 import org.graalvm.polyglot.Source
 import org.graalvm.polyglot.Value
 import javax.inject.Inject
@@ -31,11 +33,21 @@ class JavaScriptAuditingService @Inject constructor(httpClient: HttpClient, prop
     companion object {
         private const val TARGET_LANGUAGE = "js"
         private const val SCRIPT_FUNCTION_CALL = "audit();"
+        private val languageOptions = mapOf(
+            "js.ecmascript-version" to "2020"
+        )
     }
 
     private val apiObjectPackagePrefix = JavaScriptApiObject::class.java.`package`.name
     private val jsContextBuilder =
         Context.newBuilder(TARGET_LANGUAGE)
+            .options(languageOptions)
+            .allowIO(false)
+            .allowCreateThread(false)
+            .allowCreateProcess(false)
+            .allowNativeAccess(false)
+            .allowPolyglotAccess(PolyglotAccess.NONE)
+            .allowEnvironmentAccess(EnvironmentAccess.NONE)
             .allowHostAccess(HostAccess.EXPLICIT)
             .allowHostClassLookup { fullClassName -> fullClassName.startsWith(apiObjectPackagePrefix) }
 

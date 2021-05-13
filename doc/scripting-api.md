@@ -20,9 +20,10 @@ function audit() {
 ## Script API
 
 Auditing scripts can call methods and read fields from the objects specified in this section. Apart from the API
-described here, several other global objects are available (e.g. `console` and `JSON`) which can also be used. Auditing
-scripts can be tested via `POST /script/execute` when the application is running. This endpoint expects the script
-payload as `text/plain` content type.
+described here, several other global objects are available (e.g. `console` and `JSON`) which can also be used. IO
+operations, process and thread creation are not allowed in the auditing scripts (unless when available via API
+documented below). Auditing scripts can be tested via `POST /script/execute` when the application is running. This
+endpoint expects the script payload as `text/plain` content type.
 
 ### Models
 
@@ -174,8 +175,8 @@ Objects which provide various APIs (e.g. HTTP requests).
 #### HttpClient
 
 Provides support for making blocking HTTP calls from the auditing scripts. Request and response bodies are always of
-`String` type, and the default request content type is `application/json` if request body is provided. This content
-type can be changed by specifying the `Content-Type` header value.  
+`String` type, and the default request content type is `application/json` if request body is provided. This content type
+can be changed by specifying the `Content-Type` header value.  
 Object name: `HttpClient`
 
 ###### Fields
