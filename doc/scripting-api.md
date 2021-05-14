@@ -7,9 +7,9 @@ powered by GraalVM. For more info, check out
 
 ## Entry point and return value
 
-Each auditing script should define a function called `audit()` which takes no arguments. This function should do all the
+Each auditing script should define a function called `audit()` without arguments. This function should do all the
 necessary steps in the auditing process and return an `AuditResult` at the end. The simplest possible auditing script is
-therefore:
+the following:
 
 ```javascript
 function audit() {
@@ -32,11 +32,11 @@ Models are objects which are used primarily for the data transfer between the au
 #### AuditResult
 
 Model of the result that should be returned from the `audit()` function.  
-Object name: `AuditResult`
+Static object name: `AuditResult`
 
 ###### Fields
 
-No fields are readable.
+There are no readable fields.
 
 ###### Methods
 
@@ -47,7 +47,7 @@ No fields are readable.
 #### List&lt;E&gt;
 
 Model of the lists returned from the API objects. Contains elements of type `E`.  
-No static object is provided in the scripts.
+There is no static object available in the scripts.
 
 ###### Fields
 
@@ -64,7 +64,7 @@ No static object is provided in the scripts.
 #### Map&lt;K, V&gt;
 
 Model of the maps returned from the API objects. Contains elements of type `V` stored under keys of type `K`.  
-No static object is provided in the scripts.
+There is no static object available in the scripts.
 
 ###### Fields
 
@@ -82,7 +82,7 @@ No static object is provided in the scripts.
 #### HttpCookie
 
 Model of HTTP cookie objects.  
-No static object is provided in the scripts.
+There is no static object available in the scripts.
 
 ###### Fields
 
@@ -99,12 +99,12 @@ No static object is provided in the scripts.
 
 ###### Methods
 
-No methods are available.
+There are no methods available.
 
 #### HttpResponse
 
 Model of HTTP response objects.  
-No static object is provided in the scripts.
+There is no static object available in the scripts.
 
 ###### Fields
 
@@ -117,7 +117,7 @@ No static object is provided in the scripts.
 
 ###### Methods
 
-No methods are available.
+There are no methods available.
 
 ### Utilities
 
@@ -126,11 +126,11 @@ Utility objects provide ease of access between JavaScript and the scripting runt
 #### Converters
 
 Contains utility functions to convert values between JavaScript native objects and script models.  
-Object name: `Converters`
+Static object name: `Converters`
 
 ###### Fields
 
-No fields are readable.
+There are no readable fields.
 
 ###### Methods
 
@@ -153,7 +153,7 @@ object:
 console.log(Properties["example-property"]); // prints out "exampleValue"
 ```
 
-Object name: `Properties`
+Static object name: `Properties`
 
 ###### Fields
 
@@ -166,7 +166,7 @@ be of the `String` type.
 
 ###### Methods
 
-No methods are available.
+There are no methods available.
 
 ### API
 
@@ -177,11 +177,11 @@ Objects which provide various APIs (e.g. HTTP requests).
 Provides support for making blocking HTTP calls from the auditing scripts. Request and response bodies are always of
 `String` type, and the default request content type is `application/json` if request body is provided. This content type
 can be changed by specifying the `Content-Type` header value.  
-Object name: `HttpClient`
+Static object name: `HttpClient`
 
 ###### Fields
 
-No fields are readable.
+There are no readable fields.
 
 ###### Methods
 

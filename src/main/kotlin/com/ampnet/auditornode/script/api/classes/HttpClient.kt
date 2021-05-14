@@ -68,32 +68,23 @@ class HttpClient(private val blockingHttpClient: BlockingHttpClient) { // TODO a
         methodCall: String,
         argumentIndex: Int
     ): HttpResponse {
-        if (headers != null) {
-            createHttpHeaders(headers, request, methodCall, argumentIndex)
+        headers?.let {
+            if (!headers.hasMembers()) {
+                throw InvalidInputValueError(
+                    methodCall = methodCall,
+                    argumentIndex = argumentIndex,
+                    expectedType = "<JavaScript object>",
+                    actualType = headers.toString()
+                )
+            }
+
+            headers.memberKeys
+                .map { Pair(it, headers.getMember(it)) }
+                .filter { it.second.isString }
+                .forEach { request.headers.set(it.first, it.second.asString()) }
         }
 
         return convertResponse(blockingHttpClient.exchange(request, String::class.java))
-    }
-
-    private fun createHttpHeaders(
-        headers: Value,
-        request: MutableHttpRequest<String>,
-        methodCall: String,
-        argumentIndex: Int
-    ) {
-        if (!headers.hasMembers()) {
-            throw InvalidInputValueError(
-                methodCall = methodCall,
-                argumentIndex = argumentIndex,
-                expectedType = "<JavaScript object>",
-                actualType = headers.toString()
-            )
-        }
-
-        headers.memberKeys
-            .map { Pair(it, headers.getMember(it)) }
-            .filter { it.second.isString }
-            .forEach { request.headers.set(it.first, it.second.asString()) }
     }
 
     private fun convertResponse(response: io.micronaut.http.HttpResponse<String>): HttpResponse {

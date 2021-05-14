@@ -25,6 +25,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import java.net.URI
+import java.util.Optional
 
 class HttpClientJavaScriptTest : TestBase() {
 
@@ -33,6 +34,9 @@ class HttpClientJavaScriptTest : TestBase() {
             on { properties } doReturn emptyMap()
         }
     )
+
+    private val <T> Optional<T>.isEmpty
+        get() = !isPresent
 
     @Test
     fun `must correctly perform simple get() call`() {
@@ -55,7 +59,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         suppose("client will return some HTTP response") {
             val httpRequestMatcher: (HttpRequest<String>) -> Boolean = { arg ->
-                arg.uri == requestUri && arg.method == HttpMethod.GET && !arg.contentType.isPresent
+                arg.uri == requestUri && arg.method == HttpMethod.GET && arg.contentType.isEmpty
             }
             val mockResponse = mock<io.micronaut.http.HttpResponse<String>> {
                 on { headers } doReturn SimpleHttpHeaders(responseHeaders, DefaultConversionService())
@@ -134,9 +138,9 @@ class HttpClientJavaScriptTest : TestBase() {
             val httpRequestMatcher: (HttpRequest<String>) -> Boolean = { arg ->
                 val headersMap = arg.headers.asMap()
                 arg.uri == requestUri && arg.method == HttpMethod.GET && headersMap.size == 2 &&
-                    headersMap["requestHeader1"]?.size == 1 && headersMap["requestHeader1"]!![0] == "headerValue1" &&
-                    headersMap["requestHeader2"]?.size == 1 && headersMap["requestHeader2"]!![0] == "headerValue2" &&
-                    !arg.contentType.isPresent
+                    headersMap["requestHeader1"]?.size == 1 && headersMap["requestHeader1"]?.get(0) == "headerValue1" &&
+                    headersMap["requestHeader2"]?.size == 1 && headersMap["requestHeader2"]?.get(0) == "headerValue2" &&
+                    arg.contentType.isEmpty
             }
             val mockResponse = mock<io.micronaut.http.HttpResponse<String>> {
                 on { headers } doReturn SimpleHttpHeaders(responseHeaders, DefaultConversionService())
@@ -248,7 +252,7 @@ class HttpClientJavaScriptTest : TestBase() {
         suppose("client will return some HTTP response") {
             val httpRequestMatcher: (HttpRequest<String>) -> Boolean = { arg ->
                 arg.uri == requestUri && arg.method == HttpMethod.POST && arg.body.get().isEmpty() &&
-                    !arg.contentType.isPresent
+                    arg.contentType.isEmpty
             }
             val mockResponse = mock<io.micronaut.http.HttpResponse<String>> {
                 on { headers } doReturn SimpleHttpHeaders(responseHeaders, DefaultConversionService())
@@ -408,9 +412,9 @@ class HttpClientJavaScriptTest : TestBase() {
                 val headersMap = arg.headers.asMap()
                 arg.uri == requestUri && arg.method == HttpMethod.POST && arg.body.get() == requestBody &&
                     headersMap.size == 3 &&
-                    headersMap["Content-Type"]?.size == 1 && headersMap["Content-Type"]!![0] == "text/plain" &&
-                    headersMap["requestHeader1"]?.size == 1 && headersMap["requestHeader1"]!![0] == "headerValue1" &&
-                    headersMap["requestHeader2"]?.size == 1 && headersMap["requestHeader2"]!![0] == "headerValue2" &&
+                    headersMap["Content-Type"]?.size == 1 && headersMap["Content-Type"]?.get(0) == "text/plain" &&
+                    headersMap["requestHeader1"]?.size == 1 && headersMap["requestHeader1"]?.get(0) == "headerValue1" &&
+                    headersMap["requestHeader2"]?.size == 1 && headersMap["requestHeader2"]?.get(0) == "headerValue2" &&
                     arg.contentType.get() == MediaType.TEXT_PLAIN_TYPE
             }
             val mockResponse = mock<io.micronaut.http.HttpResponse<String>> {
@@ -526,7 +530,7 @@ class HttpClientJavaScriptTest : TestBase() {
         suppose("client will return some HTTP response") {
             val httpRequestMatcher: (HttpRequest<String>) -> Boolean = { arg ->
                 arg.uri == requestUri && arg.method == HttpMethod.CUSTOM &&
-                    arg.methodName == customMethodName && !arg.body.isPresent && !arg.contentType.isPresent
+                    arg.methodName == customMethodName && arg.body.isEmpty && arg.contentType.isEmpty
             }
             val mockResponse = mock<io.micronaut.http.HttpResponse<String>> {
                 on { headers } doReturn SimpleHttpHeaders(responseHeaders, DefaultConversionService())
@@ -689,9 +693,9 @@ class HttpClientJavaScriptTest : TestBase() {
                 val headersMap = arg.headers.asMap()
                 arg.uri == requestUri && arg.method == HttpMethod.CUSTOM &&
                     arg.methodName == customMethodName && arg.body.get() == requestBody && headersMap.size == 3 &&
-                    headersMap["Content-Type"]?.size == 1 && headersMap["Content-Type"]!![0] == "text/plain" &&
-                    headersMap["requestHeader1"]?.size == 1 && headersMap["requestHeader1"]!![0] == "headerValue1" &&
-                    headersMap["requestHeader2"]?.size == 1 && headersMap["requestHeader2"]!![0] == "headerValue2" &&
+                    headersMap["Content-Type"]?.size == 1 && headersMap["Content-Type"]?.get(0) == "text/plain" &&
+                    headersMap["requestHeader1"]?.size == 1 && headersMap["requestHeader1"]?.get(0) == "headerValue1" &&
+                    headersMap["requestHeader2"]?.size == 1 && headersMap["requestHeader2"]?.get(0) == "headerValue2" &&
                     arg.contentType.get() == MediaType.TEXT_PLAIN_TYPE
             }
             val mockResponse = mock<io.micronaut.http.HttpResponse<String>> {

@@ -7,6 +7,7 @@ import io.micronaut.test.extensions.AbstractMicronautExtension
 import io.micronaut.test.support.server.TestExecutableEmbeddedServer
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.fail
 import javax.inject.Inject
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -31,10 +32,11 @@ abstract class ApiTestWithPropertiesBase : TestBase() {
                 server.stop()
             }
 
-            val scriptPropertySource = server.environment.propertySources.find { it.name == propertySourceName }!!
+            val scriptPropertySource = server.environment.propertySources.find { it.name == propertySourceName }
+                ?: fail("Missing property source with name: $propertySourceName")
             val testPropertySource = server.environment.propertySources.find {
                 it.name == AbstractMicronautExtension.TEST_PROPERTY_SOURCE
-            }!!
+            } ?: fail("Missing property source with name: ${AbstractMicronautExtension.TEST_PROPERTY_SOURCE}")
 
             server.environment.removePropertySource(scriptPropertySource)
             server.environment.removePropertySource(testPropertySource)

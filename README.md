@@ -100,8 +100,8 @@ content, and the auditor will execute it.
 | Argument | Description | Default value |
 |:--------:|:-----------:|:-------------:|
 | `-rpc.url=<url>` | Ethereum RPC API URL. | `http://localhost:8545` |
-| `-ipfs.gateway-url=<url>` | IPFS gateway URL, not used when  `--local-ipfs`  is specified; must contain  `{ipfsHash}` placeholder. | `https://ipfs.io/ipfs/{ipfsHash}` |
-| `-ipfs.local-client-port=<port>` | Port of local IPFS client, used when  `--local-ipfs` is specified. | `5001` |
+| `-ipfs.gateway-url=<url>` | IPFS gateway URL, not used when `--local-ipfs` is specified; must contain  `{ipfsHash}` placeholder. | `https://ipfs.io/ipfs/{ipfsHash}` |
+| `-ipfs.local-client-port=<port>` | Port of local IPFS client, used when `--local-ipfs` is specified. | `5001` |
 | `-auditor.contract-address=<address>` | Ethereum address of auditor contract. | `0x992E8FeA2D91807797717178Aa6abEc7F20c31a8` |
 | `--local-ipfs` | Use local IPFS client to fetch files. | Disabled by default. |
 | `-script.properties.<propertyName>=<propertyValue>` | Sets specified `<propertyName>` and `<propertyValue>` which is then visible inside auditing scripts via `Properties` object. All property names are converted into `kebab-case` and property values are always strings. See auditor script API specification for more info. | No properties are set by default. |

@@ -45,13 +45,9 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
 
     private fun Cookie.asResponseHeader(): HttpHeader {
         val headerValue = StringBuilder("$name=$value").apply {
-            if (domain != null) {
-                append("; Domain=").append(domain)
-            }
+            domain?.let { append("; Domain=").append(it) }
 
-            if (path != null) {
-                append("; Path=").append(path)
-            }
+            path?.let { append("; Path=").append(it) }
 
             if (isHttpOnly) {
                 append("; HttpOnly")
