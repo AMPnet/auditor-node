@@ -50,6 +50,17 @@ micronaut {
     testRuntime(MicronautTestRuntime.JUNIT_5)
 }
 
+testSets {
+    create("integTest")
+    create("apiTest")
+}
+
+fun DependencyHandler.apiTestImplementation(dependencyNotation: Any): Dependency? =
+    add("apiTestImplementation", dependencyNotation)
+
+fun DependencyHandler.kaptApiTest(dependencyNotation: Any): Dependency? =
+    add("kaptApiTest", dependencyNotation)
+
 dependencies {
     kapt(platform("io.micronaut:micronaut-bom:${micronaut.version}"))
     kapt("io.micronaut:micronaut-inject-java")
@@ -73,22 +84,22 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.6")
 
-    kaptTest(platform("io.micronaut:micronaut-bom:${micronaut.version}"))
-    kaptTest("io.micronaut:micronaut-inject-java")
-    testImplementation(platform("io.micronaut:micronaut-bom:${micronaut.version}"))
     testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testImplementation("io.micronaut.test:micronaut-test-junit5")
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.24")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+
+    kaptApiTest(platform("io.micronaut:micronaut-bom:${micronaut.version}"))
+    kaptApiTest("io.micronaut:micronaut-inject-java")
+    apiTestImplementation(platform("io.micronaut:micronaut-bom:${micronaut.version}"))
+    apiTestImplementation("io.micronaut.test:micronaut-test-junit5")
+    apiTestImplementation("io.micronaut.test:micronaut-test-core:2.3.3")
+    apiTestImplementation("com.github.tomakehurst:wiremock-jre8:2.27.2")
+    apiTestImplementation(sourceSets.test.get().output)
 }
 
 application {
     mainClass.set("com.ampnet.auditornode.AuditorNodeApplication")
-}
-
-testSets {
-    create("integTest")
 }
 
 tasks.withType<KotlinCompile> {

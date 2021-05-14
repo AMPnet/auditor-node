@@ -1,10 +1,9 @@
-package com.ampnet.auditornode.model.script
+package com.ampnet.auditornode.script.api.objects
 
+import com.ampnet.auditornode.script.api.model.AuditResult
 import org.graalvm.polyglot.HostAccess.Export
 
-data class AuditResult(val success: Boolean)
-
-object AuditResultApi : JavaScriptApi {
+object AuditResultApi : JavaScriptApiObject {
 
     override fun apiObjectName(): String = "AuditResult"
 

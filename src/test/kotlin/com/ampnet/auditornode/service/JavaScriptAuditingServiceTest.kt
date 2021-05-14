@@ -1,7 +1,6 @@
 package com.ampnet.auditornode.service
 
 import assertk.assertThat
-import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import com.ampnet.auditornode.TestBase
 import com.ampnet.auditornode.isLeftContaining
@@ -9,16 +8,19 @@ import com.ampnet.auditornode.isLeftSatisfying
 import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.model.error.EvaluationError.InvalidReturnValueError
 import com.ampnet.auditornode.model.error.EvaluationError.ScriptExecutionError
-import com.ampnet.auditornode.model.script.AuditResult
-import com.ampnet.auditornode.model.script.Http
+import com.ampnet.auditornode.script.api.classes.HttpClient
+import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.script.api.objects.Properties
 import com.ampnet.auditornode.service.impl.JavaScriptAuditingService
+import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 
 class JavaScriptAuditingServiceTest : TestBase() {
 
-    private val http = Http(mock())
-    private val service = JavaScriptAuditingService(http)
+    private val httpClient = HttpClient(mock())
+    private val environment = Properties(mock())
+    private val service = JavaScriptAuditingService(httpClient, environment)
 
     @Test
     fun `must return ScriptExecutionError for invalid JavaScript source`() {
@@ -27,7 +29,6 @@ class JavaScriptAuditingServiceTest : TestBase() {
             val result = service.evaluate(scriptSource)
             assertThat(result).isLeftSatisfying {
                 assertThat(it).isInstanceOf(ScriptExecutionError::class)
-                assertThat((it as ScriptExecutionError).script).isEqualTo(scriptSource)
             }
         }
     }
@@ -35,7 +36,7 @@ class JavaScriptAuditingServiceTest : TestBase() {
     @Test
     fun `must return InvalidReturnValueError when JavaScript source returns native value`() {
         verify("InvalidReturnValueError is returned") {
-            val scriptSource = """
+            @Language("JavaScript") val scriptSource = """
                 function audit() {
                     return { example: true };
                 }
@@ -48,7 +49,7 @@ class JavaScriptAuditingServiceTest : TestBase() {
     @Test
     fun `must return InvalidReturnValueError when JavaScript source returns unexpected JVM object`() {
         verify("InvalidReturnValueError is returned") {
-            val scriptSource = """
+            @Language("JavaScript") val scriptSource = """
                 function audit() {
                     return AuditResult;
                 }
@@ -61,7 +62,7 @@ class JavaScriptAuditingServiceTest : TestBase() {
     @Test
     fun `must return correct AuditResult from JavaScript source`() {
         verify("AuditResult(true) is correctly returned") {
-            val scriptSource = """
+            @Language("JavaScript") val scriptSource = """
                 function audit() {
                     return AuditResult.of(true);
                 }
@@ -71,7 +72,7 @@ class JavaScriptAuditingServiceTest : TestBase() {
         }
 
         verify("AuditResult(false) is correctly returned") {
-            val scriptSource = """
+            @Language("JavaScript") val scriptSource = """
                 function audit() {
                     return AuditResult.of(false);
                 }

@@ -8,14 +8,18 @@ import arrow.core.right
 import com.ampnet.auditornode.model.error.EvaluationError.InvalidReturnValueError
 import com.ampnet.auditornode.model.error.EvaluationError.ScriptExecutionError
 import com.ampnet.auditornode.model.error.Try
-import com.ampnet.auditornode.model.script.AuditResult
-import com.ampnet.auditornode.model.script.AuditResultApi
-import com.ampnet.auditornode.model.script.Http
-import com.ampnet.auditornode.model.script.JavaScriptApi
+import com.ampnet.auditornode.script.api.classes.HttpClient
+import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.script.api.objects.AuditResultApi
+import com.ampnet.auditornode.script.api.objects.Converters
+import com.ampnet.auditornode.script.api.objects.JavaScriptApiObject
+import com.ampnet.auditornode.script.api.objects.Properties
 import com.ampnet.auditornode.service.AuditingService
 import mu.KotlinLogging
 import org.graalvm.polyglot.Context
+import org.graalvm.polyglot.EnvironmentAccess
 import org.graalvm.polyglot.HostAccess
+import org.graalvm.polyglot.PolyglotAccess
 import org.graalvm.polyglot.Source
 import org.graalvm.polyglot.Value
 import javax.inject.Inject
@@ -24,28 +28,39 @@ import javax.inject.Singleton
 private val logger = KotlinLogging.logger {}
 
 @Singleton
-class JavaScriptAuditingService @Inject constructor(http: Http) : AuditingService {
+class JavaScriptAuditingService @Inject constructor(httpClient: HttpClient, properties: Properties) : AuditingService {
 
     companion object {
         private const val TARGET_LANGUAGE = "js"
         private const val SCRIPT_FUNCTION_CALL = "audit();"
+        private val languageOptions = mapOf(
+            "js.ecmascript-version" to "2020"
+        )
     }
 
-    private val apiPackagePrefix = JavaScriptApi::class.java.`package`.name
+    private val apiObjectPackagePrefix = JavaScriptApiObject::class.java.`package`.name
     private val jsContextBuilder =
         Context.newBuilder(TARGET_LANGUAGE)
+            .options(languageOptions)
+            .allowIO(false)
+            .allowCreateThread(false)
+            .allowCreateProcess(false)
+            .allowNativeAccess(false)
+            .allowPolyglotAccess(PolyglotAccess.NONE)
+            .allowEnvironmentAccess(EnvironmentAccess.NONE)
             .allowHostAccess(HostAccess.EXPLICIT)
-            .allowHostClassLookup { fullClassName -> fullClassName.startsWith(apiPackagePrefix) }
+            .allowHostClassLookup { fullClassName -> fullClassName.startsWith(apiObjectPackagePrefix) }
 
-    private val apiObjects = listOf(AuditResultApi)
+    private val apiObjects = listOf(AuditResultApi, Converters, properties)
         .joinToString(separator = "\n") { it.createJavaScriptApiObject() }
     private val apiClasses = mapOf<String, Any>(
-        "http" to http
+        "HttpClient" to httpClient
     )
 
     override fun evaluate(auditingScript: String): Try<AuditResult> {
         val scriptSource = "$apiObjects\n$auditingScript;\n$SCRIPT_FUNCTION_CALL"
-        logger.info { "Evaluating auditing script: $auditingScript" }
+        logger.info { "Evaluating auditing script:\n$auditingScript" }
+        logger.debug { "Full script source:\n$scriptSource" }
 
         return Either.catch {
             jsContextBuilder.build()
@@ -59,7 +74,7 @@ class JavaScriptAuditingService @Inject constructor(http: Http) : AuditingServic
                     asAuditResult(result)
                 }
         }
-            .mapLeft { ScriptExecutionError(auditingScript, it) }
+            .mapLeft { ScriptExecutionError(it) }
             .flatten()
     }
 

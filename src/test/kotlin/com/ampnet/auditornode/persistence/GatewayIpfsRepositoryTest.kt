@@ -23,7 +23,7 @@ import org.mockito.kotlin.reset
 
 class GatewayIpfsRepositoryTest : TestBase() {
 
-    private val properties = IpfsProperties()
+    private val properties = mock<IpfsProperties>()
     private val client = mock<BlockingHttpClient>()
     private val ipfs = GatewayIpfsRepository(
         properties,
@@ -32,7 +32,7 @@ class GatewayIpfsRepositoryTest : TestBase() {
 
     @BeforeEach
     fun beforeEach() {
-        reset(client)
+        reset(client, properties)
     }
 
     @Test
@@ -42,6 +42,8 @@ class GatewayIpfsRepositoryTest : TestBase() {
         suppose("HTTP client will throw an exception") {
             given(client.retrieve(any<HttpRequest<String>>()))
                 .willThrow(exception)
+            given(properties.gatewayUrl)
+                .willReturn("http://localhost:8080/{ipfsHash}")
         }
 
         verify("IpfsHttpError is returned") {
@@ -55,6 +57,8 @@ class GatewayIpfsRepositoryTest : TestBase() {
         suppose("HTTP client will return a null response") {
             given(client.retrieve(any<HttpRequest<String>>()))
                 .willReturn(null)
+            given(properties.gatewayUrl)
+                .willReturn("http://localhost:8080/{ipfsHash}")
         }
 
         verify("IpfsEmptyResponseError is returned") {
@@ -66,8 +70,6 @@ class GatewayIpfsRepositoryTest : TestBase() {
 
     @Test
     fun `must correctly substitute {ipfsHash} and return a file`() {
-        properties.gatewayUrl = "http://localhost:8080/test-url/{ipfsHash}/rest"
-
         val hash = IpfsHash("testHash")
         val expectedFileUrl = "http://localhost:8080/test-url/${hash.value}/rest"
         val request = HttpRequest.GET<String>(expectedFileUrl)
@@ -77,6 +79,8 @@ class GatewayIpfsRepositoryTest : TestBase() {
             val httpRequestMatcher: (HttpRequest<String>) -> Boolean = { arg ->
                 arg.uri == request.uri && arg.method == HttpMethod.GET
             }
+            given(properties.gatewayUrl)
+                .willReturn("http://localhost:8080/test-url/{ipfsHash}/rest")
             given(client.retrieve(argThat(httpRequestMatcher)))
                 .willReturn(response)
         }

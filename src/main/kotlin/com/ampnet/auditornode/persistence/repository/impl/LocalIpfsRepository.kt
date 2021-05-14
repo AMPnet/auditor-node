@@ -24,15 +24,13 @@ private val logger = KotlinLogging.logger {}
 @Singleton
 @Requires(property = ProgramArgumentPropertyNames.USE_LOCAL_IPFS)
 class LocalIpfsRepository @Inject constructor(
-    ipfsProperties: IpfsProperties,
+    private val ipfsProperties: IpfsProperties,
     private val blockingHttpClient: BlockingHttpClient
 ) : IpfsRepository {
 
-    private val url = "http://localhost:${ipfsProperties.localClientPort}/api/v0/cat?arg={ipfsHash}"
-
     override fun fetchTextFile(hash: IpfsHash): Try<IpfsTextFile> =
         Either.catch {
-            val fileUrl = url.replace("{ipfsHash}", hash.value)
+            val fileUrl = "http://localhost:${ipfsProperties.localClientPort}/api/v0/cat?arg=${hash.value}"
             logger.info { "Fetching file from IPFS: POST $fileUrl" }
             val request = HttpRequest.POST(fileUrl, "")
             blockingHttpClient.retrieve(request)
