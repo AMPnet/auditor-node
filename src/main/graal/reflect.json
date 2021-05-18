@@ -86,6 +86,26 @@
         "allPublicMethods": true
     },
     {
+        "name": "com.ampnet.auditornode.script.api.classes.NoOpInput",
+        "allPublicFields": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.ampnet.auditornode.script.api.classes.WebSocketInput",
+        "allPublicFields": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.ampnet.auditornode.script.api.classes.NoOpOutput",
+        "allPublicFields": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.ampnet.auditornode.script.api.classes.WebSocketOutput",
+        "allPublicFields": true,
+        "allPublicMethods": true
+    },
+    {
         "name": "com.ampnet.auditornode.script.api.objects.AuditResultApi",
         "allPublicFields": true,
         "allPublicMethods": true

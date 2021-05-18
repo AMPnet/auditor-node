@@ -62,4 +62,14 @@ val jsAssertions = """
             console.log("Assertion success for '" + name + "', got value: '" + value + "'");
         }
     }
+
+    function assertNull(name, value) {
+        if (value === null) {
+            console.log("Assertion success for '" + name + "', got null as expected");
+        } else {
+            let message = "Assertion failed for '" + name + "'; expected null, got value: '" + value + "'";
+            console.log(message);
+            throw message;
+        }
+    }
 """.trimIndent().plus("\n\n")

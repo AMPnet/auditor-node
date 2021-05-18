@@ -4,6 +4,7 @@ import arrow.core.Either
 import arrow.core.computations.either
 import com.ampnet.auditornode.model.error.ApplicationError
 import com.ampnet.auditornode.persistence.repository.IpfsRepository
+import com.ampnet.auditornode.script.api.ExecutionContext
 import com.ampnet.auditornode.service.AuditingService
 import com.ampnet.auditornode.service.ContractService
 import io.micronaut.http.MediaType
@@ -30,7 +31,7 @@ class AuditController @Inject constructor(
             logger.info { "Input IPFS hash: $ipfsFileHash" }
             val ipfsFile = ipfsClientService.fetchTextFile(ipfsFileHash).bind()
             logger.info { "Got file from IPFS: $ipfsFile" }
-            val evaluationResult = auditingService.evaluate(ipfsFile.content).bind()
+            val evaluationResult = auditingService.evaluate(ipfsFile.content, ExecutionContext.noOp).bind()
             logger.info { "Evaluation result: $evaluationResult" }
             val transaction = contractService.storeIpfsFileHash(ipfsFileHash)
             transaction.toJson()

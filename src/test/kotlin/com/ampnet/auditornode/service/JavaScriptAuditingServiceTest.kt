@@ -8,6 +8,7 @@ import com.ampnet.auditornode.isLeftSatisfying
 import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.model.error.EvaluationError.InvalidReturnValueError
 import com.ampnet.auditornode.model.error.EvaluationError.ScriptExecutionError
+import com.ampnet.auditornode.script.api.ExecutionContext
 import com.ampnet.auditornode.script.api.classes.HttpClient
 import com.ampnet.auditornode.script.api.model.AuditResult
 import com.ampnet.auditornode.script.api.objects.Properties
@@ -26,7 +27,7 @@ class JavaScriptAuditingServiceTest : TestBase() {
     fun `must return ScriptExecutionError for invalid JavaScript source`() {
         verify("ScriptExecutionError is returned") {
             val scriptSource = "invalid script"
-            val result = service.evaluate(scriptSource)
+            val result = service.evaluate(scriptSource, ExecutionContext.noOp)
             assertThat(result).isLeftSatisfying {
                 assertThat(it).isInstanceOf(ScriptExecutionError::class)
             }
@@ -41,7 +42,7 @@ class JavaScriptAuditingServiceTest : TestBase() {
                     return { example: true };
                 }
             """.trimIndent()
-            val result = service.evaluate(scriptSource)
+            val result = service.evaluate(scriptSource, ExecutionContext.noOp)
             assertThat(result).isLeftContaining(InvalidReturnValueError("<native value>"))
         }
     }
@@ -54,7 +55,7 @@ class JavaScriptAuditingServiceTest : TestBase() {
                     return AuditResult;
                 }
             """.trimIndent()
-            val result = service.evaluate(scriptSource)
+            val result = service.evaluate(scriptSource, ExecutionContext.noOp)
             assertThat(result).isLeftContaining(InvalidReturnValueError(Class::class.java))
         }
     }
@@ -67,7 +68,7 @@ class JavaScriptAuditingServiceTest : TestBase() {
                     return AuditResult.of(true);
                 }
             """.trimIndent()
-            val result = service.evaluate(scriptSource)
+            val result = service.evaluate(scriptSource, ExecutionContext.noOp)
             assertThat(result).isRightContaining(AuditResult(true))
         }
 
@@ -77,7 +78,7 @@ class JavaScriptAuditingServiceTest : TestBase() {
                     return AuditResult.of(false);
                 }
             """.trimIndent()
-            val result = service.evaluate(scriptSource)
+            val result = service.evaluate(scriptSource, ExecutionContext.noOp)
             assertThat(result).isRightContaining(AuditResult(false))
         }
     }

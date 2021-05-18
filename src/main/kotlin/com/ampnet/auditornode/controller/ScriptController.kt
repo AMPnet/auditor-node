@@ -3,6 +3,7 @@ package com.ampnet.auditornode.controller
 import com.ampnet.auditornode.persistence.model.ScriptId
 import com.ampnet.auditornode.persistence.model.ScriptSource
 import com.ampnet.auditornode.persistence.repository.ScriptRepository
+import com.ampnet.auditornode.script.api.ExecutionContext
 import com.ampnet.auditornode.service.AuditingService
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
@@ -25,7 +26,7 @@ class ScriptController @Inject constructor(
 
     @Post(value = "/execute", produces = [MediaType.TEXT_PLAIN], consumes = [MediaType.TEXT_PLAIN])
     fun executeScript(@Body scriptSource: String): String { // TODO may want to return JSON here
-        val result = auditingService.evaluate(scriptSource)
+        val result = auditingService.evaluate(scriptSource, ExecutionContext.noOp)
         logger.info { "Evaluation result: $result" }
         return result.toString()
     }
