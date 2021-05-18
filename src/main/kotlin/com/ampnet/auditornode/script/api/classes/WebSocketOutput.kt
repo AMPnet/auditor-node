@@ -1,23 +1,25 @@
 package com.ampnet.auditornode.script.api.classes
 
-import io.micronaut.websocket.WebSocketSession
+import com.ampnet.auditornode.model.websocket.RenderHtmlCommand
+import com.ampnet.auditornode.model.websocket.RenderMarkdownCommand
+import com.ampnet.auditornode.model.websocket.RenderTextCommand
+import com.ampnet.auditornode.model.websocket.WebSocketApi
 import org.graalvm.polyglot.HostAccess.Export
 
-class WebSocketOutput(private val session: WebSocketSession) : Output { // TODO refactor WebSocket commands
-// TODO test
+class WebSocketOutput(private val webSocketApi: WebSocketApi) : Output { // TODO test
 
     @Export
     override fun renderText(text: String) {
-        session.sendSync("renderText:$text")
+        webSocketApi.sendCommand(RenderTextCommand(text))
     }
 
     @Export
     override fun renderHtml(html: String) {
-        session.sendSync("renderHtml:$html")
+        webSocketApi.sendCommand(RenderHtmlCommand(html))
     }
 
     @Export
     override fun renderMarkdown(markdown: String) {
-        session.sendSync("renderMarkdown:$markdown")
+        webSocketApi.sendCommand(RenderMarkdownCommand(markdown))
     }
 }

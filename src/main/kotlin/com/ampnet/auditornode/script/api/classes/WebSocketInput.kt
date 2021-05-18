@@ -1,29 +1,19 @@
 package com.ampnet.auditornode.script.api.classes
 
+import com.ampnet.auditornode.model.websocket.InputField
+import com.ampnet.auditornode.model.websocket.InputType
+import com.ampnet.auditornode.model.websocket.ReadBooleanCommand
+import com.ampnet.auditornode.model.websocket.ReadFieldsCommand
+import com.ampnet.auditornode.model.websocket.ReadNumberCommand
+import com.ampnet.auditornode.model.websocket.ReadStringCommand
+import com.ampnet.auditornode.model.websocket.WebSocketApi
 import com.ampnet.auditornode.script.api.model.MapApi
-import io.micronaut.websocket.WebSocketSession
 import org.graalvm.polyglot.HostAccess.Export
 import org.graalvm.polyglot.Value
 import java.util.concurrent.LinkedBlockingQueue
 
-private enum class InputType {
-    BOOLEAN, NUMBER, STRING;
+class WebSocketInput(private val webSocketApi: WebSocketApi) : Input { // TODO test
 
-    companion object {
-        fun parse(value: String): InputType? = values().find { it.name == value.toUpperCase() }
-    }
-}
-
-private data class InputField(
-    val type: InputType,
-    val name: String,
-    val description: String
-) {
-    fun asWebSocketMessage(): String = "field:$type:$name:$description"
-}
-
-class WebSocketInput(private val session: WebSocketSession) : Input { // TODO refactor WebSocket commands
-// TODO test
     private val queue = LinkedBlockingQueue<String>()
 
     private fun Value.getStringMember(name: String): String? {
@@ -66,19 +56,19 @@ class WebSocketInput(private val session: WebSocketSession) : Input { // TODO re
 
     @Export
     override fun readBoolean(message: String): Boolean {
-        session.sendSync("readBoolean:$message")
+        webSocketApi.sendCommand(ReadBooleanCommand(message))
         return queue.take().toBoolean()
     }
 
     @Export
     override fun readNumber(message: String): Double? {
-        session.sendSync("readNumber:$message")
+        webSocketApi.sendCommand(ReadNumberCommand(message))
         return queue.take().toDoubleOrNull()
     }
 
     @Export
     override fun readString(message: String): String? {
-        session.sendSync("readString:$message")
+        webSocketApi.sendCommand(ReadStringCommand(message))
         return queue.take()
     }
 
@@ -87,8 +77,7 @@ class WebSocketInput(private val session: WebSocketSession) : Input { // TODO re
         val inputFields = fields.asList()
             ?.mapNotNull { it.asInputField() } ?: return null
 
-        session.sendSync("readFields:${inputFields.size}:$message")
-        inputFields.forEach { session.sendSync(it.asWebSocketMessage()) }
+        webSocketApi.sendCommand(ReadFieldsCommand(message, inputFields))
 
         val inputs = inputFields.mapNotNull { field ->
             val fieldInput = queue.take()
