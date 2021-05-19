@@ -6,7 +6,7 @@ import com.ampnet.auditornode.model.websocket.RenderTextCommand
 import com.ampnet.auditornode.model.websocket.WebSocketApi
 import org.graalvm.polyglot.HostAccess.Export
 
-class WebSocketOutput(private val webSocketApi: WebSocketApi) : Output { // TODO test
+class WebSocketOutput(private val webSocketApi: WebSocketApi) : Output {
 
     @Export
     override fun renderText(text: String) {

@@ -1,5 +1,7 @@
 package com.ampnet.auditornode.model.websocket
 
+import com.ampnet.auditornode.script.api.model.AuditResult
+
 enum class MessageType {
     COMMAND, INFO, RESPONSE
 }
@@ -47,8 +49,8 @@ object NotFoundInfoMessage : WebSocketInfoMessage("notFound")
 object ExecutingInfoMessage : WebSocketInfoMessage("executing")
 
 /* Response messages */
-class WebSocketResponse<out T>(
-    val message: String,
-    val success: Boolean,
-    val payload: T
-) : WebSocketMessage(MessageType.RESPONSE)
+sealed class WebSocketResponse(val success: Boolean) : WebSocketMessage(MessageType.RESPONSE)
+
+data class AuditResultResponse(val payload: AuditResult, val message: String) : WebSocketResponse(success = true)
+
+data class ErrorResponse(val payload: String, val message: String) : WebSocketResponse(success = false)

@@ -12,7 +12,7 @@ import org.graalvm.polyglot.HostAccess.Export
 import org.graalvm.polyglot.Value
 import java.util.concurrent.LinkedBlockingQueue
 
-class WebSocketInput(private val webSocketApi: WebSocketApi) : Input { // TODO test
+class WebSocketInput(private val webSocketApi: WebSocketApi) : Input {
 
     private val queue = LinkedBlockingQueue<String>()
 
@@ -23,11 +23,11 @@ class WebSocketInput(private val webSocketApi: WebSocketApi) : Input { // TODO t
 
         val member = getMember(name)
 
-        if (!member.isString) {
-            return null
+        return if (member.isString) {
+            member.asString()
+        } else {
+            null
         }
-
-        return member.asString()
     }
 
     private fun Value.asInputField(): InputField? {

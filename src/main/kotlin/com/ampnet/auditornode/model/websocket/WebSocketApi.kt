@@ -13,7 +13,7 @@ class WebSocketApi(
 
     fun sendInfoMessage(message: WebSocketInfoMessage) = send(message)
 
-    fun <T> sendResponse(response: WebSocketResponse<T>) = send(response)
+    fun sendResponse(response: WebSocketResponse) = send(response)
 
     private fun send(message: WebSocketMessage) {
         objectSerializer.serialize(message)

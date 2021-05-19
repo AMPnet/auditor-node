@@ -1,10 +1,11 @@
 package com.ampnet.auditornode.controller.websocket
 
+import com.ampnet.auditornode.model.websocket.AuditResultResponse
 import com.ampnet.auditornode.model.websocket.ConnectedInfoMessage
+import com.ampnet.auditornode.model.websocket.ErrorResponse
 import com.ampnet.auditornode.model.websocket.ExecutingInfoMessage
 import com.ampnet.auditornode.model.websocket.NotFoundInfoMessage
 import com.ampnet.auditornode.model.websocket.WebSocketApi
-import com.ampnet.auditornode.model.websocket.WebSocketResponse
 import com.ampnet.auditornode.persistence.model.ScriptId
 import com.ampnet.auditornode.persistence.repository.ScriptRepository
 import com.ampnet.auditornode.script.api.ExecutionContext
@@ -37,7 +38,7 @@ class ScriptWebSocket @Inject constructor(
     private val scriptRepository: ScriptRepository,
     private val objectSerializer: ObjectSerializer,
     @Named(TaskExecutors.IO) executorService: ExecutorService
-) { // TODO test
+) {
 
     companion object {
         private const val SCRIPT_INPUT_ATTRIBUTE = "ScriptInput"
@@ -57,6 +58,7 @@ class ScriptWebSocket @Inject constructor(
 
         if (script == null) {
             webSocketApi.sendInfoMessage(NotFoundInfoMessage)
+            session.close(CloseReason.NORMAL)
             return
         }
 
@@ -72,18 +74,16 @@ class ScriptWebSocket @Inject constructor(
             auditingService.evaluate(script.content, executionContext).fold(
                 ifLeft = {
                     webSocketApi.sendResponse(
-                        WebSocketResponse(
+                        ErrorResponse(
                             message = "Script execution error",
-                            success = false,
-                            payload = it.message
+                            payload = it.message ?: ""
                         )
                     )
                 },
                 ifRight = {
                     webSocketApi.sendResponse(
-                        WebSocketResponse(
+                        AuditResultResponse(
                             message = "Script execution finished",
-                            success = true,
                             payload = it
                         )
                     )
