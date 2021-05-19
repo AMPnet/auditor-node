@@ -188,10 +188,92 @@ There are no readable fields.
 | Signature | Description | Example call |
 | --------- | ----------- | ------------ |
 | `get(url: String): HttpResponse` | Sends a `GET` request to the specified URL and returns the response. | `HttpClient.get("http://example.com/");` |
-| `get(url: String, headers: Object): HttpResponse` | Sends a `GET` request with provided headers to the specified URL and returns the response. The headers object should consist of key-value pairs which are of `String` type. | `HttpClient.get("http://example.com/", { "Accept": "application/json" })` |
+| `get(url: String, headers: Object): HttpResponse` | Sends a `GET` request with provided headers to the specified URL and returns the response. The headers object should consist of key-value pairs which are of `String` type. | `HttpClient.get("http://example.com/", { "Accept": "application/json" });` |
 | `post(url: String): HttpResponse` | Sends a `POST` request with empty request body to the specified URL and returns the response. | `HttpClient.post("http://example.com/");` |
 | `post(url: String, body: String): HttpResponse` | Sends a `POST` request with provided request body to the specified URL and returns the response. | `HttpClient.post("http://example.com/", "exampleRequestBody");` |
 | `post(url: String, body: String, headers: Object): HttpResponse` | Sends a `POST` request with provided request body and headers to the specified URL and returns the response. The headers object should consist of key-value pairs which are of `String` type. | `HttpClient.post("http://example.com/", "exampleRequestBody", { "Accept": "application/json" });` |
 | `request(url: String, method: String): HttpResponse` | Sends a request with specified HTTP method to the specified URL and returns the response. | `HttpClient.request("http://example.com/", "CUSTOM_METHOD");` |
 | `request(url: String, method: String, body: String): HttpResponse` | Sends a request with specified HTTP method and request body to the specified URL and returns the response. | `HttpClient.request("http://example.com/", "CUSTOM_METHOD", "exampleRequestBody");` |
 | `request(url: String, method: String, body: String, headers: Object): HttpResponse` | Sends a request with specified HTTP method, request body and headers to the specified URL and returns the response. The headers object should consist of key-value pairs which are of `String` type. | `HttpClient.request("http://example.com/", "CUSTOM_METHOD", "exampleRequestBody", { "Accept": "application/json" });` |
+
+#### Input
+
+Provides support for user input when script is running interactively via web socket. When script is not running
+interactively, all methods of this object will always return `null`. See web socket documentation for more info on
+running scripts interactively.  
+Static object name: `Input`
+
+###### Fields
+
+There are no readable fields.
+
+###### Methods
+
+| Signature | Description | Example call |
+| --------- | ----------- | ------------ |
+| <code>readBoolean(message: String): Boolean &#124; null</code> | Requests a boolean input from the user via web socket and returns the value when it becomes available. | `Input.readBoolean("Did you check this box?");` |
+| <code>readNumber(message: String): Number &#124; null</code> | Requests a number input from the user via web socket and returns the value when it becomes available. Returns `null` for invalid values. | `Input.readNumber("The answer is:");` |
+| <code>readString(message: String): String &#124; null</code> | Requests a number input from the user via web socket and returns the value when it becomes available. | `Input.readString("Name:");` |
+| <code>readFields(fields: Object, message: String): Map&lt;String, Boolean &#124; Number &#124; String&gt; &#124; null</code> | Requests multiple fields from the user. The fields can be specified via the `fields` argument which is described below this table. The return value is a map which consists of field identifiers and their values. | Example given below. |
+
+The `fields` argument of `readFields` method must be a list of JavaScript objects which describe the required input
+fields that the user should fill in. The format of the object is:
+
+```json
+{
+    "type": "boolean",
+    "name": "fieldName",
+    "description": "field description"
+}
+```
+
+The `type` of the field can be one of: `boolean`, `number` or `string`. The `name` is the field identifier, and it
+should be unique because the returned map will use it as a key. The `description` is the field description which should
+be displayed to the user.
+
+Full example on calling `readFields` method:
+
+```javascript
+let fields = [
+    {
+        "type": "boolean",
+        "name": "booleanField",
+        "description": "Yes/no?"
+    },
+    {
+        "type": "number",
+        "name": "numberField",
+        "descripiton": "Enter a number:"
+    },
+    {
+        "type": "string",
+        "name": "stringField",
+        "description": "Enter some text:"
+    }
+];
+
+let userInput = Input.readFields(fields, "Form header message");
+
+console.log(userInput.get("booleanField"));
+console.log(userInput.get("numberField"));
+console.log(userInput.get("stringField"));
+```
+
+#### Output
+
+Provides support for rendering text, HTML and Markdown when the script is running interactively via web socket. When the
+script is not running interactively, the methods will do nothing. See web socket documentation for more info on running
+scripts interactively.  
+Static object name: `Output`
+
+###### Fields
+
+There are no readable fields.
+
+###### Methods
+
+| Signature | Description | Example call |
+| --------- | ----------- | ------------ |
+| `renderText(text: String): Void` | Requests rendering of provided text. | `Output.renderText("example");` |
+| `renderHtml(html: String): Void` | Requests rendering of provided HTML. | `Output.renderHtml("<p>example<p/>");` |
+| `renderMarkdown(markdown: String): Void` | Requests rendering of provided Markdown. | `Output.renderMarkdown("# Example");` |
