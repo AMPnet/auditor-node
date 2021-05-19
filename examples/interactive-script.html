@@ -182,7 +182,7 @@ function audit() {
 
             if (message.success) {
                 scriptResult.innerHTML += "Result: " + JSON.stringify(message.payload);
-            } else if (message.startsWith("ok:")) {
+            } else {
                 scriptResult.innerHTML += "Error: " + JSON.stringify(message.payload);
             }
         }
