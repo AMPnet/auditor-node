@@ -74,18 +74,12 @@ class ScriptWebSocket @Inject constructor(
             auditingService.evaluate(script.content, executionContext).fold(
                 ifLeft = {
                     webSocketApi.sendResponse(
-                        ErrorResponse(
-                            message = "Script execution error",
-                            payload = it.message ?: ""
-                        )
+                        ErrorResponse(it.message ?: "")
                     )
                 },
                 ifRight = {
                     webSocketApi.sendResponse(
-                        AuditResultResponse(
-                            message = "Script execution finished",
-                            payload = it
-                        )
+                        AuditResultResponse(it)
                     )
                 }
             )

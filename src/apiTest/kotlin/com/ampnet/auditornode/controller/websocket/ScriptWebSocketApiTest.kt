@@ -76,12 +76,7 @@ class ScriptWebSocketApiTest : ApiTestBase() {
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
             client.assertNextMessage(ExecutingInfoMessage)
-            client.assertNextMessage(
-                AuditResultResponse(
-                    message = "Script execution finished",
-                    payload = AuditResult(true)
-                )
-            )
+            client.assertNextMessage(AuditResultResponse(AuditResult(true)))
             client.close()
         }
     }
@@ -117,12 +112,7 @@ class ScriptWebSocketApiTest : ApiTestBase() {
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
             client.assertNextMessage(ExecutingInfoMessage)
-            client.assertNextMessage(
-                ErrorResponse(
-                    message = "Script execution error",
-                    payload = "Error while executing provided script: error"
-                )
-            )
+            client.assertNextMessage(ErrorResponse("Error while executing provided script: error"))
             client.close()
         }
     }

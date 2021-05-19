@@ -51,6 +51,6 @@ object ExecutingInfoMessage : WebSocketInfoMessage("executing")
 /* Response messages */
 sealed class WebSocketResponse(val success: Boolean) : WebSocketMessage(MessageType.RESPONSE)
 
-data class AuditResultResponse(val payload: AuditResult, val message: String) : WebSocketResponse(success = true)
+data class AuditResultResponse(val payload: AuditResult) : WebSocketResponse(success = true)
 
-data class ErrorResponse(val payload: String, val message: String) : WebSocketResponse(success = false)
+data class ErrorResponse(val payload: String) : WebSocketResponse(success = false)

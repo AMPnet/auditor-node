@@ -66,12 +66,7 @@ class WebSocketOutputApiTest : ApiTestBase() {
             client.assertNextMessage(ConnectedInfoMessage)
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(RenderTextCommand("test"))
-            client.assertNextMessage(
-                AuditResultResponse(
-                    message = "Script execution finished",
-                    payload = AuditResult(true)
-                )
-            )
+            client.assertNextMessage(AuditResultResponse(AuditResult(true)))
             client.close()
         }
     }
@@ -108,12 +103,7 @@ class WebSocketOutputApiTest : ApiTestBase() {
             client.assertNextMessage(ConnectedInfoMessage)
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(RenderHtmlCommand("test"))
-            client.assertNextMessage(
-                AuditResultResponse(
-                    message = "Script execution finished",
-                    payload = AuditResult(true)
-                )
-            )
+            client.assertNextMessage(AuditResultResponse(AuditResult(true)))
             client.close()
         }
     }
@@ -150,12 +140,7 @@ class WebSocketOutputApiTest : ApiTestBase() {
             client.assertNextMessage(ConnectedInfoMessage)
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(RenderMarkdownCommand("test"))
-            client.assertNextMessage(
-                AuditResultResponse(
-                    message = "Script execution finished",
-                    payload = AuditResult(true)
-                )
-            )
+            client.assertNextMessage(AuditResultResponse(AuditResult(true)))
             client.close()
         }
     }
