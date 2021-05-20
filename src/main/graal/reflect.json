@@ -304,6 +304,16 @@
         "allPublicMethods": true
     },
     {
+        "name": "com.ampnet.auditornode.script.api.classes.NoOpIpfs",
+        "allPublicFields": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.ampnet.auditornode.script.api.classes.DirectoryBasedIpfs",
+        "allPublicFields": true,
+        "allPublicMethods": true
+    },
+    {
         "name": "com.ampnet.auditornode.script.api.objects.AuditResultApi",
         "allPublicFields": true,
         "allPublicMethods": true
