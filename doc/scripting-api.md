@@ -277,3 +277,20 @@ There are no readable fields.
 | `renderText(text: String): Void` | Requests rendering of provided text. | `Output.renderText("example");` |
 | `renderHtml(html: String): Void` | Requests rendering of provided HTML. | `Output.renderHtml("<p>example<p/>");` |
 | `renderMarkdown(markdown: String): Void` | Requests rendering of provided Markdown. | `Output.renderMarkdown("# Example");` |
+
+#### Ipfs
+
+Provides support for fetching files located in the same IPFS directory which contains the auditing script. If the loaded
+script was provided locally instead of via IPFS and no IPFS directory was specified, then `null` will always be
+returned. For specifying the IPFS directory for locally provided scripts, see web socket documentation.  
+Static object name: `Ipfs`
+
+###### Fields
+
+There are no readable fields.
+
+###### Methods
+
+| Signature | Description | Example call |
+| --------- | ----------- | ------------ |
+| <code>getFile(fileName: String): String &#124; null</code> | Reads content of the IPFS file with provided name. The file must be located in the IPFS directory associated with the script. If the file cannot be found, `null` is returned. | `Ipfs.getFile("example.html");` |
