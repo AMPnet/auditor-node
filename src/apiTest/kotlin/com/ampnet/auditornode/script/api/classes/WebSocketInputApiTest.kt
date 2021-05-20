@@ -3,6 +3,7 @@ package com.ampnet.auditornode.script.api.classes
 import assertk.assertThat
 import assertk.assertions.isNotNull
 import com.ampnet.auditornode.ApiTestBase
+import com.ampnet.auditornode.TestUtils.parseScriptId
 import com.ampnet.auditornode.controller.websocket.WebSocketTestClient
 import com.ampnet.auditornode.jsAssertions
 import com.ampnet.auditornode.model.websocket.AuditResultResponse
@@ -22,16 +23,11 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import io.micronaut.websocket.RxWebSocketClient
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.fail
+import java.util.UUID
 import javax.inject.Inject
 
 @MicronautTest
 class WebSocketInputApiTest : ApiTestBase() {
-
-    companion object {
-        @Language("RegExp")
-        private const val UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
-    }
 
     @Inject
     @field:Client("/")
@@ -39,7 +35,7 @@ class WebSocketInputApiTest : ApiTestBase() {
 
     @Test
     fun `must execute script which uses readBoolean() call`() {
-        var storedScriptId: String? = null
+        var storedScriptId: UUID? = null
 
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
@@ -55,11 +51,7 @@ class WebSocketInputApiTest : ApiTestBase() {
                 }
             )
 
-            val responseRegex = """^\{"id":"($UUID_REGEX)"}$""".toRegex()
-            val matchResult = responseRegex.find(result)
-                ?: fail("Response does not match regular expression: $responseRegex")
-
-            storedScriptId = matchResult.groups[1]?.value
+            storedScriptId = result.parseScriptId()
             assertThat(storedScriptId).isNotNull()
         }
 
@@ -77,7 +69,7 @@ class WebSocketInputApiTest : ApiTestBase() {
 
     @Test
     fun `must execute script which uses readNumber() call`() {
-        var storedScriptId: String? = null
+        var storedScriptId: UUID? = null
 
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
@@ -93,11 +85,7 @@ class WebSocketInputApiTest : ApiTestBase() {
                 }
             )
 
-            val responseRegex = """^\{"id":"($UUID_REGEX)"}$""".toRegex()
-            val matchResult = responseRegex.find(result)
-                ?: fail("Response does not match regular expression: $responseRegex")
-
-            storedScriptId = matchResult.groups[1]?.value
+            storedScriptId = result.parseScriptId()
             assertThat(storedScriptId).isNotNull()
         }
 
@@ -115,7 +103,7 @@ class WebSocketInputApiTest : ApiTestBase() {
 
     @Test
     fun `must execute script which uses readString() call`() {
-        var storedScriptId: String? = null
+        var storedScriptId: UUID? = null
 
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
@@ -131,11 +119,7 @@ class WebSocketInputApiTest : ApiTestBase() {
                 }
             )
 
-            val responseRegex = """^\{"id":"($UUID_REGEX)"}$""".toRegex()
-            val matchResult = responseRegex.find(result)
-                ?: fail("Response does not match regular expression: $responseRegex")
-
-            storedScriptId = matchResult.groups[1]?.value
+            storedScriptId = result.parseScriptId()
             assertThat(storedScriptId).isNotNull()
         }
 
@@ -153,7 +137,7 @@ class WebSocketInputApiTest : ApiTestBase() {
 
     @Test
     fun `must execute script which uses readFields() call`() {
-        var storedScriptId: String? = null
+        var storedScriptId: UUID? = null
 
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
@@ -190,11 +174,7 @@ class WebSocketInputApiTest : ApiTestBase() {
                 }
             )
 
-            val responseRegex = """^\{"id":"($UUID_REGEX)"}$""".toRegex()
-            val matchResult = responseRegex.find(result)
-                ?: fail("Response does not match regular expression: $responseRegex")
-
-            storedScriptId = matchResult.groups[1]?.value
+            storedScriptId = result.parseScriptId()
             assertThat(storedScriptId).isNotNull()
         }
 

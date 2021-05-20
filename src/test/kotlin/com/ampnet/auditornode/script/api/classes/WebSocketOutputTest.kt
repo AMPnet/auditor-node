@@ -2,6 +2,7 @@ package com.ampnet.auditornode.script.api.classes
 
 import assertk.assertThat
 import com.ampnet.auditornode.TestBase
+import com.ampnet.auditornode.TestUtils
 import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.jsAssertions
 import com.ampnet.auditornode.model.websocket.RenderHtmlCommand
@@ -13,8 +14,6 @@ import com.ampnet.auditornode.script.api.ExecutionContext
 import com.ampnet.auditornode.script.api.model.AuditResult
 import com.ampnet.auditornode.script.api.objects.Properties
 import com.ampnet.auditornode.service.impl.JavaScriptAuditingService
-import com.fasterxml.jackson.databind.ObjectMapper
-import io.micronaut.jackson.serialize.JacksonObjectSerializer
 import io.micronaut.websocket.WebSocketSession
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.BeforeEach
@@ -28,14 +27,13 @@ import java.nio.charset.StandardCharsets
 class WebSocketOutputTest : TestBase() {
 
     private val session = mock<WebSocketSession>()
-    private val objectSerializer = JacksonObjectSerializer(ObjectMapper())
-    private val webSocketApi = WebSocketApi(session, objectSerializer)
+    private val webSocketApi = WebSocketApi(session, TestUtils.objectSerializer)
     private val httpClient = HttpClient(mock())
     private val environment = Properties(mock())
     private val service = JavaScriptAuditingService(httpClient, environment)
 
     private fun WebSocketMessage.toJson(): String {
-        return objectSerializer.serialize(this)
+        return TestUtils.objectSerializer.serialize(this)
             .map { String(it, StandardCharsets.UTF_8) }
             .orElse("")
     }

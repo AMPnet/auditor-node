@@ -8,6 +8,7 @@ import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
 import assertk.assertions.startsWith
 import com.ampnet.auditornode.ApiTestBase
+import com.ampnet.auditornode.TestUtils.parseScriptId
 import com.ampnet.auditornode.script.api.model.AuditResult
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
@@ -16,16 +17,10 @@ import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.fail
 import java.util.UUID
 
 @MicronautTest
 class ScriptControllerApiTest : ApiTestBase() {
-
-    companion object {
-        @Language("RegExp")
-        private const val UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
-    }
 
     @Test
     fun `must correctly execute simple auditing script`() {
@@ -62,7 +57,7 @@ class ScriptControllerApiTest : ApiTestBase() {
     @Test
     fun `must correctly store and load scripts`() {
         val scriptSource = "test script source"
-        var storedScriptId: String? = null
+        var storedScriptId: UUID? = null
 
         verify("script is stored and script ID is returned") {
             val result = client.toBlocking().retrieve(
@@ -71,11 +66,7 @@ class ScriptControllerApiTest : ApiTestBase() {
                 }
             )
 
-            val responseRegex = """^\{"id":"($UUID_REGEX)"}$""".toRegex()
-            val matchResult = responseRegex.find(result)
-                ?: fail("Response does not match regular expression: $responseRegex")
-
-            storedScriptId = matchResult.groups[1]?.value
+            storedScriptId = result.parseScriptId()
             assertThat(storedScriptId).isNotNull()
         }
 

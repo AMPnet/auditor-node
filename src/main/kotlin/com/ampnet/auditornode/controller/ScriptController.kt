@@ -1,5 +1,6 @@
 package com.ampnet.auditornode.controller
 
+import com.ampnet.auditornode.model.response.StoreScriptResponse
 import com.ampnet.auditornode.persistence.model.ScriptId
 import com.ampnet.auditornode.persistence.model.ScriptSource
 import com.ampnet.auditornode.persistence.repository.ScriptRepository
@@ -32,9 +33,9 @@ class ScriptController @Inject constructor(
     }
 
     @Post(value = "/store", produces = [MediaType.APPLICATION_JSON], consumes = [MediaType.TEXT_PLAIN])
-    fun storeScript(@Body scriptSource: String): String {
+    fun storeScript(@Body scriptSource: String): StoreScriptResponse {
         val scriptId = scriptRepository.store(ScriptSource(scriptSource))
-        return """{"id":"${scriptId.value}"}"""
+        return StoreScriptResponse(scriptId)
     }
 
     @Get(value = "/load/{scriptId}", produces = [MediaType.TEXT_PLAIN])

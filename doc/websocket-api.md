@@ -73,7 +73,7 @@ web socket client:
 
 The top-level `success` field indicates if the script execution finished without any unhandled errors. When this value
 is `true`, then the `payload` will contain and object as in the example above. When the value is `false`, then the
-payload will instead contain a string containing error message description.
+payload will contain a string - error message description instead of an object.
 
 ## Web socket command messages
 
@@ -157,19 +157,19 @@ Requests multiple inputs from the user. Web socket message:
 }
 ```
 
-Response: web socket client should one message for each of the objects in the `fields` array. The order of the messages
-must match the order of the fields in the array. For the above web socket message, web socket client should send three
-messages: first a boolean, then a number and finally a string. The `fields` array can contain any number of objects
-which describe the required input fields, not only three as shown above. The available field types are: `BOOLEAN`,
-`NUMBER` and `STRING`. The `name` value will be the identifier of the field in the running script, which should not be
-important to the web socket client, and it can be ignored. Each field has its `descritpion` which should be displayed to
-the user. The `message` top-level field acts as a general message the user should see when being prompted to input the
-specified fields.
+Response: web socket client should send one message for each of the objects in the `fields` array. The order of the
+messages must match the order of the fields in the array. For the example message above, web socket client should send
+three messages: first a boolean, then a number and finally a string. The `fields` array can contain any number of
+objects which describe the required input fields, not only three as shown above. The available field types are:
+`BOOLEAN`, `NUMBER` and `STRING`. The `name` value will be the identifier of the field in the running script, which
+should not be important to the web socket client, and it can be ignored. Each field has its `descritpion` which should
+be displayed to the user. The `message` top-level field acts as a general message the user should see when being
+prompted to input the specified fields.
 
 ### Output commands
 
-These commands inform the web socket client that something needs to be rendered and displayed to the user. No responses
-should be sent by the web socket client to such commands.
+These commands inform the web socket client that something needs to be rendered and displayed to the user. The client
+should not respond to such commands.
 
 #### RenderText command
 

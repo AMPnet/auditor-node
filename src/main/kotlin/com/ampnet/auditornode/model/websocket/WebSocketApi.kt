@@ -2,7 +2,10 @@ package com.ampnet.auditornode.model.websocket
 
 import io.micronaut.core.serialize.ObjectSerializer
 import io.micronaut.websocket.WebSocketSession
+import mu.KotlinLogging
 import java.nio.charset.StandardCharsets
+
+private val logger = KotlinLogging.logger {}
 
 class WebSocketApi(
     private val session: WebSocketSession,
@@ -16,6 +19,7 @@ class WebSocketApi(
     fun sendResponse(response: WebSocketResponse) = send(response)
 
     private fun send(message: WebSocketMessage) {
+        logger.debug { "Sending web socket message: $message" }
         objectSerializer.serialize(message)
             .map { String(it, StandardCharsets.UTF_8) }
             .ifPresent {

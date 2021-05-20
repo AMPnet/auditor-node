@@ -17,7 +17,7 @@ class WebSocketInput(private val webSocketApi: WebSocketApi) : Input {
     private val queue = LinkedBlockingQueue<String>()
 
     private fun Value.getStringMember(name: String): String? {
-        if (!hasMember(name)) {
+        if (hasMember(name).not()) {
             return null
         }
 

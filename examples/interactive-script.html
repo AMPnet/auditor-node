@@ -207,7 +207,7 @@ function audit() {
             request.open("POST", "http://localhost:8080/script/store", true);
             request.setRequestHeader("Content-Type", "text/plain");
             request.onreadystatechange = function () {
-                if (this.readyState === 4) {
+                if (this.readyState === XMLHttpRequest.DONE) {
                     if (this.status === 200) {
                         let responseJson = JSON.parse(this.responseText);
 

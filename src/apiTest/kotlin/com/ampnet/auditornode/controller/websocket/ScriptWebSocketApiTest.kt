@@ -3,6 +3,7 @@ package com.ampnet.auditornode.controller.websocket
 import assertk.assertThat
 import assertk.assertions.isNotNull
 import com.ampnet.auditornode.ApiTestBase
+import com.ampnet.auditornode.TestUtils.parseScriptId
 import com.ampnet.auditornode.jsAssertions
 import com.ampnet.auditornode.model.websocket.AuditResultResponse
 import com.ampnet.auditornode.model.websocket.ConnectedInfoMessage
@@ -17,17 +18,11 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import io.micronaut.websocket.RxWebSocketClient
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.fail
 import java.util.UUID
 import javax.inject.Inject
 
 @MicronautTest
 class ScriptWebSocketApiTest : ApiTestBase() {
-
-    companion object {
-        @Language("RegExp")
-        private const val UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
-    }
 
     @Inject
     @field:Client("/")
@@ -47,7 +42,7 @@ class ScriptWebSocketApiTest : ApiTestBase() {
 
     @Test
     fun `must return audit result message for successful script`() {
-        var storedScriptId: String? = null
+        var storedScriptId: UUID? = null
 
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
@@ -62,11 +57,7 @@ class ScriptWebSocketApiTest : ApiTestBase() {
                 }
             )
 
-            val responseRegex = """^\{"id":"($UUID_REGEX)"}$""".toRegex()
-            val matchResult = responseRegex.find(result)
-                ?: fail("Response does not match regular expression: $responseRegex")
-
-            storedScriptId = matchResult.groups[1]?.value
+            storedScriptId = result.parseScriptId()
             assertThat(storedScriptId).isNotNull()
         }
 
@@ -83,7 +74,7 @@ class ScriptWebSocketApiTest : ApiTestBase() {
 
     @Test
     fun `must return error result message for invalid script`() {
-        var storedScriptId: String? = null
+        var storedScriptId: UUID? = null
 
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
@@ -98,11 +89,7 @@ class ScriptWebSocketApiTest : ApiTestBase() {
                 }
             )
 
-            val responseRegex = """^\{"id":"($UUID_REGEX)"}$""".toRegex()
-            val matchResult = responseRegex.find(result)
-                ?: fail("Response does not match regular expression: $responseRegex")
-
-            storedScriptId = matchResult.groups[1]?.value
+            storedScriptId = result.parseScriptId()
             assertThat(storedScriptId).isNotNull()
         }
 
