@@ -6,4 +6,5 @@ import com.ampnet.auditornode.persistence.model.IpfsTextFile
 
 interface IpfsRepository {
     fun fetchTextFile(hash: IpfsHash): Try<IpfsTextFile>
+    fun fetchTextFileFromDirectory(directoryHash: IpfsHash, fileName: String): Try<IpfsTextFile>
 }
