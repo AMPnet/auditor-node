@@ -5,6 +5,7 @@ import arrow.core.computations.either
 import com.ampnet.auditornode.model.error.ApplicationError
 import com.ampnet.auditornode.persistence.repository.IpfsRepository
 import com.ampnet.auditornode.script.api.ExecutionContext
+import com.ampnet.auditornode.script.api.classes.DirectoryBasedIpfs
 import com.ampnet.auditornode.service.AuditingService
 import com.ampnet.auditornode.service.ContractService
 import io.micronaut.http.MediaType
@@ -18,7 +19,7 @@ private val logger = KotlinLogging.logger {}
 @Controller("/audit") // TODO for example only, remove later
 class AuditController @Inject constructor(
     private val contractService: ContractService,
-    private val ipfsClientService: IpfsRepository,
+    private val ipfsRepository: IpfsRepository,
     private val auditingService: AuditingService
 ) {
 
@@ -27,13 +28,16 @@ class AuditController @Inject constructor(
         val result = either<ApplicationError, String> {
             val currentBlockNumber = contractService.currentBlockNumber().bind()
             logger.info { "Current block number: $currentBlockNumber" }
-            val ipfsFileHash = contractService.getIpfsFileHash().bind()
-            logger.info { "Input IPFS hash: $ipfsFileHash" }
-            val ipfsFile = ipfsClientService.fetchTextFile(ipfsFileHash).bind()
+            val ipfsDirectoryHash = contractService.getIpfsDirectoryHash().bind()
+            logger.info { "Input IPFS hash: $ipfsDirectoryHash" }
+            val ipfsFile = ipfsRepository.fetchTextFileFromDirectory(ipfsDirectoryHash, "audit.js").bind()
             logger.info { "Got file from IPFS: $ipfsFile" }
-            val evaluationResult = auditingService.evaluate(ipfsFile.content, ExecutionContext.noOp).bind()
+            val executionContext = ExecutionContext.noOp.copy(
+                ipfs = DirectoryBasedIpfs(ipfsDirectoryHash, ipfsRepository)
+            )
+            val evaluationResult = auditingService.evaluate(ipfsFile.content, executionContext).bind()
             logger.info { "Evaluation result: $evaluationResult" }
-            val transaction = contractService.storeIpfsFileHash(ipfsFileHash)
+            val transaction = contractService.storeIpfsDirectoryHash(ipfsDirectoryHash)
             transaction.toJson()
         }
 

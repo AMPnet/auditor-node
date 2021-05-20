@@ -45,9 +45,9 @@ class GethContractService @Inject constructor(
         }
             .mapLeft { RpcConnectionError(rpcProperties.url, it) }
 
-    override fun getIpfsFileHash(): Try<IpfsHash> =
+    override fun getIpfsDirectoryHash(): Try<IpfsHash> =
         Either.catch {
-            logger.info { "Fetching IPFS file hash from contract address: $contractAddress" }
+            logger.info { "Fetching IPFS directory hash from contract address: $contractAddress" }
             val hash = contractConnector.getHash()
                 ?.right()
                 ?.map { IpfsHash(it) }
@@ -57,12 +57,12 @@ class GethContractService @Inject constructor(
             .mapLeft { RpcConnectionError(rpcProperties.url, it) }
             .flatMap {
                 it ?: ContractReadError(
-                    "Could not retrieve IPFS file hash; make sure your local ethereum light client is " +
+                    "Could not retrieve IPFS directory hash; make sure your local ethereum light client is " +
                         "fully synced with Ropsten testnet"
                 ).left()
             }
 
-    override fun storeIpfsFileHash(newHash: IpfsHash): EthereumTransaction {
+    override fun storeIpfsDirectoryHash(newHash: IpfsHash): EthereumTransaction {
         val transaction = contractTransactionGenerator.updateHash(newHash.value)
         return EthereumTransaction(
             to = EthereumAddress(contractAddress.hex),

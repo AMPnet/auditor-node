@@ -91,29 +91,29 @@ class GethContractServiceTest : TestBase() {
     }
 
     @Test
-    fun `must return RpcConnectionError when fetching IPFS file hash fails`() {
+    fun `must return RpcConnectionError when fetching IPFS directory hash fails`() {
         val exception = RuntimeException("rpc exception")
 
-        suppose("RPC client will throw an exception when fetching IPFS file hash") {
+        suppose("RPC client will throw an exception when fetching IPFS directory hash") {
             given(rpc.call(any(), any()))
                 .willThrow(exception)
         }
 
         verify("RpcConnectionError is returned") {
-            val result = service.getIpfsFileHash()
+            val result = service.getIpfsDirectoryHash()
             assertThat(result).isLeftContaining(RpcConnectionError(rpcProperties.url, exception))
         }
     }
 
     @Test
-    fun `must return ContractReadError when returned IPFS file hash is null`() {
-        suppose("RPC client will return null value when fetching IPFS file hash") {
+    fun `must return ContractReadError when returned IPFS directory hash is null`() {
+        suppose("RPC client will return null value when fetching IPFS directory hash") {
             given(rpc.call(any(), any()))
                 .willReturn(null)
         }
 
         verify("ContractReadError is returned") {
-            val result = service.getIpfsFileHash()
+            val result = service.getIpfsDirectoryHash()
             assertThat(result).isLeftSatisfying {
                 assertThat(it).isInstanceOf(ContractReadError::class)
             }
@@ -121,25 +121,25 @@ class GethContractServiceTest : TestBase() {
     }
 
     @Test
-    fun `must correctly return IPFS file hash`() {
-        suppose("RPC client will return some IPFS file hash") {
+    fun `must correctly return IPFS directory hash`() {
+        suppose("RPC client will return some IPFS directory hash") {
             given(rpc.call(any(), any()))
                 .willAnswer { encodedTestHash.string } // for inline classes we must return inner value with willAnswer
         }
 
-        verify("correct IPFS file hash is returned") {
-            val result = service.getIpfsFileHash()
+        verify("correct IPFS directory hash is returned") {
+            val result = service.getIpfsDirectoryHash()
             assertThat(result).isRightContaining(testHash)
         }
     }
 
     @Test
-    fun `must correctly generate transaction to store IPFS file hash`() {
+    fun `must correctly generate transaction to store IPFS directory hash`() {
         val storeFunctionHash = "92dea922"
         val transactionData = "0x$storeFunctionHash${encodedTestHash.string.removePrefix("0x")}"
 
-        verify("correct transaction to store IPFS file hash is generated") {
-            val result = service.storeIpfsFileHash(testHash)
+        verify("correct transaction to store IPFS directory hash is generated") {
+            val result = service.storeIpfsDirectoryHash(testHash)
             assertThat(result.to).isEqualTo(EthereumAddress(auditorProperties.contractAddress))
             assertThat(result.data).isEqualTo(transactionData)
         }
