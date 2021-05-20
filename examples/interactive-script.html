@@ -211,6 +211,7 @@ function audit() {
                     if (this.status === 200) {
                         let responseJson = JSON.parse(this.responseText);
 
+                        document.getElementById("store-input").disabled = true;
                         document.getElementById("store-script").disabled = true;
                         document.getElementById("script-response").innerHTML = "Script stored under UUID: " +
                             responseJson.id;
