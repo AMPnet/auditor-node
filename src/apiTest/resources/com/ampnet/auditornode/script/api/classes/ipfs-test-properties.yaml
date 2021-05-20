@@ -1,0 +1,2 @@
+ipfs:
+  gateway-url: http://localhost:8090/ipfs/{ipfsHash}

@@ -13,9 +13,7 @@ import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 
 @MicronautTest(propertySources = ["script-properties-test.yaml"])
-class PropertiesJavaScriptApiTest : ApiTestWithPropertiesBase() {
-
-    override val propertySourceName = "script-properties-test"
+class PropertiesJavaScriptApiTest : ApiTestWithPropertiesBase("script-properties-test") {
 
     @Test
     fun `must correctly execute auditing script which uses script properties`() {
