@@ -31,5 +31,4 @@ class NoOpIpfsTest : TestBase() {
             assertThat(result).isRightContaining(AuditResult(true))
         }
     }
-
 }
