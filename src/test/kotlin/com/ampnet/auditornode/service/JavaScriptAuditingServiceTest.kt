@@ -10,7 +10,9 @@ import com.ampnet.auditornode.model.error.EvaluationError.InvalidReturnValueErro
 import com.ampnet.auditornode.model.error.EvaluationError.ScriptExecutionError
 import com.ampnet.auditornode.script.api.ExecutionContext
 import com.ampnet.auditornode.script.api.classes.HttpClient
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.script.api.model.AbortedAudit
+import com.ampnet.auditornode.script.api.model.FailedAudit
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import com.ampnet.auditornode.script.api.objects.Properties
 import com.ampnet.auditornode.service.impl.JavaScriptAuditingService
 import org.intellij.lang.annotations.Language
@@ -62,24 +64,34 @@ class JavaScriptAuditingServiceTest : TestBase() {
 
     @Test
     fun `must return correct AuditResult from JavaScript source`() {
-        verify("AuditResult(true) is correctly returned") {
+        verify("SuccessfulAudit is correctly returned") {
             @Language("JavaScript") val scriptSource = """
                 function audit() {
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
 
-        verify("AuditResult(false) is correctly returned") {
+        verify("FailedAudit is correctly returned") {
             @Language("JavaScript") val scriptSource = """
                 function audit() {
-                    return AuditResult.of(false);
+                    return AuditResult.failure("Example message");
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(false))
+            assertThat(result).isRightContaining(FailedAudit("Example message"))
+        }
+
+        verify("AbortedAudit is correctly returned") {
+            @Language("JavaScript") val scriptSource = """
+                function audit() {
+                    return AuditResult.aborted("Example message");
+                }
+            """.trimIndent()
+            val result = service.evaluate(scriptSource, ExecutionContext.noOp)
+            assertThat(result).isRightContaining(AbortedAudit("Example message"))
         }
     }
 }

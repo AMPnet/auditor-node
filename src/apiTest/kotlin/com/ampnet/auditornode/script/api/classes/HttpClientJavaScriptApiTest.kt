@@ -6,7 +6,7 @@ import assertk.assertions.isEqualTo
 import com.ampnet.auditornode.ApiTestBase
 import com.ampnet.auditornode.jsAssertions
 import com.ampnet.auditornode.model.error.EvaluationError.InvalidInputValueError
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.equalTo
@@ -132,7 +132,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -142,7 +142,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 
@@ -219,7 +219,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -229,7 +229,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 
@@ -251,7 +251,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                         function() { HttpClient.get("http://localhost:${wireMockServer.port()}/example", "headers"); }
                     );
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -261,7 +261,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 
@@ -330,7 +330,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -340,7 +340,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 
@@ -415,7 +415,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -425,7 +425,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 
@@ -507,7 +507,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -517,7 +517,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 
@@ -545,7 +545,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                         }
                     );
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -555,7 +555,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 
@@ -628,7 +628,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -638,7 +638,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 
@@ -715,7 +715,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -725,7 +725,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 
@@ -809,7 +809,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -819,7 +819,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 
@@ -848,7 +848,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                         }
                     );
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -858,7 +858,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 }

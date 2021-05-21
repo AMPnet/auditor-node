@@ -7,5 +7,5 @@ function audit() {
         Output.renderText("HTML fragment not rendered");
     }
 
-    return AuditResult.of(true);
+    return AuditResult.success();
 }

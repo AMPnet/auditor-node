@@ -12,7 +12,7 @@ import com.ampnet.auditornode.model.websocket.ExecutingInfoMessage
 import com.ampnet.auditornode.model.websocket.RenderHtmlCommand
 import com.ampnet.auditornode.model.websocket.RenderMarkdownCommand
 import com.ampnet.auditornode.model.websocket.RenderTextCommand
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.MediaType
 import io.micronaut.http.client.annotation.Client
@@ -38,7 +38,7 @@ class WebSocketOutputApiTest : ApiTestBase() {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit() {
                     Output.renderText("test");
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -58,7 +58,7 @@ class WebSocketOutputApiTest : ApiTestBase() {
             client.assertNextMessage(ConnectedInfoMessage)
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(RenderTextCommand("test"))
-            client.assertNextMessage(AuditResultResponse(AuditResult(true)))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
             client.close()
         }
     }
@@ -71,7 +71,7 @@ class WebSocketOutputApiTest : ApiTestBase() {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit() {
                     Output.renderHtml("test");
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -91,7 +91,7 @@ class WebSocketOutputApiTest : ApiTestBase() {
             client.assertNextMessage(ConnectedInfoMessage)
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(RenderHtmlCommand("test"))
-            client.assertNextMessage(AuditResultResponse(AuditResult(true)))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
             client.close()
         }
     }
@@ -104,7 +104,7 @@ class WebSocketOutputApiTest : ApiTestBase() {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit() {
                     Output.renderMarkdown("test");
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -124,7 +124,7 @@ class WebSocketOutputApiTest : ApiTestBase() {
             client.assertNextMessage(ConnectedInfoMessage)
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(RenderMarkdownCommand("test"))
-            client.assertNextMessage(AuditResultResponse(AuditResult(true)))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
             client.close()
         }
     }

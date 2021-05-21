@@ -9,7 +9,7 @@ import assertk.assertions.isNotNull
 import assertk.assertions.startsWith
 import com.ampnet.auditornode.ApiTestBase
 import com.ampnet.auditornode.TestUtils.parseScriptId
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.MediaType
@@ -27,7 +27,7 @@ class ScriptControllerApiTest : ApiTestBase() {
         verify("simple auditing script is correctly executed") {
             @Language("JavaScript") val scriptSource = """
                 function audit() {
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -37,7 +37,7 @@ class ScriptControllerApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 

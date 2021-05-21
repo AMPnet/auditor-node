@@ -7,7 +7,7 @@ import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.jsAssertions
 import com.ampnet.auditornode.script.api.ExecutionContext
 import com.ampnet.auditornode.script.api.classes.HttpClient
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import com.ampnet.auditornode.service.impl.JavaScriptAuditingService
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
@@ -45,11 +45,11 @@ class PropertiesJavaScriptTest : TestBase() {
                     assertEquals("Properties.another", "one", Properties.another);
                     assertEquals("Properties[\"some-number\"]", "123", Properties["some-number"]);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 }

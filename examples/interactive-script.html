@@ -44,7 +44,7 @@ function audit() {
     );
     Output.renderText(JSON.stringify(Converters.mapToObject(fieldValues)));
 
-    return AuditResult.of(true);
+    return AuditResult.success();
 }</textarea><br>
         <br>
         <button id="store-script" onclick="saveScript();">Store script</button>

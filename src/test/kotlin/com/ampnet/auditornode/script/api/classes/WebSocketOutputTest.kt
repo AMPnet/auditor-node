@@ -11,7 +11,7 @@ import com.ampnet.auditornode.model.websocket.RenderTextCommand
 import com.ampnet.auditornode.model.websocket.WebSocketApi
 import com.ampnet.auditornode.model.websocket.WebSocketMessage
 import com.ampnet.auditornode.script.api.ExecutionContext
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import com.ampnet.auditornode.script.api.objects.Properties
 import com.ampnet.auditornode.service.impl.JavaScriptAuditingService
 import io.micronaut.websocket.WebSocketSession
@@ -51,11 +51,11 @@ class WebSocketOutputTest : TestBase() {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit() {
                     Output.renderText("some text");
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp.copy(output = output))
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
 
         verify("correct web socket command is sent") {
@@ -73,11 +73,11 @@ class WebSocketOutputTest : TestBase() {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit() {
                     Output.renderHtml("some html");
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp.copy(output = output))
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
 
         verify("correct web socket command is sent") {
@@ -95,11 +95,11 @@ class WebSocketOutputTest : TestBase() {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit() {
                     Output.renderMarkdown("some markdown");
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp.copy(output = output))
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
 
         verify("correct web socket command is sent") {

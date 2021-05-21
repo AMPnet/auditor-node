@@ -5,7 +5,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.ampnet.auditornode.ApiTestBase
 import com.ampnet.auditornode.jsAssertions
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.MediaType
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
@@ -21,7 +21,7 @@ class NoOpOutputApiTest : ApiTestBase() {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit() {
                     Output.renderText("test");
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -31,7 +31,7 @@ class NoOpOutputApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 
@@ -41,7 +41,7 @@ class NoOpOutputApiTest : ApiTestBase() {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit() {
                     Output.renderHtml("test");
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -51,7 +51,7 @@ class NoOpOutputApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 
@@ -61,7 +61,7 @@ class NoOpOutputApiTest : ApiTestBase() {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit() {
                     Output.renderMarkdown("test");
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -71,7 +71,7 @@ class NoOpOutputApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 }

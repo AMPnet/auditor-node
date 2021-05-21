@@ -14,7 +14,7 @@ import com.ampnet.auditornode.model.websocket.ReadStringCommand
 import com.ampnet.auditornode.model.websocket.WebSocketApi
 import com.ampnet.auditornode.model.websocket.WebSocketMessage
 import com.ampnet.auditornode.script.api.ExecutionContext
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import com.ampnet.auditornode.script.api.objects.Properties
 import com.ampnet.auditornode.service.impl.JavaScriptAuditingService
 import io.micronaut.websocket.WebSocketSession
@@ -62,11 +62,11 @@ class WebSocketInputTest : TestBase() {
                     assertEquals("Input.readBoolean() #1", true, Input.readBoolean("test1"));
                     assertEquals("Input.readBoolean() #2", false, Input.readBoolean("test2"));
                     assertEquals("Input.readBoolean() #3", false, Input.readBoolean("test3"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp.copy(input = input))
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
 
         verify("correct web socket commands are sent") {
@@ -98,11 +98,11 @@ class WebSocketInputTest : TestBase() {
                     assertEquals("Input.readNumber() #1", 1, Input.readNumber("test1"));
                     assertEquals("Input.readNumber() #2", -2.0, Input.readNumber("test2"));
                     assertNull("Input.readNumber() #3", Input.readNumber("test3"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp.copy(input = input))
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
 
         verify("correct web socket commands are sent") {
@@ -132,11 +132,11 @@ class WebSocketInputTest : TestBase() {
                 function audit() {
                     assertEquals("Input.readString() #1", "string1", Input.readString("test1"));
                     assertEquals("Input.readString() #2", "string2", Input.readString("test2"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp.copy(input = input))
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
 
         verify("correct web socket commands are sent") {
@@ -184,11 +184,11 @@ class WebSocketInputTest : TestBase() {
                     assertEquals("values.get(\"booleanField\")", true, values.get("booleanField"));
                     assertEquals("values.get(\"numberField\")", 42, values.get("numberField"));
                     assertEquals("values.get(\"stringField\")", "string field", values.get("stringField"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp.copy(input = input))
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
 
         verify("correct web socket commands are sent") {

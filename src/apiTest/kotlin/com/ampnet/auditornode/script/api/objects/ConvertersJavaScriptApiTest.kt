@@ -5,7 +5,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.ampnet.auditornode.ApiTestBase
 import com.ampnet.auditornode.jsAssertions
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.MediaType
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
@@ -37,7 +37,7 @@ class ConvertersJavaScriptApiTest : ApiTestBase() {
                         assertEquals("newArray[" + i + "]", array[i], newArray[i]);
                     }
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -47,7 +47,7 @@ class ConvertersJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 
@@ -87,7 +87,7 @@ class ConvertersJavaScriptApiTest : ApiTestBase() {
                         assertEquals("newObject[\"" + property + "\"]", object[property], newObject[property]);
                     }
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -97,7 +97,7 @@ class ConvertersJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 }

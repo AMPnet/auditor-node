@@ -6,7 +6,7 @@ import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.jsAssertions
 import com.ampnet.auditornode.model.error.EvaluationError.InvalidInputValueError
 import com.ampnet.auditornode.script.api.ExecutionContext
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import com.ampnet.auditornode.script.api.objects.Properties
 import com.ampnet.auditornode.service.impl.JavaScriptAuditingService
 import io.micronaut.core.convert.DefaultConversionService
@@ -108,11 +108,11 @@ class HttpClientJavaScriptTest : TestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -195,11 +195,11 @@ class HttpClientJavaScriptTest : TestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -223,11 +223,11 @@ class HttpClientJavaScriptTest : TestBase() {
                         function() { HttpClient.get("http://localhost:8080", "headers"); }
                     );
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -301,11 +301,11 @@ class HttpClientJavaScriptTest : TestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -380,11 +380,11 @@ class HttpClientJavaScriptTest : TestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -472,11 +472,11 @@ class HttpClientJavaScriptTest : TestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -500,11 +500,11 @@ class HttpClientJavaScriptTest : TestBase() {
                         function() { HttpClient.post("http://localhost:8080", "{\"requestBody\":true}", "headers"); }
                     );
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -579,11 +579,11 @@ class HttpClientJavaScriptTest : TestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -660,11 +660,11 @@ class HttpClientJavaScriptTest : TestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -754,11 +754,11 @@ class HttpClientJavaScriptTest : TestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -789,11 +789,11 @@ class HttpClientJavaScriptTest : TestBase() {
                         }
                     );
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 }

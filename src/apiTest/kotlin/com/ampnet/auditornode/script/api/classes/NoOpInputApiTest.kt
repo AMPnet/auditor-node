@@ -5,7 +5,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.ampnet.auditornode.ApiTestBase
 import com.ampnet.auditornode.jsAssertions
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.MediaType
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
@@ -21,7 +21,7 @@ class NoOpInputApiTest : ApiTestBase() {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit() {
                     assertNull("Input.readBoolean()", Input.readBoolean("test"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -31,7 +31,7 @@ class NoOpInputApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 
@@ -41,7 +41,7 @@ class NoOpInputApiTest : ApiTestBase() {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit() {
                     assertNull("Input.readNumber()", Input.readNumber("test"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -51,7 +51,7 @@ class NoOpInputApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 
@@ -61,7 +61,7 @@ class NoOpInputApiTest : ApiTestBase() {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit() {
                     assertNull("Input.readString()", Input.readString("test"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -71,7 +71,7 @@ class NoOpInputApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 
@@ -81,7 +81,7 @@ class NoOpInputApiTest : ApiTestBase() {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit() {
                     assertNull("Input.readFields()", Input.readFields({}, "test"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -91,7 +91,7 @@ class NoOpInputApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
         }
     }
 }

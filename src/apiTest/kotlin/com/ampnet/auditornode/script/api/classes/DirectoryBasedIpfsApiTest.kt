@@ -9,7 +9,7 @@ import com.ampnet.auditornode.jsAssertions
 import com.ampnet.auditornode.model.websocket.AuditResultResponse
 import com.ampnet.auditornode.model.websocket.ConnectedInfoMessage
 import com.ampnet.auditornode.model.websocket.ExecutingInfoMessage
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.get
@@ -85,7 +85,7 @@ class DirectoryBasedIpfsApiTest : ApiTestWithPropertiesBase("ipfs-test-propertie
                     let file2Content = Ipfs.getFile("file2");
                     assertEquals("file2Content", "example file 2", file2Content);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -107,7 +107,7 @@ class DirectoryBasedIpfsApiTest : ApiTestWithPropertiesBase("ipfs-test-propertie
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
             client.assertNextMessage(ExecutingInfoMessage)
-            client.assertNextMessage(AuditResultResponse(AuditResult(true)))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
             client.close()
         }
     }

@@ -13,7 +13,7 @@ the following:
 
 ```javascript
 function audit() {
-    return AuditResult.of(true);
+    return AuditResult.success();
 }
 ```
 
@@ -42,7 +42,9 @@ There are no readable fields.
 
 | Signature | Description | Example call |
 | --------- | ----------- | ------------ |
-| `of(value: Boolean): AuditResult` | Constructs an `AuditResult` from the provided argument. | `AuditResult.of(true);` |
+| `success(): AuditResult` | Used to create a successful `AuditResult` object. | `AuditResult.success();` |
+| `failure(message: String): AuditResult` | Used to create a failed `AuditResult` object with provided message. | `AuditResult.failure("Owner mismatch");` |
+| `aborted(message: String): AuditResult` | Used to create an aborted `AuditResult` object with provided message. | `AuditResult.aborted("Will be audited later");` |
 
 #### List&lt;E&gt;
 

@@ -10,7 +10,7 @@ import com.ampnet.auditornode.model.websocket.ConnectedInfoMessage
 import com.ampnet.auditornode.model.websocket.ErrorResponse
 import com.ampnet.auditornode.model.websocket.ExecutingInfoMessage
 import com.ampnet.auditornode.model.websocket.NotFoundInfoMessage
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.MediaType
 import io.micronaut.http.client.annotation.Client
@@ -47,7 +47,7 @@ class ScriptWebSocketApiTest : ApiTestBase() {
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit() {
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -67,7 +67,7 @@ class ScriptWebSocketApiTest : ApiTestBase() {
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
             client.assertNextMessage(ExecutingInfoMessage)
-            client.assertNextMessage(AuditResultResponse(AuditResult(true)))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
             client.close()
         }
     }
