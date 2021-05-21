@@ -1,0 +1,245 @@
+<html lang="en">
+    <title>Interactive auditing script example</title>
+    <body>
+        <label for="script-input">Auditing script:</label><br>
+        <br>
+        <textarea id="script-input" rows="35" cols="120">
+function audit() {
+    let booleanValue = Input.readBoolean("Example boolean input:");
+    Output.renderText("Got value: " + booleanValue);
+
+    let numberValue = Input.readNumber("Example number input:");
+    Output.renderText("Got value: " + numberValue);
+
+    let stringValue = Input.readString("Example string input:");
+    Output.renderText("Got value: " + stringValue);
+
+    let fieldValues = Input.readFields(
+        [
+            {
+                "type": "boolean",
+                "name": "booleanField",
+                "description": "Boolean field description:"
+            },
+            {
+                "type": "number",
+                "name": "numberField",
+                "description": "Number field description:"
+            },
+            {
+                "type": "string",
+                "name": "stringField",
+                "description": "String field description:"
+            }
+        ],
+        "Input multiple fields:"
+    );
+    Output.renderText(JSON.stringify(Converters.mapToObject(fieldValues)));
+
+    return AuditResult.of(true);
+}</textarea><br>
+        <br>
+        <button id="store-script" onclick="saveScript();">Store script</button>
+        <br>
+        <p id="script-response"></p>
+        <button id="execute-script" onclick="executeScript();" hidden>Execute script</button>
+        <div id="script-log"></div>
+        <div id="script-io"></div>
+        <div id="script-result"></div>
+    </body>
+    <script type="text/javascript">
+        let scriptId = "";
+        let inputIndex = 0;
+        var webSocket = null;
+
+        function submitInput(index, field) {
+            document.getElementById("input-button-" + index).disabled = true;
+            let inputElement = document.getElementById("input-" + index);
+            inputElement.disabled = true;
+            webSocket.send(inputElement[field]);
+        }
+
+        function submitForm(index, numFields) {
+            for (let i = 0; i < numFields; i++) {
+                document.getElementById("input-" + index + "-" + i).disabled = true;
+            }
+
+            document.getElementById("input-button-" + index).disabled = true;
+
+            for (let i = 0; i < numFields; i++) {
+                let inputElement = document.getElementById("input-" + index + "-" + i);
+                if (inputElement.type === "checkbox") {
+                    webSocket.send(inputElement.checked);
+                } else {
+                    webSocket.send(inputElement.value);
+                }
+            }
+        }
+
+        function createInputField(message, inputType, valueField) {
+            let inputFieldDiv = document.createElement("div");
+            inputFieldDiv.innerHTML =
+                "<label for=\"input-" + inputIndex + "\">" + message +
+                "</label> <input id=\"input-" + inputIndex + "\" type=\"" + inputType +
+                "\"> <button id=\"input-button-" + inputIndex + "\" " +
+                "onclick=\"submitInput(" + inputIndex + ", '" + valueField + "');\">Submit</button>";
+
+            let scriptIo = document.getElementById("script-io");
+            scriptIo.appendChild(inputFieldDiv);
+            scriptIo.appendChild(document.createElement("br"));
+
+            inputIndex += 1;
+        }
+
+        function createInputForm(message, fields) {
+            let fieldsElement = document.createElement("div");
+            fieldsElement.id = "input-" + inputIndex;
+            fieldsElement.innerHTML += "<h3>" + message + "</h3>";
+
+            for (let i = 0; i < fields.length; i++) {
+                let field = fields[i];
+                let inputType;
+
+                if (field.type === "BOOLEAN") {
+                    inputType = "checkbox";
+                } else if (field.type === "NUMBER") {
+                    inputType = "number";
+                } else if (field.type === "STRING") {
+                    inputType = "text";
+                } else {
+                    window.alert("Unknown field type: " + field.type);
+                    inputType = "text";
+                }
+
+                let formFieldDiv = document.createElement("div");
+                formFieldDiv.innerHTML =
+                    "<label for=\"input-" + inputIndex + "-" + i + "\">" + field.description +
+                    "</label> <input id=\"input-" + inputIndex + "-" + i + "\" type=\"" + inputType +
+                    "\"><br><br>";
+
+                fieldsElement.appendChild(formFieldDiv);
+            }
+
+            let fieldsFinalElement = document.createElement("div");
+            fieldsFinalElement.innerHTML =
+                "<button id=\"input-button-" + inputIndex + "\" " +
+                "onclick=\"submitForm(" + inputIndex + ", " + fields.length + ");\">Submit</button>";
+
+            fieldsElement.appendChild(fieldsFinalElement);
+
+            let scriptIo = document.getElementById("script-io");
+            scriptIo.appendChild(fieldsElement);
+            scriptIo.appendChild(document.createElement("br"));
+        }
+
+        function processInfoMessage(message) {
+            let scriptLog = document.getElementById("script-log");
+
+            if (message.message === "connected") {
+                scriptLog.innerHTML += "<p>Connection established</p>";
+            } else if (message.message === "notFound") {
+                scriptLog.innerHTML += "<p>Script with ID " + scriptId + " not found</p>";
+            } else if (message.message === "executing") {
+                scriptLog.innerHTML += "<p>Script execution has started</p>";
+            } else {
+                window.alert("Unknown WS INFO message: " + JSON.stringify(message));
+            }
+        }
+
+        function processCommandMessage(message) {
+            let scriptIo = document.getElementById("script-io");
+
+            if (message.command === "readBoolean") {
+                createInputField(message.message, "checkbox", "checked");
+            } else if (message.command === "readNumber") {
+                createInputField(message.message, "number", "value");
+            } else if (message.command === "readString") {
+                createInputField(message.message, "text", "value");
+            } else if (message.command === "readFields") {
+                createInputForm(message.message, message.fields);
+            } else if (message.command === "renderText") {
+                let textElement = document.createElement("div");
+                textElement.innerText = message.text;
+                scriptIo.appendChild(textElement);
+                scriptIo.appendChild(document.createElement("br"));
+            } else if (message.command === "renderHtml") {
+                let htmlElement = document.createElement("div");
+                htmlElement.innerHTML = message.html;
+                scriptIo.appendChild(htmlElement);
+                scriptIo.appendChild(document.createElement("br"));
+            } else if (message.command === "renderMarkdown") {
+                let markdownElement = document.createElement("pre");
+                markdownElement.innerText = message.markdown;
+                scriptIo.appendChild(markdownElement);
+                scriptIo.appendChild(document.createElement("br"));
+            } else {
+                window.alert("Unknown WS COMMAND message: " + JSON.stringify(message));
+            }
+        }
+
+        function processResponseMessage(message) {
+            let scriptResult = document.getElementById("script-result");
+
+            if (message.success) {
+                scriptResult.innerHTML += "Result: " + JSON.stringify(message.payload);
+            } else {
+                scriptResult.innerHTML += "Error: " + JSON.stringify(message.payload);
+            }
+        }
+
+        function processWsMessage(rawMessage) {
+            let message = JSON.parse(rawMessage);
+
+            if (message.messageType === "INFO") {
+                processInfoMessage(message);
+            } else if (message.messageType === "COMMAND") {
+                processCommandMessage(message);
+            } else if (message.messageType === "RESPONSE") {
+                processResponseMessage(message);
+            } else {
+                window.alert("Unknown WS message: " + rawMessage);
+            }
+        }
+
+        function saveScript() {
+            let request = new XMLHttpRequest();
+
+            request.open("POST", "http://localhost:8080/script/store", true);
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.onreadystatechange = function () {
+                if (this.readyState === XMLHttpRequest.DONE) {
+                    if (this.status === 200) {
+                        let responseJson = JSON.parse(this.responseText);
+
+                        document.getElementById("store-script").disabled = true;
+                        document.getElementById("script-response").innerHTML = "Script stored under UUID: " +
+                            responseJson.id;
+                        document.getElementById("execute-script").hidden = false;
+                        scriptId = responseJson.id;
+                    } else {
+                        document.getElementById("script-response").innerHTML = "Error while storing the script";
+                    }
+                }
+            }
+            request.send(document.getElementById("script-input").value);
+        }
+
+        function executeScript() {
+            document.getElementById("execute-script").disabled = true;
+            let scriptLog = document.getElementById("script-log");
+
+            webSocket = new WebSocket("ws://localhost:8080/script/interactive/" + scriptId);
+            webSocket.onopen = function () {
+                scriptLog.innerHTML += "<p>Connection opened</p>";
+            }
+
+            webSocket.onmessage = function (event) {
+                processWsMessage(event.data);
+            }
+
+            webSocket.onclose = function () {
+                document.getElementById("script-result").innerHTML += "<p>Connection closed</p>";
+            }
+        }
+    </script>
+</html>

@@ -4,6 +4,7 @@ import assertk.assertThat
 import com.ampnet.auditornode.TestBase
 import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.jsAssertions
+import com.ampnet.auditornode.script.api.ExecutionContext
 import com.ampnet.auditornode.script.api.classes.HttpClient
 import com.ampnet.auditornode.script.api.model.AuditResult
 import com.ampnet.auditornode.service.impl.JavaScriptAuditingService
@@ -42,7 +43,7 @@ class ConvertersJavaScriptTest : TestBase() {
                     return AuditResult.of(true);
                 }
             """.trimIndent()
-            val result = service.evaluate(scriptSource)
+            val result = service.evaluate(scriptSource, ExecutionContext.noOp)
             assertThat(result).isRightContaining(AuditResult(true))
         }
     }
@@ -86,7 +87,7 @@ class ConvertersJavaScriptTest : TestBase() {
                     return AuditResult.of(true);
                 }
             """.trimIndent()
-            val result = service.evaluate(scriptSource)
+            val result = service.evaluate(scriptSource, ExecutionContext.noOp)
             assertThat(result).isRightContaining(AuditResult(true))
         }
     }

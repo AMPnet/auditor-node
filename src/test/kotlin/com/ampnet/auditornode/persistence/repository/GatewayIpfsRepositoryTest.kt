@@ -1,4 +1,4 @@
-package com.ampnet.auditornode.persistence
+package com.ampnet.auditornode.persistence.repository
 
 import assertk.assertThat
 import com.ampnet.auditornode.TestBase

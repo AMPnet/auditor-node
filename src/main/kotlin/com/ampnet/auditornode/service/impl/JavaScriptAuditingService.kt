@@ -8,6 +8,7 @@ import arrow.core.right
 import com.ampnet.auditornode.model.error.EvaluationError.InvalidReturnValueError
 import com.ampnet.auditornode.model.error.EvaluationError.ScriptExecutionError
 import com.ampnet.auditornode.model.error.Try
+import com.ampnet.auditornode.script.api.ExecutionContext
 import com.ampnet.auditornode.script.api.classes.HttpClient
 import com.ampnet.auditornode.script.api.model.AuditResult
 import com.ampnet.auditornode.script.api.objects.AuditResultApi
@@ -57,7 +58,7 @@ class JavaScriptAuditingService @Inject constructor(httpClient: HttpClient, prop
         "HttpClient" to httpClient
     )
 
-    override fun evaluate(auditingScript: String): Try<AuditResult> {
+    override fun evaluate(auditingScript: String, executionContext: ExecutionContext): Try<AuditResult> {
         val scriptSource = "$apiObjects\n$auditingScript;\n$SCRIPT_FUNCTION_CALL"
         logger.info { "Evaluating auditing script:\n$auditingScript" }
         logger.debug { "Full script source:\n$scriptSource" }
@@ -67,9 +68,11 @@ class JavaScriptAuditingService @Inject constructor(httpClient: HttpClient, prop
                 .use {
                     val apiBindings = it.getBindings(TARGET_LANGUAGE)
 
-                    apiClasses.map { (identifier, value) -> apiBindings.putMember(identifier, value) }
+                    (apiClasses + executionContext.apiClasses())
+                        .map { (identifier, value) -> apiBindings.putMember(identifier, value) }
 
                     val source = Source.create(TARGET_LANGUAGE, scriptSource)
+                    logger.info { "Script evaluation starting" }
                     val result = it.eval(source)
                     asAuditResult(result)
                 }

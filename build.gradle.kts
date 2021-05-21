@@ -87,6 +87,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.24")
+    testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 
     kaptApiTest(platform("io.micronaut:micronaut-bom:${micronaut.version}"))
