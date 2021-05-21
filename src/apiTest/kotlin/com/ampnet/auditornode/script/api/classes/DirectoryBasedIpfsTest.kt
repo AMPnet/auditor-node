@@ -3,6 +3,7 @@ package com.ampnet.auditornode.script.api.classes
 import assertk.assertThat
 import assertk.assertions.isNotNull
 import com.ampnet.auditornode.ApiTestWithPropertiesBase
+import com.ampnet.auditornode.TestUtils.parseScriptId
 import com.ampnet.auditornode.controller.websocket.WebSocketTestClient
 import com.ampnet.auditornode.jsAssertions
 import com.ampnet.auditornode.model.websocket.AuditResultResponse
@@ -22,16 +23,11 @@ import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.fail
+import java.util.UUID
 import javax.inject.Inject
 
 @MicronautTest(propertySources = ["ipfs-test-properties.yaml"])
 class DirectoryBasedIpfsTest : ApiTestWithPropertiesBase("ipfs-test-properties") {
-
-    companion object {
-        @Language("RegExp")
-        private const val UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
-    }
 
     @Inject
     private lateinit var webSocketClient: RxWebSocketClient
@@ -78,7 +74,7 @@ class DirectoryBasedIpfsTest : ApiTestWithPropertiesBase("ipfs-test-properties")
             )
         }
 
-        var storedScriptId: String? = null
+        var storedScriptId: UUID? = null
 
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
@@ -99,11 +95,7 @@ class DirectoryBasedIpfsTest : ApiTestWithPropertiesBase("ipfs-test-properties")
                 }
             )
 
-            val responseRegex = """^\{"id":"($UUID_REGEX)"}$""".toRegex()
-            val matchResult = responseRegex.find(result)
-                ?: fail("Response does not match regular expression: $responseRegex")
-
-            storedScriptId = matchResult.groups[1]?.value
+            storedScriptId = result.parseScriptId()
             assertThat(storedScriptId).isNotNull()
         }
 
