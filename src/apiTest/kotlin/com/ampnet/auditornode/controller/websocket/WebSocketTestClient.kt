@@ -29,15 +29,15 @@ abstract class WebSocketTestClient : AutoCloseable {
         messageQueue.add(message)
     }
 
-    fun assertNextMessage(message: WebSocketMessage, timeoutInSeconds: Long = 5L) {
+    fun assertNextMessage(message: WebSocketMessage, timeoutInSeconds: Long = 5L) { // TODO
         val queueMessage = messageQueue.poll(timeoutInSeconds, TimeUnit.SECONDS)
         val deserializedMessage = queueMessage?.let {
-            TestUtils.objectSerializer.deserialize(it.toByteArray(StandardCharsets.UTF_8), message.javaClass)
+            TestUtils.objectMapper.readTree(it.toByteArray(StandardCharsets.UTF_8))
         }
 
-        assertThat(deserializedMessage?.orElseGet(null))
+        assertThat(deserializedMessage)
             .isNotNull()
-            .isEqualTo(message)
+            .isEqualTo(TestUtils.objectMapper.valueToTree(message))
     }
 
     fun send(message: String) {

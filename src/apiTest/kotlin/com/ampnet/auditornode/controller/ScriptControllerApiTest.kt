@@ -1,14 +1,15 @@
 package com.ampnet.auditornode.controller
 
-import arrow.core.right
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
-import assertk.assertions.startsWith
+import assertk.assertions.isTrue
 import com.ampnet.auditornode.ApiTestBase
 import com.ampnet.auditornode.TestUtils.parseScriptId
+import com.ampnet.auditornode.isJsonEqualTo
+import com.ampnet.auditornode.model.response.ExecuteScriptOkResponse
 import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
@@ -37,7 +38,7 @@ class ScriptControllerApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(SuccessfulAudit.right().toString())
+            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
         }
     }
 
@@ -50,7 +51,7 @@ class ScriptControllerApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).startsWith("Either.Left")
+            assertThat(result.contains("error")).isTrue()
         }
     }
 
