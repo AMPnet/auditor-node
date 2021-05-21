@@ -27,7 +27,7 @@ import java.util.UUID
 import javax.inject.Inject
 
 @MicronautTest(propertySources = ["ipfs-test-properties.yaml"])
-class DirectoryBasedIpfsTest : ApiTestWithPropertiesBase("ipfs-test-properties") {
+class DirectoryBasedIpfsApiTest : ApiTestWithPropertiesBase("ipfs-test-properties") {
 
     @Inject
     private lateinit var webSocketClient: RxWebSocketClient
