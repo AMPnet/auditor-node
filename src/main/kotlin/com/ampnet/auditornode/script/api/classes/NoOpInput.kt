@@ -17,4 +17,7 @@ object NoOpInput : Input {
 
     @Export
     override fun readFields(fields: Value, message: String): MapApi<String, Any>? = null
+
+    @Export
+    override fun button(message: String) = Unit
 }

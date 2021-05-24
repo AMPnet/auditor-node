@@ -7,6 +7,7 @@ import com.ampnet.auditornode.TestUtils.parseScriptId
 import com.ampnet.auditornode.controller.websocket.WebSocketTestClient
 import com.ampnet.auditornode.jsAssertions
 import com.ampnet.auditornode.model.websocket.AuditResultResponse
+import com.ampnet.auditornode.model.websocket.ButtonCommand
 import com.ampnet.auditornode.model.websocket.ConnectedInfoMessage
 import com.ampnet.auditornode.model.websocket.ExecutingInfoMessage
 import com.ampnet.auditornode.model.websocket.InputField
@@ -215,6 +216,42 @@ class WebSocketInputApiTest : ApiTestBase() {
             client.send("true")
             client.send("42")
             client.send("string field")
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
+            client.close()
+        }
+    }
+
+    @Test
+    fun `must execute script which uses button() call`() {
+        var storedScriptId: UUID? = null
+
+        suppose("script is stored for interactive execution") {
+            @Language("JavaScript") val scriptSource = jsAssertions + """
+                function audit(auditData) {
+                    Input.button("test");
+                    return AuditResult.success();
+                }
+            """.trimIndent()
+
+            val result = client.toBlocking().retrieve(
+                HttpRequest.POST("/script/store", scriptSource).apply {
+                    contentType(MediaType.TEXT_PLAIN_TYPE)
+                }
+            )
+
+            storedScriptId = result.parseScriptId()
+            assertThat(storedScriptId).isNotNull()
+        }
+
+        verify("correct value is returned") {
+            val client = webSocketClient.connect(WebSocketTestClient::class.java, "/script/interactive/$storedScriptId")
+                .blockingFirst()
+            client.assertNextMessage(ConnectedInfoMessage)
+            client.assertNextMessage(ReadInputJsonCommand())
+            client.send("{}")
+            client.assertNextMessage(ExecutingInfoMessage)
+            client.assertNextMessage(ButtonCommand("test"))
+            client.send("ignored dummy value")
             client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
             client.close()
         }

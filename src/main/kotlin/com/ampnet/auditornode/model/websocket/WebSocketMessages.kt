@@ -36,6 +36,8 @@ data class InputField(
 
 data class ReadFieldsCommand(val message: String, val fields: List<InputField>) : WebSocketCommand("readFields")
 
+data class ButtonCommand(val message: String) : WebSocketCommand("button")
+
 data class RenderTextCommand(val text: String) : WebSocketCommand("renderText")
 
 data class RenderHtmlCommand(val html: String) : WebSocketCommand("renderHtml")
