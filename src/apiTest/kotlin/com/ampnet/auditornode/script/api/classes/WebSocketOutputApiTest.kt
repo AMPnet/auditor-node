@@ -9,6 +9,7 @@ import com.ampnet.auditornode.jsAssertions
 import com.ampnet.auditornode.model.websocket.AuditResultResponse
 import com.ampnet.auditornode.model.websocket.ConnectedInfoMessage
 import com.ampnet.auditornode.model.websocket.ExecutingInfoMessage
+import com.ampnet.auditornode.model.websocket.ReadInputJsonCommand
 import com.ampnet.auditornode.model.websocket.RenderHtmlCommand
 import com.ampnet.auditornode.model.websocket.RenderMarkdownCommand
 import com.ampnet.auditornode.model.websocket.RenderTextCommand
@@ -56,6 +57,8 @@ class WebSocketOutputApiTest : ApiTestBase() {
             val client = webSocketClient.connect(WebSocketTestClient::class.java, "/script/interactive/$storedScriptId")
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
+            client.assertNextMessage(ReadInputJsonCommand())
+            client.send("{}")
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(RenderTextCommand("test"))
             client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
@@ -89,6 +92,8 @@ class WebSocketOutputApiTest : ApiTestBase() {
             val client = webSocketClient.connect(WebSocketTestClient::class.java, "/script/interactive/$storedScriptId")
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
+            client.assertNextMessage(ReadInputJsonCommand())
+            client.send("{}")
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(RenderHtmlCommand("test"))
             client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
@@ -122,6 +127,8 @@ class WebSocketOutputApiTest : ApiTestBase() {
             val client = webSocketClient.connect(WebSocketTestClient::class.java, "/script/interactive/$storedScriptId")
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
+            client.assertNextMessage(ReadInputJsonCommand())
+            client.send("{}")
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(RenderMarkdownCommand("test"))
             client.assertNextMessage(AuditResultResponse(SuccessfulAudit))

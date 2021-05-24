@@ -81,7 +81,7 @@ class ScriptWebSocket @Inject constructor(
         session.script = script
         session.scriptIpfsDirectoryHash = ipfsDirectoryHash?.let { IpfsHash(it) }
         session.scriptState = ReadyState
-        webSocketApi.sendCommand(ReadInputJsonCommand("Please provide script input JSON"))
+        webSocketApi.sendCommand(ReadInputJsonCommand())
         logger.info { "Script is in ready state" }
     }
 
@@ -98,9 +98,7 @@ class ScriptWebSocket @Inject constructor(
 
     private fun startScript(message: String, session: WebSocketSession) {
         session.scriptState = ExecutingState
-
         val webSocketApi = WebSocketApi(session, objectMapper)
-        webSocketApi.sendInfoMessage(ExecutingInfoMessage)
 
         val input = WebSocketInput(webSocketApi)
         session.scriptInput = input
@@ -120,6 +118,8 @@ class ScriptWebSocket @Inject constructor(
         }
 
         logger.info { "Starting script" }
+        webSocketApi.sendInfoMessage(ExecutingInfoMessage)
+
         val executionContext = ExecutionContext(input, output, ipfs, auditDataJson)
         val scriptTask = scheduler.scheduleDirect {
             auditingService.evaluate(session.script.content, executionContext).fold(

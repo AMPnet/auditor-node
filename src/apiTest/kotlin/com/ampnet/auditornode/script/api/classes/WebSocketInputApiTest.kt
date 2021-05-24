@@ -13,6 +13,7 @@ import com.ampnet.auditornode.model.websocket.InputField
 import com.ampnet.auditornode.model.websocket.InputType
 import com.ampnet.auditornode.model.websocket.ReadBooleanCommand
 import com.ampnet.auditornode.model.websocket.ReadFieldsCommand
+import com.ampnet.auditornode.model.websocket.ReadInputJsonCommand
 import com.ampnet.auditornode.model.websocket.ReadNumberCommand
 import com.ampnet.auditornode.model.websocket.ReadStringCommand
 import com.ampnet.auditornode.script.api.model.SuccessfulAudit
@@ -59,6 +60,8 @@ class WebSocketInputApiTest : ApiTestBase() {
             val client = webSocketClient.connect(WebSocketTestClient::class.java, "/script/interactive/$storedScriptId")
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
+            client.assertNextMessage(ReadInputJsonCommand())
+            client.send("{}")
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(ReadBooleanCommand("test"))
             client.send("true")
@@ -93,6 +96,8 @@ class WebSocketInputApiTest : ApiTestBase() {
             val client = webSocketClient.connect(WebSocketTestClient::class.java, "/script/interactive/$storedScriptId")
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
+            client.assertNextMessage(ReadInputJsonCommand())
+            client.send("{}")
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(ReadNumberCommand("test"))
             client.send("123")
@@ -127,6 +132,8 @@ class WebSocketInputApiTest : ApiTestBase() {
             val client = webSocketClient.connect(WebSocketTestClient::class.java, "/script/interactive/$storedScriptId")
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
+            client.assertNextMessage(ReadInputJsonCommand())
+            client.send("{}")
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(ReadStringCommand("test"))
             client.send("example")
@@ -182,6 +189,8 @@ class WebSocketInputApiTest : ApiTestBase() {
             val client = webSocketClient.connect(WebSocketTestClient::class.java, "/script/interactive/$storedScriptId")
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
+            client.assertNextMessage(ReadInputJsonCommand())
+            client.send("{}")
             client.assertNextMessage(ExecutingInfoMessage)
 
             val fields = listOf(

@@ -9,6 +9,7 @@ import com.ampnet.auditornode.jsAssertions
 import com.ampnet.auditornode.model.websocket.AuditResultResponse
 import com.ampnet.auditornode.model.websocket.ConnectedInfoMessage
 import com.ampnet.auditornode.model.websocket.ExecutingInfoMessage
+import com.ampnet.auditornode.model.websocket.ReadInputJsonCommand
 import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
@@ -106,6 +107,8 @@ class DirectoryBasedIpfsApiTest : ApiTestWithPropertiesBase("ipfs-test-propertie
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
+            client.assertNextMessage(ReadInputJsonCommand())
+            client.send("{}")
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
             client.close()

@@ -11,7 +11,8 @@ sealed class WebSocketMessage(val messageType: MessageType)
 /* WebSocket commands */
 sealed class WebSocketCommand(val command: String) : WebSocketMessage(MessageType.COMMAND)
 
-data class ReadInputJsonCommand(val message: String) : WebSocketCommand("readInputJson")
+data class ReadInputJsonCommand(val message: String = "Please provide script input JSON") :
+    WebSocketCommand("readInputJson")
 
 data class ReadBooleanCommand(val message: String) : WebSocketCommand("readBoolean")
 
