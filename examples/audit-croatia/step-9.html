@@ -1,0 +1,29 @@
+<div>
+    <p>The final part of the audit process is checking if the owner data matches the expected values.</p>
+    <p>If the audit is successful, then the shown document must contain the correct row in the first table contained in
+        the document.</p>
+    <p>The blow table contains the same table header as the document, and the table row which should be contained in
+        the document.</p>
+    <p><b>Have a look at the table below and confirm if the document contains the following data:</b></p>
+    <table>
+        <tr>
+            <th>Redni broj dijela</th>
+            <th>Udio dijela</th>
+            <th>Prezime i ime odnosno tvrtka ili naziv, prebivalište odnosno sjedište
+                upisane osobe
+            </th>
+            <th>Udio</th>
+            <th>OIB</th>
+        </tr>
+        <tr>
+            <td>{ordinalNumber}</td>
+            <td>{totalAssetShares}</td>
+            <td>{ownerName}</td>
+            <td>{pid}</td>
+            <td>{subdivisionShares}</td>
+        </tr>
+    </table>
+    <p><b>NOTE:</b> the value shown here for the <b>'Prezime i ime odnosno tvrtka ili naziv, prebivalište odnosno
+        sjedište upisane osobe'</b> column is only partial - you should only confirm that the column in the document
+        contains the value shown here. Any additional info in the document for that column should be ignored.</p>
+</div>
