@@ -4,7 +4,7 @@
         <label for="script-input">Auditing script:</label><br>
         <br>
         <textarea id="script-input" rows="42" cols="120">
-function audit() {
+function audit(auditData) {
     let displayHtmlFragment = Input.readBoolean("Display HTML fragment?");
 
     if (displayHtmlFragment) {
@@ -53,7 +53,7 @@ function audit() {
         <div id="execute-script-block" hidden>
             <label for="ipfs-directory-hash">Input optional IPFS directory hash:</label>
             <input id="ipfs-directory-hash" type="text" size="56"
-                   value="QmdiDwQaHkPx2eum1FkGqJh5AfB5U6HKVSmKj7gVWymySd">
+                   value="QmdxwTrkQAmXSs7FEbMXJWrBqYQfZ6j9o5BzYrNLLuw4xg">
             <button id="execute-script" onclick="executeScript();">Execute script</button>
         </div>
         <div id="script-log"></div>
@@ -104,6 +104,21 @@ function audit() {
             inputIndex += 1;
         }
 
+        function createTextAreaInput(message) {
+            let inputFieldDiv = document.createElement("div");
+            inputFieldDiv.innerHTML =
+                "<label for=\"input-" + inputIndex + "\">" + message +
+                "</label><br><textarea id=\"input-" + inputIndex + "\" rows=\"20\" cols=\"120\"></textarea>" +
+                "<br><br><button id=\"input-button-" + inputIndex + "\" " +
+                "onclick=\"submitInput(" + inputIndex + ", 'value');\">Submit</button>";
+
+            let scriptLog = document.getElementById("script-log");
+            scriptLog.appendChild(inputFieldDiv);
+            scriptLog.appendChild(document.createElement("br"));
+
+            inputIndex += 1;
+        }
+
         function createInputForm(message, fields) {
             let fieldsElement = document.createElement("div");
             fieldsElement.id = "input-" + inputIndex;
@@ -147,22 +162,31 @@ function audit() {
 
         function processInfoMessage(message) {
             let scriptLog = document.getElementById("script-log");
+            let newElement = document.createElement("p");
 
             if (message.message === "connected") {
-                scriptLog.innerHTML += "<p>Connection established</p>";
+                newElement.innerText = "Connection established";
             } else if (message.message === "notFound") {
-                scriptLog.innerHTML += "<p>Script with ID " + scriptId + " not found</p>";
+                newElement.innerText = "Script with ID " + scriptId + " not found";
             } else if (message.message === "executing") {
-                scriptLog.innerHTML += "<p>Script execution has started</p>";
+                newElement.innerText = "Script execution has started";
+            } else if (message.message === "invalidInputJson") {
+                newElement.innerText = "Invalid input JSON was provided";
             } else {
-                window.alert("Unknown WS INFO message: " + JSON.stringify(message));
+                let unknownMessage = "Unknown WS INFO message: " + JSON.stringify(message)
+                window.alert(unknownMessage);
+                newElement.innerText = unknownMessage;
             }
+
+            scriptLog.appendChild(newElement);
         }
 
         function processCommandMessage(message) {
             let scriptIo = document.getElementById("script-io");
 
-            if (message.command === "readBoolean") {
+            if (message.command === "readInputJson") {
+                createTextAreaInput(message.message);
+            } else if (message.command === "readBoolean") {
                 createInputField(message.message, "checkbox", "checked");
             } else if (message.command === "readNumber") {
                 createInputField(message.message, "number", "value");
