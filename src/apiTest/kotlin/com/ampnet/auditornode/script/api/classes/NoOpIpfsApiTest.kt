@@ -19,7 +19,7 @@ class NoOpIpfsApiTest : ApiTestBase() {
     fun `must execute script which uses getFile() call`() {
         verify("null is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertNull("Ipfs.getFile()", Ipfs.getFile("example.js"));
                     return AuditResult.success();
                 }

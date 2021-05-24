@@ -38,7 +38,7 @@ class PropertiesJavaScriptTest : TestBase() {
 
         verify("JavaScript properties variables are accessible in the script") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     console.log(JSON.stringify(Properties));
 
                     assertEquals("Properties[\"test-key\"]", "testValue", Properties["test-key"]);

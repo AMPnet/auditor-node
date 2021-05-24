@@ -27,7 +27,7 @@ class ScriptControllerApiTest : ApiTestBase() {
     fun `must correctly execute simple auditing script`() {
         verify("simple auditing script is correctly executed") {
             @Language("JavaScript") val scriptSource = """
-                function audit() {
+                function audit(auditData) {
                     return AuditResult.success();
                 }
             """.trimIndent()

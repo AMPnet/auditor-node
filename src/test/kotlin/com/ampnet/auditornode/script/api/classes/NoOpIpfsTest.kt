@@ -22,7 +22,7 @@ class NoOpIpfsTest : TestBase() {
     fun `must return null when getFile() is called`() {
         verify("call is successful") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertNull("Ipfs.getFile()", Ipfs.getFile("test"));
                     return AuditResult.success();
                 }

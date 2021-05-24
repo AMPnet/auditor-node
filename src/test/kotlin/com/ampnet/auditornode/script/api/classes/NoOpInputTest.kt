@@ -22,7 +22,7 @@ class NoOpInputTest : TestBase() {
     fun `must return null when readBoolean() is called`() {
         verify("null is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertNull("Input.readBoolean()", Input.readBoolean("test"));
                     return AuditResult.success();
                 }
@@ -36,7 +36,7 @@ class NoOpInputTest : TestBase() {
     fun `must return null when readNumber() is called`() {
         verify("null is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertNull("Input.readNumber()", Input.readNumber("test"));
                     return AuditResult.success();
                 }
@@ -50,7 +50,7 @@ class NoOpInputTest : TestBase() {
     fun `must return null when readString() is called`() {
         verify("null is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertNull("Input.readString()", Input.readString("test"));
                     return AuditResult.success();
                 }
@@ -64,7 +64,7 @@ class NoOpInputTest : TestBase() {
     fun `must return null when readFields() is called`() {
         verify("null is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertNull("Input.readFields()", Input.readFields({}, "test"));
                     return AuditResult.success();
                 }

@@ -40,7 +40,7 @@ class JavaScriptAuditingServiceTest : TestBase() {
     fun `must return InvalidReturnValueError when JavaScript source returns native value`() {
         verify("InvalidReturnValueError is returned") {
             @Language("JavaScript") val scriptSource = """
-                function audit() {
+                function audit(auditData) {
                     return { example: true };
                 }
             """.trimIndent()
@@ -53,7 +53,7 @@ class JavaScriptAuditingServiceTest : TestBase() {
     fun `must return InvalidReturnValueError when JavaScript source returns unexpected JVM object`() {
         verify("InvalidReturnValueError is returned") {
             @Language("JavaScript") val scriptSource = """
-                function audit() {
+                function audit(auditData) {
                     return AuditResult;
                 }
             """.trimIndent()
@@ -66,7 +66,7 @@ class JavaScriptAuditingServiceTest : TestBase() {
     fun `must return correct AuditResult from JavaScript source`() {
         verify("SuccessfulAudit is correctly returned") {
             @Language("JavaScript") val scriptSource = """
-                function audit() {
+                function audit(auditData) {
                     return AuditResult.success();
                 }
             """.trimIndent()
@@ -76,7 +76,7 @@ class JavaScriptAuditingServiceTest : TestBase() {
 
         verify("FailedAudit is correctly returned") {
             @Language("JavaScript") val scriptSource = """
-                function audit() {
+                function audit(auditData) {
                     return AuditResult.failure("Example message");
                 }
             """.trimIndent()
@@ -86,7 +86,7 @@ class JavaScriptAuditingServiceTest : TestBase() {
 
         verify("AbortedAudit is correctly returned") {
             @Language("JavaScript") val scriptSource = """
-                function audit() {
+                function audit(auditData) {
                     return AuditResult.aborted("Example message");
                 }
             """.trimIndent()

@@ -78,7 +78,7 @@ class DirectoryBasedIpfsApiTest : ApiTestWithPropertiesBase("ipfs-test-propertie
 
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let file1Content = Ipfs.getFile("file1");
                     assertEquals("file1Content", "example file 1", file1Content);
 

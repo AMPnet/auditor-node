@@ -38,7 +38,7 @@ class DirectoryBasedIpfsTest : TestBase() {
 
         verify("IPFS file is correctly returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertEquals("Ipfs.getFile()", "example file content", Ipfs.getFile("example.js"));
                     return AuditResult.success();
                 }

@@ -3,13 +3,13 @@ package com.ampnet.auditornode.script.api.classes
 import assertk.assertThat
 import com.ampnet.auditornode.TestBase
 import com.ampnet.auditornode.TestUtils
+import com.ampnet.auditornode.TestUtils.toJson
 import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.jsAssertions
 import com.ampnet.auditornode.model.websocket.RenderHtmlCommand
 import com.ampnet.auditornode.model.websocket.RenderMarkdownCommand
 import com.ampnet.auditornode.model.websocket.RenderTextCommand
 import com.ampnet.auditornode.model.websocket.WebSocketApi
-import com.ampnet.auditornode.model.websocket.WebSocketMessage
 import com.ampnet.auditornode.script.api.ExecutionContext
 import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import com.ampnet.auditornode.script.api.objects.Properties
@@ -22,21 +22,14 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.then
 import org.mockito.kotlin.times
-import java.nio.charset.StandardCharsets
 
 class WebSocketOutputTest : TestBase() {
 
     private val session = mock<WebSocketSession>()
-    private val webSocketApi = WebSocketApi(session, TestUtils.objectSerializer)
+    private val webSocketApi = WebSocketApi(session, TestUtils.objectMapper)
     private val httpClient = HttpClient(mock())
     private val environment = Properties(mock())
     private val service = JavaScriptAuditingService(httpClient, environment)
-
-    private fun WebSocketMessage.toJson(): String {
-        return TestUtils.objectSerializer.serialize(this)
-            .map { String(it, StandardCharsets.UTF_8) }
-            .orElse("")
-    }
 
     @BeforeEach
     fun beforeEach() {
@@ -49,7 +42,7 @@ class WebSocketOutputTest : TestBase() {
 
         suppose("renderText() output is called") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     Output.renderText("some text");
                     return AuditResult.success();
                 }
@@ -71,7 +64,7 @@ class WebSocketOutputTest : TestBase() {
 
         suppose("renderHtml() output is called") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     Output.renderHtml("some html");
                     return AuditResult.success();
                 }
@@ -93,7 +86,7 @@ class WebSocketOutputTest : TestBase() {
 
         suppose("renderMarkdown() output is called") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     Output.renderMarkdown("some markdown");
                     return AuditResult.success();
                 }

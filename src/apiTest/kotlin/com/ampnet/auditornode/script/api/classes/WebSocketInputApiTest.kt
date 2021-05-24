@@ -39,7 +39,7 @@ class WebSocketInputApiTest : ApiTestBase() {
 
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertEquals("Input.readBoolean()", true, Input.readBoolean("test"));
                     return AuditResult.success();
                 }
@@ -73,7 +73,7 @@ class WebSocketInputApiTest : ApiTestBase() {
 
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertEquals("Input.readNumber()", 123, Input.readNumber("test"));
                     return AuditResult.success();
                 }
@@ -107,7 +107,7 @@ class WebSocketInputApiTest : ApiTestBase() {
 
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertEquals("Input.readString()", "example", Input.readString("test"));
                     return AuditResult.success();
                 }
@@ -141,7 +141,7 @@ class WebSocketInputApiTest : ApiTestBase() {
 
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let fields = [
                         {
                             "type": "boolean",

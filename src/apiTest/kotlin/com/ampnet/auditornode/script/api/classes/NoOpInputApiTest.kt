@@ -19,7 +19,7 @@ class NoOpInputApiTest : ApiTestBase() {
     fun `must execute script which uses readBoolean() call`() {
         verify("null is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertNull("Input.readBoolean()", Input.readBoolean("test"));
                     return AuditResult.success();
                 }
@@ -39,7 +39,7 @@ class NoOpInputApiTest : ApiTestBase() {
     fun `must execute script which uses readNumber() call`() {
         verify("null is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertNull("Input.readNumber()", Input.readNumber("test"));
                     return AuditResult.success();
                 }
@@ -59,7 +59,7 @@ class NoOpInputApiTest : ApiTestBase() {
     fun `must execute script which uses readString() call`() {
         verify("null is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertNull("Input.readString()", Input.readString("test"));
                     return AuditResult.success();
                 }
@@ -79,7 +79,7 @@ class NoOpInputApiTest : ApiTestBase() {
     fun `must execute script which uses readFields() call`() {
         verify("null is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertNull("Input.readFields()", Input.readFields({}, "test"));
                     return AuditResult.success();
                 }

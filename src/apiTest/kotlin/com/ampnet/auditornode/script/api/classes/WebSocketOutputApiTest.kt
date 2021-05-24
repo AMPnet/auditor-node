@@ -36,7 +36,7 @@ class WebSocketOutputApiTest : ApiTestBase() {
 
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     Output.renderText("test");
                     return AuditResult.success();
                 }
@@ -69,7 +69,7 @@ class WebSocketOutputApiTest : ApiTestBase() {
 
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     Output.renderHtml("test");
                     return AuditResult.success();
                 }
@@ -102,7 +102,7 @@ class WebSocketOutputApiTest : ApiTestBase() {
 
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     Output.renderMarkdown("test");
                     return AuditResult.success();
                 }

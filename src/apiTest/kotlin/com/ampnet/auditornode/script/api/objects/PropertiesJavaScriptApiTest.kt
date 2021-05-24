@@ -19,7 +19,7 @@ class PropertiesJavaScriptApiTest : ApiTestWithPropertiesBase("script-properties
     fun `must correctly execute auditing script which uses script properties`() {
         verify("script properties are readable in the script") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     console.log(JSON.stringify(Properties));
 
                     assertEquals("Properties[\"test-property\"]", "example", Properties["test-property"]);

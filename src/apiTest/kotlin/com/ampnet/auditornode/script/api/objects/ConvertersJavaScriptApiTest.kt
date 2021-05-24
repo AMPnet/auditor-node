@@ -19,7 +19,7 @@ class ConvertersJavaScriptApiTest : ApiTestBase() {
     fun `must correctly execute auditing script which uses Converters list API`() {
         verify("list converters work correctly") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let array = [1, 2, "three"];
                     let list = Converters.arrayToList(array);
 
@@ -56,7 +56,7 @@ class ConvertersJavaScriptApiTest : ApiTestBase() {
         verify("map converters work correctly") {
             @Suppress("JSUnfilteredForInLoop")
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let object = {
                         prop1: "string",
                         prop2: 123,

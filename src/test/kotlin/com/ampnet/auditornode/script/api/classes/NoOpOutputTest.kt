@@ -22,7 +22,7 @@ class NoOpOutputTest : TestBase() {
     fun `must not throw exception when renderText() is called`() {
         verify("call is successful") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     Output.renderText("test");
                     return AuditResult.success();
                 }
@@ -36,7 +36,7 @@ class NoOpOutputTest : TestBase() {
     fun `must not throw exception when renderHtml() is called`() {
         verify("call is successful") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     Output.renderHtml("test");
                     return AuditResult.success();
                 }
@@ -50,7 +50,7 @@ class NoOpOutputTest : TestBase() {
     fun `must not throw exception when renderMarkdown() is called`() {
         verify("call is successful") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     Output.renderMarkdown("test");
                     return AuditResult.success();
                 }

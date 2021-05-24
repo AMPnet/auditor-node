@@ -22,7 +22,7 @@ class ConvertersJavaScriptTest : TestBase() {
     fun `must correctly convert JS array into a list and vice-versa`() {
         verify("JS array is correctly converted into a list and then back into an array") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let array = [1, 2, "three"];
                     let list = Converters.arrayToList(array);
 
@@ -53,7 +53,7 @@ class ConvertersJavaScriptTest : TestBase() {
         verify("JS object is correctly converted into a map and then back into an object") {
             @Suppress("JSUnfilteredForInLoop")
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let object = {
                         prop1: "string",
                         prop2: 123,

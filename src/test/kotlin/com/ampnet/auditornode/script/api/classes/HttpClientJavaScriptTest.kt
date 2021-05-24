@@ -78,7 +78,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.get("http://localhost:8080");
 
                     assertEquals("response.body", "$responseBody", response.body);
@@ -159,7 +159,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.get(
                         "http://localhost:8080",
                         {
@@ -216,7 +216,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("exception is thrown for invalid headers argument") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertThrows(
                         "HttpClient.get()",
                         "$expectedException",
@@ -271,7 +271,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.post("http://localhost:8080");
 
                     assertEquals("response.body", "$responseBody", response.body);
@@ -350,7 +350,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.post("http://localhost:8080", "$requestBody");
 
                     assertEquals("response.body", "$responseBody", response.body);
@@ -434,7 +434,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.post(
                         "http://localhost:8080",
                         "$requestBody",
@@ -493,7 +493,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("exception is thrown for invalid headers argument") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertThrows(
                         "HttpClient.post()",
                         "$expectedException",
@@ -549,7 +549,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.request("http://localhost:8080", "$customMethodName");
 
                     assertEquals("response.body", "$responseBody", response.body);
@@ -630,7 +630,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.request("http://localhost:8080", "$customMethodName", "$requestBody");
 
                     assertEquals("response.body", "$responseBody", response.body);
@@ -715,7 +715,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.request(
                         "http://localhost:8080",
                         "$customMethodName",
@@ -775,7 +775,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("exception is thrown for invalid headers argument") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertThrows(
                         "HttpClient.request()",
                         "$expectedException",

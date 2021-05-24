@@ -19,7 +19,7 @@ class NoOpOutputApiTest : ApiTestBase() {
     fun `must execute script which uses renderText() call`() {
         verify("call is successful") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     Output.renderText("test");
                     return AuditResult.success();
                 }
@@ -39,7 +39,7 @@ class NoOpOutputApiTest : ApiTestBase() {
     fun `must execute script which uses renderHtml() call`() {
         verify("call is successful") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     Output.renderHtml("test");
                     return AuditResult.success();
                 }
@@ -59,7 +59,7 @@ class NoOpOutputApiTest : ApiTestBase() {
     fun `must execute script which uses renderMarkdown() call`() {
         verify("call is successful") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     Output.renderMarkdown("test");
                     return AuditResult.success();
                 }
