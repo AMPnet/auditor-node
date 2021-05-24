@@ -38,4 +38,16 @@ class GatewayIpfsRepository @Inject constructor(
             .mapLeft { IpfsHttpError(it) }
             .flatMap { it?.right() ?: IpfsEmptyResponseError(hash).left() }
             .map { IpfsTextFile(it) }
+
+    override fun fetchTextFileFromDirectory(directoryHash: IpfsHash, fileName: String): Try<IpfsTextFile> =
+        Either.catch {
+            val fileUrl = "${ipfsProperties.gatewayUrl.removeSuffix("/")}/$fileName"
+                .replace("{ipfsHash}", directoryHash.value)
+            logger.info { "Fetching file from IPFS folder: GET $fileUrl" }
+            val request = HttpRequest.GET<String>(fileUrl)
+            blockingHttpClient.retrieve(request)
+        }
+            .mapLeft { IpfsHttpError(it) }
+            .flatMap { it?.right() ?: IpfsEmptyResponseError(directoryHash, fileName).left() }
+            .map { IpfsTextFile(it) }
 }

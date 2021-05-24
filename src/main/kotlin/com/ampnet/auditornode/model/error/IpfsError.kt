@@ -9,7 +9,7 @@ sealed class IpfsError(message: String, cause: Throwable? = null) : ApplicationE
         cause = cause
     )
 
-    data class IpfsEmptyResponseError(val hash: IpfsHash) : IpfsError(
-        "Could not fetch file from IPFS with hash: $hash"
+    data class IpfsEmptyResponseError(val hash: IpfsHash, val fileName: String? = null) : IpfsError(
+        "Could not fetch file from IPFS: ${hash.value}" + (fileName?.let { "/$it" } ?: "")
     )
 }

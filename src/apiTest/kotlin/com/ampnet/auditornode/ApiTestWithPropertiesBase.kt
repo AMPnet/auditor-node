@@ -11,7 +11,7 @@ import org.junit.jupiter.api.fail
 import javax.inject.Inject
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-abstract class ApiTestWithPropertiesBase : TestBase() {
+abstract class ApiTestWithPropertiesBase(private val propertySourceName: String) : TestBase() {
 
     @Inject
     // request path must always include serverPath(), e.g. "${serverPath()}/hello"
@@ -19,8 +19,6 @@ abstract class ApiTestWithPropertiesBase : TestBase() {
 
     @Inject
     private lateinit var server: EmbeddedServer
-
-    abstract val propertySourceName: String
 
     @BeforeAll
     fun beforeAll() {
@@ -55,4 +53,6 @@ abstract class ApiTestWithPropertiesBase : TestBase() {
     }
 
     protected fun serverPath() = "${server.scheme}://${server.host}:${server.port}"
+
+    protected fun webSocketPath() = "ws://${server.host}:${server.port}"
 }

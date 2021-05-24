@@ -37,7 +37,7 @@ class LocalIpfsRepositoryTest : TestBase() {
     }
 
     @Test
-    fun `must return IpfsHttpError when HTTP request fails with an exception`() {
+    fun `fetchTextFile() must return IpfsHttpError when HTTP request fails with an exception`() {
         val exception = RuntimeException("http exception")
 
         suppose("HTTP client will throw an exception") {
@@ -54,7 +54,7 @@ class LocalIpfsRepositoryTest : TestBase() {
     }
 
     @Test
-    fun `must return IpfsEmptyResponseError when null response body is returned`() {
+    fun `fetchTextFile() must return IpfsEmptyResponseError when null response body is returned`() {
         suppose("HTTP client will return a null response") {
             given(client.retrieve(any<HttpRequest<String>>()))
                 .willReturn(null)
@@ -70,7 +70,7 @@ class LocalIpfsRepositoryTest : TestBase() {
     }
 
     @Test
-    fun `must correctly substitute {ipfsHash}, use provided port and return a file`() {
+    fun `fetchTextFile() must correctly substitute {ipfsHash}, use provided port and return a file`() {
         val testPort = 1234
         val hash = IpfsHash("testHash")
         val expectedFileUrl = "http://localhost:$testPort/api/v0/cat?arg=${hash.value}"
@@ -89,6 +89,65 @@ class LocalIpfsRepositoryTest : TestBase() {
 
         verify("correct file data is returned") {
             val result = ipfs.fetchTextFile(hash)
+            assertThat(result).isRightContaining(IpfsTextFile(response))
+        }
+    }
+
+    @Test
+    fun `fetchTextFileFromDirectory() must return IpfsHttpError when HTTP request fails with an exception`() {
+        val exception = RuntimeException("http exception")
+
+        suppose("HTTP client will throw an exception") {
+            given(client.retrieve(any<HttpRequest<String>>()))
+                .willThrow(exception)
+            given(properties.localClientPort)
+                .willReturn(5001)
+        }
+
+        verify("IpfsHttpError is returned") {
+            val result = ipfs.fetchTextFileFromDirectory(IpfsHash("testHash"), "example.js")
+            assertThat(result).isLeftContaining(IpfsHttpError(exception))
+        }
+    }
+
+    @Test
+    fun `fetchTextFileFromDirectory() must return IpfsEmptyResponseError when null response body is returned`() {
+        suppose("HTTP client will return a null response") {
+            given(client.retrieve(any<HttpRequest<String>>()))
+                .willReturn(null)
+            given(properties.localClientPort)
+                .willReturn(5001)
+        }
+
+        verify("IpfsEmptyResponseError is returned") {
+            val hash = IpfsHash("testHash")
+            val fileName = "example.js"
+            val result = ipfs.fetchTextFileFromDirectory(hash, fileName)
+            assertThat(result).isLeftContaining(IpfsEmptyResponseError(hash, fileName))
+        }
+    }
+
+    @Test
+    fun `fetchTextFileFromDirectory() must correctly substitute {ipfsHash}, use provided port and return a file`() {
+        val testPort = 1234
+        val hash = IpfsHash("testHash")
+        val fileName = "example.js"
+        val expectedFileUrl = "http://localhost:$testPort/api/v0/cat?arg=${hash.value}/$fileName"
+        val request = HttpRequest.POST(expectedFileUrl, "")
+        val response = "example file data"
+
+        suppose("HTTP client will return a file") {
+            val httpRequestMatcher: (HttpRequest<String>) -> Boolean = { arg ->
+                arg.uri == request.uri && arg.method == HttpMethod.POST && arg.body == Optional.of("")
+            }
+            given(properties.localClientPort)
+                .willReturn(testPort)
+            given(client.retrieve(argThat(httpRequestMatcher)))
+                .willReturn(response)
+        }
+
+        verify("correct file data is returned") {
+            val result = ipfs.fetchTextFileFromDirectory(hash, fileName)
             assertThat(result).isRightContaining(IpfsTextFile(response))
         }
     }

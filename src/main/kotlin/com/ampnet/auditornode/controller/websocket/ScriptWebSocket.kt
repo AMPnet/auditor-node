@@ -6,14 +6,19 @@ import com.ampnet.auditornode.model.websocket.ErrorResponse
 import com.ampnet.auditornode.model.websocket.ExecutingInfoMessage
 import com.ampnet.auditornode.model.websocket.NotFoundInfoMessage
 import com.ampnet.auditornode.model.websocket.WebSocketApi
+import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.persistence.model.ScriptId
+import com.ampnet.auditornode.persistence.repository.IpfsRepository
 import com.ampnet.auditornode.persistence.repository.ScriptRepository
 import com.ampnet.auditornode.script.api.ExecutionContext
+import com.ampnet.auditornode.script.api.classes.DirectoryBasedIpfs
+import com.ampnet.auditornode.script.api.classes.NoOpIpfs
 import com.ampnet.auditornode.script.api.classes.WebSocketInput
 import com.ampnet.auditornode.script.api.classes.WebSocketOutput
 import com.ampnet.auditornode.service.AuditingService
 import io.micronaut.core.serialize.ObjectSerializer
 import io.micronaut.http.annotation.PathVariable
+import io.micronaut.http.annotation.QueryValue
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.websocket.CloseReason
 import io.micronaut.websocket.WebSocketSession
@@ -36,6 +41,7 @@ private val logger = KotlinLogging.logger {}
 class ScriptWebSocket @Inject constructor(
     private val auditingService: AuditingService,
     private val scriptRepository: ScriptRepository,
+    private val ipfsRepository: IpfsRepository,
     private val objectSerializer: ObjectSerializer,
     @Named(TaskExecutors.IO) executorService: ExecutorService
 ) {
@@ -48,8 +54,12 @@ class ScriptWebSocket @Inject constructor(
     private val scheduler: Scheduler = Schedulers.from(executorService)
 
     @OnOpen
-    fun onOpen(@PathVariable("scriptId") scriptId: UUID, session: WebSocketSession) {
-        logger.info { "WebSocket connection opened" }
+    fun onOpen(
+        @PathVariable("scriptId") scriptId: UUID,
+        @QueryValue("ipfs-directory") ipfsDirectoryHash: String?,
+        session: WebSocketSession
+    ) {
+        logger.info { "WebSocket connection opened, script ID: $scriptId, IPFS directory hash: $ipfsDirectoryHash" }
         val webSocketApi = WebSocketApi(session, objectSerializer)
 
         webSocketApi.sendInfoMessage(ConnectedInfoMessage)
@@ -68,8 +78,11 @@ class ScriptWebSocket @Inject constructor(
         session.attributes.put(SCRIPT_INPUT_ATTRIBUTE, input)
 
         val output = WebSocketOutput(webSocketApi)
+        val ipfs = ipfsDirectoryHash?.let {
+            DirectoryBasedIpfs(IpfsHash(it), ipfsRepository)
+        } ?: NoOpIpfs
 
-        val executionContext = ExecutionContext(input, output)
+        val executionContext = ExecutionContext(input, output, ipfs)
         val scriptTask = scheduler.scheduleDirect {
             auditingService.evaluate(script.content, executionContext).fold(
                 ifLeft = {

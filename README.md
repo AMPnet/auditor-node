@@ -29,7 +29,8 @@ them manually or run them via Docker Compose.
 To start IPFS and Geth via Docker Compose, position yourself into the `docker` directory and run `docker-compose up -d`.
 To upload a file to your local IPFS, first place it in the `ipfs-staging` directory which was created when you started
 Docker Compose. After that, you can add the file to IPFS like this:
-`docker exec ipfs-node ipfs add /export/<your-file-name>`.
+`docker exec ipfs-node ipfs add /export/<your-file-name>`. If you need to upload a directory instead, you can do so by
+adding the `-r` flag to the `ipfs add` command: `docker exec ipfs-node ipfs add -r /export/<your-directory-name>`.
 
 **IMPORTANT NOTE: when you start local Geth node, it may take up to 30 minutes to get it synced with Ropsten testnet.
 During this time it is possible that reading IPFS hash from the contract will fail because your local Geth node is not
@@ -69,31 +70,32 @@ compiled native image: `./gradlew apiTestNativeImage`.
 
 #### Full flow
 
-You can upload the test JavaScript file located in `src/integTest/resources/` to IPFS to try out the application. To do
-so, execute the following commands from the project root:  
-`cp src/integTest/resources/test-script.js docker/ipfs-staging/`  
-`docker exec ipfs-node ipfs add /export/test-script.js`
+You can upload the test directory located in `examples/example-auditing-scritp` to IPFS to try out the application. To
+do so, execute the following commands from the project root:  
+`cp -r examples/example-auditing-script docker/ipfs-staging/`  
+`docker exec ipfs-node ipfs add -r /export/example-auditing-script`
 
-The second command will print the IPFS file hash you can use to fetch the file. This hash must be provided as a program
-argument. Current version of the script file should produce the hash value of
-`QmSuwCUCZXzPunnrCWL7CnSLixboTa7HftVBjcVgi3TMaK`.
+The second command will print the IPFS file hashes as well as the directory hash. Current version of the script
+directory should produce the hash value of `QmeRQcjtdpVsdAwqQAChrGhJXVPCfH9q1KiE1dqUNBaywU`.
 
 While the Docker IPFS container is running, you can access its web-ui via `http://localhost:5001/webui`.
 
-If you are running the desktop IPFS application, you can upload the file through its interface. The hash of the file
-will then be displayed there.
+If you are running the desktop IPFS application, you can upload the directory through its interface. The hash of the
+directory will then be displayed there.
 
 When the application is started, it will listen to HTTP requests on port `8080`. Making a GET request to `/audit` will
-start the test audit procedure which will first try to fetch IPFS file hash stored in the Ethereum contract with address
-`0x992E8FeA2D91807797717178Aa6abEc7F20c31a8` on the Ropsten testnet. After that, the file will be fetched via public
-IPFS gateway (`https://ipfs.io/ipfs/`). The stored hash value will be fetched from contract via the Infura node on
-Ropsten network (`https://ropsten.infura.io/v3/08664baf7af14eda956db2b71a79f12f`). If you want to use local IPFS and
-Geth nodes instead, you can specify `--local-ipfs` and `-rpc.url=http://localhost:8545` as program arguments.
+start the test audit procedure which will first try to fetch IPFS directory hash stored in the Ethereum contract with
+address `0x992E8FeA2D91807797717178Aa6abEc7F20c31a8` on the Ropsten testnet. After that, the script file will be fetched
+via public IPFS gateway (`https://ipfs.io/ipfs/`). The stored hash value will be fetched from contract via the Infura
+node on Ropsten network (`https://ropsten.infura.io/v3/08664baf7af14eda956db2b71a79f12f`). If you want to use local IPFS
+and Geth nodes instead, you can specify `--local-ipfs` and `-rpc.url=http://localhost:8545` as program arguments.
 
 #### Scripts
 
 You can test auditing scripts directly by using `POST /script/execute` endpoint. Simply send the script as `text/plain`
-content, and the auditor will execute it.
+content, and the auditor will execute it. To run scripts interactively, web socket api can be used. See web socket API
+documentation located in `doc/websocket-api.md` for more info. There is also an example HTML page for running scripts
+interactively located in `examples/interactive-script.html`.
 
 ## Program arguments
 

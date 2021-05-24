@@ -38,4 +38,16 @@ class LocalIpfsRepository @Inject constructor(
             .mapLeft { IpfsHttpError(it) }
             .flatMap { it?.right() ?: IpfsEmptyResponseError(hash).left() }
             .map { IpfsTextFile(it) }
+
+    override fun fetchTextFileFromDirectory(directoryHash: IpfsHash, fileName: String): Try<IpfsTextFile> =
+        Either.catch {
+            val port = ipfsProperties.localClientPort
+            val fileUrl = "http://localhost:$port/api/v0/cat?arg=${directoryHash.value}/$fileName"
+            logger.info { "Fetching file from IPFS folder: POST $fileUrl" }
+            val request = HttpRequest.POST(fileUrl, "")
+            blockingHttpClient.retrieve(request)
+        }
+            .mapLeft { IpfsHttpError(it) }
+            .flatMap { it?.right() ?: IpfsEmptyResponseError(directoryHash, fileName).left() }
+            .map { IpfsTextFile(it) }
 }

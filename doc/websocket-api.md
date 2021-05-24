@@ -24,8 +24,10 @@ type. If the script cannot be found for the provided UUID, 404 HTTP status code 
 
 ## Interactive script execution via web socket
 
-To start a stored script interactively, simply connect to `/script/interactive/{uuid}` via web socket. Upon establishing
-the connection, auditor application will send a response to the web socket:
+To start a stored script interactively, simply connect to `/script/interactive/{uuid}` via web socket. To associate an
+IPFS directory with the script being executed, provide the IPFS directory hash via `ipfs-directory` query parameter. All
+the files in the provided IPFS directory will then be readable via `Ipfs.getFile()` method by providing the file name
+inside the directory. Upon establishing the connection, auditor application will send a response to the web socket:
 
 ```json
 {

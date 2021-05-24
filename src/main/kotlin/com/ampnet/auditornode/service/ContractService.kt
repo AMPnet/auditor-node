@@ -7,6 +7,6 @@ import java.math.BigInteger
 
 interface ContractService {
     fun currentBlockNumber(): Try<BigInteger>
-    fun getIpfsFileHash(): Try<IpfsHash>
-    fun storeIpfsFileHash(newHash: IpfsHash): EthereumTransaction
+    fun getIpfsDirectoryHash(): Try<IpfsHash>
+    fun storeIpfsDirectoryHash(newHash: IpfsHash): EthereumTransaction
 }
