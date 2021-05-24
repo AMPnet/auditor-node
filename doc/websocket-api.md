@@ -52,6 +52,27 @@ other hand, if the script was found then the following message will be sent to w
 
 ```json
 {
+    "messageType": "COMMAND",
+    "command": "readInputJson",
+    "message": "Please provide script input JSON"
+}
+```
+
+This message indicates that the client should send a JSON value which will be used as an input argument of the script.
+If the provided value is not a valid JSON, the following message will be returned, and the script execution will not
+start:
+
+```json
+{
+    "messageType": "INFO",
+    "message": "invalidInputJson"
+}
+```
+
+If the input value is a valid JSON, then the following message is sent to the client:
+
+```json
+{
     "messageType": "INFO",
     "message": "executing"
 }
@@ -86,6 +107,22 @@ should send a message via web socket only when a command which requires some web
 
 These commands require some input from the user, which means that web socket client must send a response when it becomes
 available.
+
+#### ReadInputJsonBoolean command
+
+Requests the script input JSON from the user. This message is sent only once when the script is being executed
+interactively - before the script is executed. Web socket message:
+
+```json
+{
+    "messageType": "COMMAND",
+    "command": "readInputJson",
+    "message": "Please provide script input JSON"
+}
+```
+
+Response: web socket client should send a valid JSON value. This can be a JSON array, object, string, number, boolean or
+null.
 
 #### ReadBoolean command
 

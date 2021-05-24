@@ -7,15 +7,18 @@ powered by GraalVM. For more info, check out
 
 ## Entry point and return value
 
-Each auditing script should define a function called `audit()` without arguments. This function should do all the
+Each auditing script should define a function called `audit()` with a single argument. This function should do all the
 necessary steps in the auditing process and return an `AuditResult` at the end. The simplest possible auditing script is
 the following:
 
 ```javascript
-function audit() {
+function audit(auditData) {
     return AuditResult.success();
 }
 ```
+
+The input argument `auditData` is a JSON object which will vary depending on asset category. See script input
+documentation for more info.
 
 ## Script API
 
