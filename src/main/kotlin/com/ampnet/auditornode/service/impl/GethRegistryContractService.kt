@@ -22,9 +22,9 @@ private val logger = KotlinLogging.logger {}
 
 @Singleton
 class GethRegistryContractService @Inject constructor(
+    rpc: EthereumRPC,
     auditorProperties: AuditorProperties,
-    private val rpcProperties: RpcProperties,
-    rpc: EthereumRPC
+    private val rpcProperties: RpcProperties
 ) : RegistryContractService {
 
     private val contractAddress = Address(auditorProperties.registryContractAddress)

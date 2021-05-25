@@ -23,9 +23,9 @@ private val logger = KotlinLogging.logger {}
 
 @Singleton
 class GethAssetContractService @Inject constructor(
+    rpc: EthereumRPC,
     auditorProperties: AuditorProperties,
-    private val rpcProperties: RpcProperties,
-    rpc: EthereumRPC
+    private val rpcProperties: RpcProperties
 ) : AssetContractService {
 
     private val contractAddress = Address(auditorProperties.assetContractAddress)

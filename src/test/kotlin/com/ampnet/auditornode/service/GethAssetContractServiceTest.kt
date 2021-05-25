@@ -32,7 +32,7 @@ class GethAssetContractServiceTest : TestBase() {
         on { url } doReturn "http://localhost:8080/test-url"
     }
     private val rpc = mock<EthereumRPC>()
-    private val service = GethAssetContractService(auditorProperties, rpcProperties, rpc)
+    private val service = GethAssetContractService(rpc, auditorProperties, rpcProperties)
 
     private val testHash = IpfsHash("testHash")
     private val encodedTestHash =

@@ -32,7 +32,7 @@ class GethRegistryContractServiceTest : TestBase() {
         on { url } doReturn "http://localhost:8080/test-url"
     }
     private val rpc = mock<EthereumRPC>()
-    private val service = GethRegistryContractService(auditorProperties, rpcProperties, rpc)
+    private val service = GethRegistryContractService(rpc, auditorProperties, rpcProperties)
 
     private val testHash = IpfsHash("testHash")
     private val encodedTestHash =
