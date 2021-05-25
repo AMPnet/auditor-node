@@ -1,5 +1,8 @@
 package com.ampnet.auditornode.controller
 
+import com.ampnet.auditornode.model.response.ExecuteScriptErrorResponse
+import com.ampnet.auditornode.model.response.ExecuteScriptOkResponse
+import com.ampnet.auditornode.model.response.ExecuteScriptResponse
 import com.ampnet.auditornode.model.response.StoreScriptResponse
 import com.ampnet.auditornode.persistence.model.ScriptId
 import com.ampnet.auditornode.persistence.model.ScriptSource
@@ -25,11 +28,15 @@ class ScriptController @Inject constructor(
     private val scriptRepository: ScriptRepository
 ) {
 
-    @Post(value = "/execute", produces = [MediaType.TEXT_PLAIN], consumes = [MediaType.TEXT_PLAIN])
-    fun executeScript(@Body scriptSource: String): String { // TODO may want to return JSON here
+    @Post(value = "/execute", produces = [MediaType.APPLICATION_JSON], consumes = [MediaType.TEXT_PLAIN])
+    fun executeScript(@Body scriptSource: String): ExecuteScriptResponse {
+        logger.warn { "Got HTTP call" }
         val result = auditingService.evaluate(scriptSource, ExecutionContext.noOp)
         logger.info { "Evaluation result: $result" }
-        return result.toString()
+        return result.fold(
+            ifLeft = { ExecuteScriptErrorResponse(it.message) },
+            ifRight = { ExecuteScriptOkResponse(it) }
+        )
     }
 
     @Post(value = "/store", produces = [MediaType.APPLICATION_JSON], consumes = [MediaType.TEXT_PLAIN])

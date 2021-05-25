@@ -90,6 +90,42 @@
         "allPublicClasses": true
     },
     {
+        "name": "com.ampnet.auditornode.model.response.StoreScriptResponse",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
+        "name": "com.ampnet.auditornode.model.response.ExecuteScriptResponse",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
+        "name": "com.ampnet.auditornode.model.response.ExecuteScriptOkResponse",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
+        "name": "com.ampnet.auditornode.model.response.ExecuteScriptErrorResponse",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
         "name": "com.ampnet.auditornode.model.websocket.MessageType",
         "allDeclaredConstructors": true,
         "allPublicConstructors": true,
@@ -109,6 +145,15 @@
     },
     {
         "name": "com.ampnet.auditornode.model.websocket.WebSocketCommand",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
+        "name": "com.ampnet.auditornode.model.websocket.ReadInputJsonCommand",
         "allDeclaredConstructors": true,
         "allPublicConstructors": true,
         "allDeclaredMethods": true,
@@ -225,6 +270,15 @@
         "allPublicClasses": true
     },
     {
+        "name": "com.ampnet.auditornode.model.websocket.InvalidInputJsonInfoMessage",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
         "name": "com.ampnet.auditornode.model.websocket.ExecutingInfoMessage",
         "allDeclaredConstructors": true,
         "allPublicConstructors": true,
@@ -329,7 +383,43 @@
         "allPublicMethods": true
     },
     {
+        "name": "com.ampnet.auditornode.script.api.model.AuditStatus",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
         "name": "com.ampnet.auditornode.script.api.model.AuditResult",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
+        "name": "com.ampnet.auditornode.script.api.model.SuccessfulAudit",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
+        "name": "com.ampnet.auditornode.script.api.model.FailedAudit",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
+        "name": "com.ampnet.auditornode.script.api.model.AbortedAudit",
         "allDeclaredConstructors": true,
         "allPublicConstructors": true,
         "allDeclaredMethods": true,

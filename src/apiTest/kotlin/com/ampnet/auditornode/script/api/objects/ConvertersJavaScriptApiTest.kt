@@ -1,11 +1,11 @@
 package com.ampnet.auditornode.script.api.objects
 
-import arrow.core.right
 import assertk.assertThat
-import assertk.assertions.isEqualTo
 import com.ampnet.auditornode.ApiTestBase
+import com.ampnet.auditornode.isJsonEqualTo
 import com.ampnet.auditornode.jsAssertions
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.model.response.ExecuteScriptOkResponse
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.MediaType
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
@@ -19,7 +19,7 @@ class ConvertersJavaScriptApiTest : ApiTestBase() {
     fun `must correctly execute auditing script which uses Converters list API`() {
         verify("list converters work correctly") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let array = [1, 2, "three"];
                     let list = Converters.arrayToList(array);
 
@@ -37,7 +37,7 @@ class ConvertersJavaScriptApiTest : ApiTestBase() {
                         assertEquals("newArray[" + i + "]", array[i], newArray[i]);
                     }
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -47,7 +47,7 @@ class ConvertersJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
         }
     }
 
@@ -56,7 +56,7 @@ class ConvertersJavaScriptApiTest : ApiTestBase() {
         verify("map converters work correctly") {
             @Suppress("JSUnfilteredForInLoop")
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let object = {
                         prop1: "string",
                         prop2: 123,
@@ -87,7 +87,7 @@ class ConvertersJavaScriptApiTest : ApiTestBase() {
                         assertEquals("newObject[\"" + property + "\"]", object[property], newObject[property]);
                     }
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -97,7 +97,7 @@ class ConvertersJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
         }
     }
 }

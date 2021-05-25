@@ -4,6 +4,7 @@ import arrow.core.Either
 import assertk.Assert
 import assertk.assertions.isEqualTo
 import assertk.assertions.support.expected
+import assertk.assertions.support.fail
 import org.intellij.lang.annotations.Language
 
 fun <A, B> Assert<Either<A, B>>.isLeftSatisfying(assertions: (A) -> Unit) = given { actual ->
@@ -27,6 +28,13 @@ fun <A, B> Assert<Either<A, B>>.isLeftContaining(expected: A) =
 
 fun <A, B> Assert<Either<A, B>>.isRightContaining(expected: B) =
     isRightSatisfying { assertThat(it).isEqualTo(expected) }
+
+fun Assert<String>.isJsonEqualTo(expected: Any) = given { actual ->
+    val actualJson = TestUtils.objectMapper.readTree(actual)
+    if (actualJson != TestUtils.objectMapper.valueToTree(expected)) {
+        fail(expected, actual)
+    }
+}
 
 @Language("JavaScript")
 val jsAssertions = """

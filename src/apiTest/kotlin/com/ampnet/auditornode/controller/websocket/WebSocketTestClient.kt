@@ -1,15 +1,13 @@
 package com.ampnet.auditornode.controller.websocket
 
 import assertk.assertThat
-import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
-import com.ampnet.auditornode.TestUtils
+import com.ampnet.auditornode.isJsonEqualTo
 import com.ampnet.auditornode.model.websocket.WebSocketMessage
 import io.micronaut.websocket.WebSocketSession
 import io.micronaut.websocket.annotation.ClientWebSocket
 import io.micronaut.websocket.annotation.OnMessage
 import io.micronaut.websocket.annotation.OnOpen
-import java.nio.charset.StandardCharsets
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.TimeUnit
 
@@ -31,13 +29,10 @@ abstract class WebSocketTestClient : AutoCloseable {
 
     fun assertNextMessage(message: WebSocketMessage, timeoutInSeconds: Long = 5L) {
         val queueMessage = messageQueue.poll(timeoutInSeconds, TimeUnit.SECONDS)
-        val deserializedMessage = queueMessage?.let {
-            TestUtils.objectSerializer.deserialize(it.toByteArray(StandardCharsets.UTF_8), message.javaClass)
-        }
 
-        assertThat(deserializedMessage?.orElseGet(null))
+        assertThat(queueMessage)
             .isNotNull()
-            .isEqualTo(message)
+            .isJsonEqualTo(message)
     }
 
     fun send(message: String) {

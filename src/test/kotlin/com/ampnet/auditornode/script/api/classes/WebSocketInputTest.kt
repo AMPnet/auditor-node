@@ -3,6 +3,7 @@ package com.ampnet.auditornode.script.api.classes
 import assertk.assertThat
 import com.ampnet.auditornode.TestBase
 import com.ampnet.auditornode.TestUtils
+import com.ampnet.auditornode.TestUtils.toJson
 import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.jsAssertions
 import com.ampnet.auditornode.model.websocket.InputField
@@ -12,9 +13,8 @@ import com.ampnet.auditornode.model.websocket.ReadFieldsCommand
 import com.ampnet.auditornode.model.websocket.ReadNumberCommand
 import com.ampnet.auditornode.model.websocket.ReadStringCommand
 import com.ampnet.auditornode.model.websocket.WebSocketApi
-import com.ampnet.auditornode.model.websocket.WebSocketMessage
 import com.ampnet.auditornode.script.api.ExecutionContext
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import com.ampnet.auditornode.script.api.objects.Properties
 import com.ampnet.auditornode.service.impl.JavaScriptAuditingService
 import io.micronaut.websocket.WebSocketSession
@@ -25,21 +25,14 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.then
 import org.mockito.kotlin.times
-import java.nio.charset.StandardCharsets
 
 class WebSocketInputTest : TestBase() {
 
     private val session = mock<WebSocketSession>()
-    private val webSocketApi = WebSocketApi(session, TestUtils.objectSerializer)
+    private val webSocketApi = WebSocketApi(session, TestUtils.objectMapper)
     private val httpClient = HttpClient(mock())
     private val environment = Properties(mock())
     private val service = JavaScriptAuditingService(httpClient, environment)
-
-    private fun WebSocketMessage.toJson(): String {
-        return TestUtils.objectSerializer.serialize(this)
-            .map { String(it, StandardCharsets.UTF_8) }
-            .orElse("")
-    }
 
     @BeforeEach
     fun beforeEach() {
@@ -58,15 +51,15 @@ class WebSocketInputTest : TestBase() {
 
         verify("boolean values are correctly read from web socket") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertEquals("Input.readBoolean() #1", true, Input.readBoolean("test1"));
                     assertEquals("Input.readBoolean() #2", false, Input.readBoolean("test2"));
                     assertEquals("Input.readBoolean() #3", false, Input.readBoolean("test3"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp.copy(input = input))
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
 
         verify("correct web socket commands are sent") {
@@ -94,15 +87,15 @@ class WebSocketInputTest : TestBase() {
 
         verify("number values are correctly read from web socket") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertEquals("Input.readNumber() #1", 1, Input.readNumber("test1"));
                     assertEquals("Input.readNumber() #2", -2.0, Input.readNumber("test2"));
                     assertNull("Input.readNumber() #3", Input.readNumber("test3"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp.copy(input = input))
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
 
         verify("correct web socket commands are sent") {
@@ -129,14 +122,14 @@ class WebSocketInputTest : TestBase() {
 
         verify("string values are correctly read from web socket") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertEquals("Input.readString() #1", "string1", Input.readString("test1"));
                     assertEquals("Input.readString() #2", "string2", Input.readString("test2"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp.copy(input = input))
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
 
         verify("correct web socket commands are sent") {
@@ -161,7 +154,7 @@ class WebSocketInputTest : TestBase() {
 
         verify("field values are correctly read from web socket") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let fields = [
                         {
                             "type": "boolean",
@@ -184,11 +177,11 @@ class WebSocketInputTest : TestBase() {
                     assertEquals("values.get(\"booleanField\")", true, values.get("booleanField"));
                     assertEquals("values.get(\"numberField\")", 42, values.get("numberField"));
                     assertEquals("values.get(\"stringField\")", "string field", values.get("stringField"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp.copy(input = input))
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
 
         verify("correct web socket commands are sent") {

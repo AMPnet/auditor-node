@@ -7,15 +7,18 @@ powered by GraalVM. For more info, check out
 
 ## Entry point and return value
 
-Each auditing script should define a function called `audit()` without arguments. This function should do all the
+Each auditing script should define a function called `audit()` with a single argument. This function should do all the
 necessary steps in the auditing process and return an `AuditResult` at the end. The simplest possible auditing script is
 the following:
 
 ```javascript
-function audit() {
-    return AuditResult.of(true);
+function audit(auditData) {
+    return AuditResult.success();
 }
 ```
+
+The input argument `auditData` is a JSON object which will vary depending on asset category. See script input
+documentation for more info.
 
 ## Script API
 
@@ -42,7 +45,9 @@ There are no readable fields.
 
 | Signature | Description | Example call |
 | --------- | ----------- | ------------ |
-| `of(value: Boolean): AuditResult` | Constructs an `AuditResult` from the provided argument. | `AuditResult.of(true);` |
+| `success(): AuditResult` | Used to create a successful `AuditResult` object. | `AuditResult.success();` |
+| `failure(message: String): AuditResult` | Used to create a failed `AuditResult` object with provided message. | `AuditResult.failure("Owner mismatch");` |
+| `aborted(message: String): AuditResult` | Used to create an aborted `AuditResult` object with provided message. | `AuditResult.aborted("Will be audited later");` |
 
 #### List&lt;E&gt;
 

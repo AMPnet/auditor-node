@@ -6,7 +6,7 @@ import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.jsAssertions
 import com.ampnet.auditornode.model.error.EvaluationError.InvalidInputValueError
 import com.ampnet.auditornode.script.api.ExecutionContext
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import com.ampnet.auditornode.script.api.objects.Properties
 import com.ampnet.auditornode.service.impl.JavaScriptAuditingService
 import io.micronaut.core.convert.DefaultConversionService
@@ -78,7 +78,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.get("http://localhost:8080");
 
                     assertEquals("response.body", "$responseBody", response.body);
@@ -108,11 +108,11 @@ class HttpClientJavaScriptTest : TestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -159,7 +159,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.get(
                         "http://localhost:8080",
                         {
@@ -195,11 +195,11 @@ class HttpClientJavaScriptTest : TestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -216,18 +216,18 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("exception is thrown for invalid headers argument") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertThrows(
                         "HttpClient.get()",
                         "$expectedException",
                         function() { HttpClient.get("http://localhost:8080", "headers"); }
                     );
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -271,7 +271,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.post("http://localhost:8080");
 
                     assertEquals("response.body", "$responseBody", response.body);
@@ -301,11 +301,11 @@ class HttpClientJavaScriptTest : TestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -350,7 +350,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.post("http://localhost:8080", "$requestBody");
 
                     assertEquals("response.body", "$responseBody", response.body);
@@ -380,11 +380,11 @@ class HttpClientJavaScriptTest : TestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -434,7 +434,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.post(
                         "http://localhost:8080",
                         "$requestBody",
@@ -472,11 +472,11 @@ class HttpClientJavaScriptTest : TestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -493,18 +493,18 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("exception is thrown for invalid headers argument") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertThrows(
                         "HttpClient.post()",
                         "$expectedException",
                         function() { HttpClient.post("http://localhost:8080", "{\"requestBody\":true}", "headers"); }
                     );
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -549,7 +549,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.request("http://localhost:8080", "$customMethodName");
 
                     assertEquals("response.body", "$responseBody", response.body);
@@ -579,11 +579,11 @@ class HttpClientJavaScriptTest : TestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -630,7 +630,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.request("http://localhost:8080", "$customMethodName", "$requestBody");
 
                     assertEquals("response.body", "$responseBody", response.body);
@@ -660,11 +660,11 @@ class HttpClientJavaScriptTest : TestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -715,7 +715,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.request(
                         "http://localhost:8080",
                         "$customMethodName",
@@ -754,11 +754,11 @@ class HttpClientJavaScriptTest : TestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -775,7 +775,7 @@ class HttpClientJavaScriptTest : TestBase() {
 
         verify("exception is thrown for invalid headers argument") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertThrows(
                         "HttpClient.request()",
                         "$expectedException",
@@ -789,11 +789,11 @@ class HttpClientJavaScriptTest : TestBase() {
                         }
                     );
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 }

@@ -6,7 +6,7 @@ import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.jsAssertions
 import com.ampnet.auditornode.script.api.ExecutionContext
 import com.ampnet.auditornode.script.api.classes.HttpClient
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import com.ampnet.auditornode.service.impl.JavaScriptAuditingService
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
@@ -22,7 +22,7 @@ class ConvertersJavaScriptTest : TestBase() {
     fun `must correctly convert JS array into a list and vice-versa`() {
         verify("JS array is correctly converted into a list and then back into an array") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let array = [1, 2, "three"];
                     let list = Converters.arrayToList(array);
 
@@ -40,11 +40,11 @@ class ConvertersJavaScriptTest : TestBase() {
                         assertEquals("newArray[" + i + "]", array[i], newArray[i]);
                     }
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
@@ -53,7 +53,7 @@ class ConvertersJavaScriptTest : TestBase() {
         verify("JS object is correctly converted into a map and then back into an object") {
             @Suppress("JSUnfilteredForInLoop")
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let object = {
                         prop1: "string",
                         prop2: 123,
@@ -84,11 +84,11 @@ class ConvertersJavaScriptTest : TestBase() {
                         assertEquals("newObject[\"" + property + "\"]", object[property], newObject[property]);
                     }
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp)
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 }

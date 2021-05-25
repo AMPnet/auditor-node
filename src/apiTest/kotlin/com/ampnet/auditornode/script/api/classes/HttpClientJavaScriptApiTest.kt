@@ -1,12 +1,12 @@
 package com.ampnet.auditornode.script.api.classes
 
-import arrow.core.right
 import assertk.assertThat
-import assertk.assertions.isEqualTo
 import com.ampnet.auditornode.ApiTestBase
+import com.ampnet.auditornode.isJsonEqualTo
 import com.ampnet.auditornode.jsAssertions
 import com.ampnet.auditornode.model.error.EvaluationError.InvalidInputValueError
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.model.response.ExecuteScriptOkResponse
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.equalTo
@@ -100,7 +100,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.get("http://localhost:${wireMockServer.port()}/example");
 
                     assertEquals("response.body", "$responseBody", response.body);
@@ -132,7 +132,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -142,7 +142,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
         }
     }
 
@@ -181,7 +181,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.get(
                         "http://localhost:${wireMockServer.port()}/example",
                         {
@@ -219,7 +219,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -229,7 +229,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
         }
     }
 
@@ -244,14 +244,14 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
 
         verify("exception is thrown for invalid headers argument") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertThrows(
                         "HttpClient.get()",
                         "$expectedException",
                         function() { HttpClient.get("http://localhost:${wireMockServer.port()}/example", "headers"); }
                     );
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -261,7 +261,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
         }
     }
 
@@ -298,7 +298,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.post("http://localhost:${wireMockServer.port()}/example");
 
                     assertEquals("response.body", "$responseBody", response.body);
@@ -330,7 +330,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -340,7 +340,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
         }
     }
 
@@ -380,7 +380,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.post(
                         "http://localhost:${wireMockServer.port()}/example",
                         "$requestBody"
@@ -415,7 +415,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -425,7 +425,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
         }
     }
 
@@ -467,7 +467,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.post(
                         "http://localhost:${wireMockServer.port()}/example",
                         "$requestBody",
@@ -507,7 +507,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -517,7 +517,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
         }
     }
 
@@ -532,7 +532,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
 
         verify("exception is thrown for invalid headers argument") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertThrows(
                         "HttpClient.post()",
                         "$expectedException",
@@ -545,7 +545,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                         }
                     );
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -555,7 +555,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
         }
     }
 
@@ -593,7 +593,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.request(
                         "http://localhost:${wireMockServer.port()}/example",
                         "$customMethodName"
@@ -628,7 +628,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -638,7 +638,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
         }
     }
 
@@ -679,7 +679,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.request(
                         "http://localhost:${wireMockServer.port()}/example",
                         "$customMethodName",
@@ -715,7 +715,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -725,7 +725,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
         }
     }
 
@@ -768,7 +768,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
 
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let response = HttpClient.request(
                         "http://localhost:${wireMockServer.port()}/example",
                         "$customMethodName",
@@ -809,7 +809,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("cookie.maxAge", ${responseCookie.maxAge}, cookie.maxAge);
                     assertEquals("cookie.sameSite", "${responseCookie.sameSite.get().name}", cookie.sameSite);
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -819,7 +819,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
         }
     }
 
@@ -834,7 +834,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
 
         verify("exception is thrown for invalid headers argument") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertThrows(
                         "HttpClient.request()",
                         "$expectedException",
@@ -848,7 +848,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                         }
                     );
 
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -858,7 +858,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
         }
     }
 }

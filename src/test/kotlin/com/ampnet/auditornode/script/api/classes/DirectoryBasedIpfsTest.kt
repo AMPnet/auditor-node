@@ -9,7 +9,7 @@ import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.persistence.model.IpfsTextFile
 import com.ampnet.auditornode.persistence.repository.IpfsRepository
 import com.ampnet.auditornode.script.api.ExecutionContext
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import com.ampnet.auditornode.script.api.objects.Properties
 import com.ampnet.auditornode.service.impl.JavaScriptAuditingService
 import org.intellij.lang.annotations.Language
@@ -38,13 +38,13 @@ class DirectoryBasedIpfsTest : TestBase() {
 
         verify("IPFS file is correctly returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertEquals("Ipfs.getFile()", "example file content", Ipfs.getFile("example.js"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
             val result = service.evaluate(scriptSource, ExecutionContext.noOp.copy(ipfs = ipfs))
-            assertThat(result).isRightContaining(AuditResult(true))
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 }

@@ -1,11 +1,11 @@
 package com.ampnet.auditornode.script.api.classes
 
-import arrow.core.right
 import assertk.assertThat
-import assertk.assertions.isEqualTo
 import com.ampnet.auditornode.ApiTestBase
+import com.ampnet.auditornode.isJsonEqualTo
 import com.ampnet.auditornode.jsAssertions
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.model.response.ExecuteScriptOkResponse
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.MediaType
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
@@ -19,9 +19,9 @@ class NoOpInputApiTest : ApiTestBase() {
     fun `must execute script which uses readBoolean() call`() {
         verify("null is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertNull("Input.readBoolean()", Input.readBoolean("test"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -31,7 +31,7 @@ class NoOpInputApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
         }
     }
 
@@ -39,9 +39,9 @@ class NoOpInputApiTest : ApiTestBase() {
     fun `must execute script which uses readNumber() call`() {
         verify("null is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertNull("Input.readNumber()", Input.readNumber("test"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -51,7 +51,7 @@ class NoOpInputApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
         }
     }
 
@@ -59,9 +59,9 @@ class NoOpInputApiTest : ApiTestBase() {
     fun `must execute script which uses readString() call`() {
         verify("null is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertNull("Input.readString()", Input.readString("test"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -71,7 +71,7 @@ class NoOpInputApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
         }
     }
 
@@ -79,9 +79,9 @@ class NoOpInputApiTest : ApiTestBase() {
     fun `must execute script which uses readFields() call`() {
         verify("null is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertNull("Input.readFields()", Input.readFields({}, "test"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -91,7 +91,7 @@ class NoOpInputApiTest : ApiTestBase() {
                 }
             )
 
-            assertThat(result).isEqualTo(AuditResult(true).right().toString())
+            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
         }
     }
 }

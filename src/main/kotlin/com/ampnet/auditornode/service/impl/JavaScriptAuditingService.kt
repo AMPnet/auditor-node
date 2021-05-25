@@ -33,7 +33,8 @@ class JavaScriptAuditingService @Inject constructor(httpClient: HttpClient, prop
 
     companion object {
         private const val TARGET_LANGUAGE = "js"
-        private const val SCRIPT_FUNCTION_CALL = "audit();"
+        private const val INPUT_VALUE_NAME = "__input__"
+        private const val SCRIPT_FUNCTION_CALL = "audit($INPUT_VALUE_NAME);"
         private val languageOptions = mapOf(
             "js.ecmascript-version" to "2020"
         )
@@ -58,19 +59,25 @@ class JavaScriptAuditingService @Inject constructor(httpClient: HttpClient, prop
         "HttpClient" to httpClient
     )
 
-    override fun evaluate(auditingScript: String, executionContext: ExecutionContext): Try<AuditResult> {
-        val scriptSource = "$apiObjects\n$auditingScript;\n$SCRIPT_FUNCTION_CALL"
-        logger.info { "Evaluating auditing script:\n$auditingScript" }
-        logger.debug { "Full script source:\n$scriptSource" }
-
-        return Either.catch {
+    override fun evaluate(auditingScript: String, executionContext: ExecutionContext): Try<AuditResult> =
+        Either.catch {
             jsContextBuilder.build()
                 .use {
+                    logger.info { "Evaluating script input JSON: ${executionContext.auditDataJson}" }
+                    val auditDataJsonSource = Source.create(
+                        TARGET_LANGUAGE,
+                        "const $INPUT_VALUE_NAME = ${executionContext.auditDataJson};"
+                    )
+                    it.eval(auditDataJsonSource)
+
                     val apiBindings = it.getBindings(TARGET_LANGUAGE)
 
                     (apiClasses + executionContext.apiClasses())
                         .map { (identifier, value) -> apiBindings.putMember(identifier, value) }
 
+                    val scriptSource = "$apiObjects\n$auditingScript;\n$SCRIPT_FUNCTION_CALL"
+                    logger.debug { "Full script source:\n$scriptSource" }
+                    logger.info { "Evaluating auditing script:\n$auditingScript" }
                     val source = Source.create(TARGET_LANGUAGE, scriptSource)
                     logger.info { "Script evaluation starting" }
                     val result = it.eval(source)
@@ -79,7 +86,6 @@ class JavaScriptAuditingService @Inject constructor(httpClient: HttpClient, prop
         }
             .mapLeft { ScriptExecutionError(it) }
             .flatten()
-    }
 
     private fun asAuditResult(result: Value): Try<AuditResult> =
         Either.conditionally(

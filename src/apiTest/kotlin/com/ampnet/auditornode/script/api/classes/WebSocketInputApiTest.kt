@@ -13,9 +13,10 @@ import com.ampnet.auditornode.model.websocket.InputField
 import com.ampnet.auditornode.model.websocket.InputType
 import com.ampnet.auditornode.model.websocket.ReadBooleanCommand
 import com.ampnet.auditornode.model.websocket.ReadFieldsCommand
+import com.ampnet.auditornode.model.websocket.ReadInputJsonCommand
 import com.ampnet.auditornode.model.websocket.ReadNumberCommand
 import com.ampnet.auditornode.model.websocket.ReadStringCommand
-import com.ampnet.auditornode.script.api.model.AuditResult
+import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.MediaType
 import io.micronaut.http.client.annotation.Client
@@ -39,9 +40,9 @@ class WebSocketInputApiTest : ApiTestBase() {
 
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertEquals("Input.readBoolean()", true, Input.readBoolean("test"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -59,10 +60,12 @@ class WebSocketInputApiTest : ApiTestBase() {
             val client = webSocketClient.connect(WebSocketTestClient::class.java, "/script/interactive/$storedScriptId")
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
+            client.assertNextMessage(ReadInputJsonCommand())
+            client.send("{}")
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(ReadBooleanCommand("test"))
             client.send("true")
-            client.assertNextMessage(AuditResultResponse(AuditResult(true)))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
             client.close()
         }
     }
@@ -73,9 +76,9 @@ class WebSocketInputApiTest : ApiTestBase() {
 
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertEquals("Input.readNumber()", 123, Input.readNumber("test"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -93,10 +96,12 @@ class WebSocketInputApiTest : ApiTestBase() {
             val client = webSocketClient.connect(WebSocketTestClient::class.java, "/script/interactive/$storedScriptId")
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
+            client.assertNextMessage(ReadInputJsonCommand())
+            client.send("{}")
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(ReadNumberCommand("test"))
             client.send("123")
-            client.assertNextMessage(AuditResultResponse(AuditResult(true)))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
             client.close()
         }
     }
@@ -107,9 +112,9 @@ class WebSocketInputApiTest : ApiTestBase() {
 
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     assertEquals("Input.readString()", "example", Input.readString("test"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -127,10 +132,12 @@ class WebSocketInputApiTest : ApiTestBase() {
             val client = webSocketClient.connect(WebSocketTestClient::class.java, "/script/interactive/$storedScriptId")
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
+            client.assertNextMessage(ReadInputJsonCommand())
+            client.send("{}")
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(ReadStringCommand("test"))
             client.send("example")
-            client.assertNextMessage(AuditResultResponse(AuditResult(true)))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
             client.close()
         }
     }
@@ -141,7 +148,7 @@ class WebSocketInputApiTest : ApiTestBase() {
 
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
-                function audit() {
+                function audit(auditData) {
                     let fields = [
                         {
                             "type": "boolean",
@@ -164,7 +171,7 @@ class WebSocketInputApiTest : ApiTestBase() {
                     assertEquals("values.get(\"booleanField\")", true, values.get("booleanField"));
                     assertEquals("values.get(\"numberField\")", 42, values.get("numberField"));
                     assertEquals("values.get(\"stringField\")", "string field", values.get("stringField"));
-                    return AuditResult.of(true);
+                    return AuditResult.success();
                 }
             """.trimIndent()
 
@@ -182,6 +189,8 @@ class WebSocketInputApiTest : ApiTestBase() {
             val client = webSocketClient.connect(WebSocketTestClient::class.java, "/script/interactive/$storedScriptId")
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
+            client.assertNextMessage(ReadInputJsonCommand())
+            client.send("{}")
             client.assertNextMessage(ExecutingInfoMessage)
 
             val fields = listOf(
@@ -206,7 +215,7 @@ class WebSocketInputApiTest : ApiTestBase() {
             client.send("true")
             client.send("42")
             client.send("string field")
-            client.assertNextMessage(AuditResultResponse(AuditResult(true)))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
             client.close()
         }
     }
