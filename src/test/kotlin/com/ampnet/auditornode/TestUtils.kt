@@ -17,7 +17,7 @@ object TestUtils {
         registerModule(KotlinModule(singletonSupport = SingletonSupport.CANONICALIZE))
     }
 
-    fun WebSocketMessage.toJson(): String = TestUtils.objectMapper.writeValueAsString(this)
+    fun WebSocketMessage.toJson(): String = objectMapper.writeValueAsString(this)
 
     fun String.parseScriptId(): UUID? {
         val responseRegex = """^\{"id":"($UUID_REGEX)"}$""".toRegex()

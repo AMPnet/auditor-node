@@ -124,7 +124,7 @@ class ScriptWebSocket @Inject constructor(
         val scriptTask = scheduler.scheduleDirect {
             auditingService.evaluate(session.script.content, executionContext).fold(
                 ifLeft = {
-                    logger.info { "Script execution finished with error: ${it.message}" }
+                    logger.warn { "Script execution finished with error: ${it.message}" }
                     webSocketApi.sendResponse(
                         ErrorResponse(it.message ?: "")
                     )
