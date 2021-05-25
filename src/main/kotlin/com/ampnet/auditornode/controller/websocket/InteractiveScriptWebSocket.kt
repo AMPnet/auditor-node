@@ -11,6 +11,7 @@ import com.ampnet.auditornode.model.websocket.ErrorResponse
 import com.ampnet.auditornode.model.websocket.ExecutingInfoMessage
 import com.ampnet.auditornode.model.websocket.ExecutingState
 import com.ampnet.auditornode.model.websocket.FinishedState
+import com.ampnet.auditornode.model.websocket.InitState
 import com.ampnet.auditornode.model.websocket.InvalidInputJsonInfoMessage
 import com.ampnet.auditornode.model.websocket.NotFoundInfoMessage
 import com.ampnet.auditornode.model.websocket.ReadInputJsonCommand
@@ -48,7 +49,7 @@ import javax.inject.Named
 private val logger = KotlinLogging.logger {}
 
 @ServerWebSocket("/script/interactive/{scriptId}")
-class ScriptWebSocket @Inject constructor(
+class InteractiveScriptWebSocket @Inject constructor(
     private val auditingService: AuditingService,
     private val scriptRepository: ScriptRepository,
     private val ipfsRepository: IpfsRepository,
@@ -90,9 +91,9 @@ class ScriptWebSocket @Inject constructor(
         logger.info { "WebSocket message: $message" }
 
         when (session.scriptState) {
+            is InitState, is FinishedState -> Unit
             is ReadyState -> startScript(message, session)
             is ExecutingState -> session.scriptInput?.push(message)
-            is FinishedState -> Unit
         }
     }
 
@@ -117,7 +118,7 @@ class ScriptWebSocket @Inject constructor(
             return
         }
 
-        logger.info { "Starting script" }
+        logger.info { "Starting interactive script" }
         webSocketApi.sendInfoMessage(ExecutingInfoMessage)
 
         val executionContext = ExecutionContext(input, output, ipfs, auditDataJson)
@@ -125,15 +126,11 @@ class ScriptWebSocket @Inject constructor(
             auditingService.evaluate(session.script.content, executionContext).fold(
                 ifLeft = {
                     logger.warn { "Script execution finished with error: ${it.message}" }
-                    webSocketApi.sendResponse(
-                        ErrorResponse(it.message ?: "")
-                    )
+                    webSocketApi.sendResponse(ErrorResponse(it.message ?: ""))
                 },
                 ifRight = {
                     logger.info { "Script execution finished successfully, result: $it" }
-                    webSocketApi.sendResponse(
-                        AuditResultResponse(it)
-                    )
+                    webSocketApi.sendResponse(AuditResultResponse(it))
                 }
             )
             session.scriptState = FinishedState

@@ -1,4 +1,4 @@
-# Web socket API
+# Interactive script web socket API
 
 Scripts can be run interactively via web socket. When running in this mode, input values can be requested from the user
 and rendering of text, HTML and Markdown is possible. All the web socket messages sent by the auditor application will
