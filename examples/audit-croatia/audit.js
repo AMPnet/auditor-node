@@ -68,7 +68,22 @@ function audit(auditData) {
         return abortOrInvalidateAudit("Ownership document not found");
     }
 
-    Output.renderHtml(Ipfs.getFile("step-9.html"));
+    let tableRowTemplate = Ipfs.getFile("step-9-table-row-template.html");
+    let tableRows = "";
+
+    for (owner of auditData.ownerInfo) {
+        tableRows += tableRowTemplate
+            .replace(/{ordinalNumber}/g, owner.ordinalNumber)
+            .replace(/{totalAssetShares}/g, owner.totalAssetShares)
+            .replace(/{ownerName}/g, owner.ownerName)
+            .replace(/{pid}/g, owner.pid)
+            .replace(/{subdivisionShares}/g, owner.subdivisionShares) + "\n";
+    }
+
+    Output.renderHtml(
+        Ipfs.getFile("step-9.html")
+            .replace(/{tableRows}/g, tableRows)
+    );
 
     if (!Input.readBoolean("Do the document contain the required data?")) {
         return abortOrInvalidateAudit("Ownership not confirmed");
