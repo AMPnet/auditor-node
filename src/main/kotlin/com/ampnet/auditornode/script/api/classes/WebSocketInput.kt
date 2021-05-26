@@ -1,5 +1,6 @@
 package com.ampnet.auditornode.script.api.classes
 
+import com.ampnet.auditornode.model.websocket.ButtonCommand
 import com.ampnet.auditornode.model.websocket.InputField
 import com.ampnet.auditornode.model.websocket.InputType
 import com.ampnet.auditornode.model.websocket.ReadBooleanCommand
@@ -90,5 +91,11 @@ class WebSocketInput(private val webSocketApi: WebSocketApi) : Input {
         }.toMap()
 
         return MapApi(inputs)
+    }
+
+    @Export
+    override fun button(message: String) {
+        webSocketApi.sendCommand(ButtonCommand(message))
+        queue.take()
     }
 }

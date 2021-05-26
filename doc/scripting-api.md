@@ -220,6 +220,7 @@ There are no readable fields.
 | <code>readNumber(message: String): Number &#124; null</code> | Requests a number input from the user via web socket and returns the value when it becomes available. Returns `null` for invalid values. | `Input.readNumber("The answer is:");` |
 | <code>readString(message: String): String &#124; null</code> | Requests a number input from the user via web socket and returns the value when it becomes available. | `Input.readString("Name:");` |
 | <code>readFields(fields: Object, message: String): Map&lt;String, Boolean &#124; Number &#124; String&gt; &#124; null</code> | Requests multiple fields from the user. The fields can be specified via the `fields` argument which is described below this table. The return value is a map which consists of field identifiers and their values. | Example given below. |
+| `button(message: String): Void` | Requests button click from the user via web socket and blocks execution until the user clicks on the button. Does not block execution and returns immediately if the script is not running interactively. | `Input.button("Continue");` |
 
 The `fields` argument of `readFields` method must be a list of JavaScript objects which describe the required input
 fields that the user should fill in. The format of the object is:

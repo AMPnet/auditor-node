@@ -73,4 +73,18 @@ class NoOpInputTest : TestBase() {
             assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
+
+    @Test
+    fun `must not throw exception when button() is called`() {
+        verify("call is successful") {
+            @Language("JavaScript") val scriptSource = jsAssertions + """
+                function audit(auditData) {
+                    Input.button("test");
+                    return AuditResult.success();
+                }
+            """.trimIndent()
+            val result = service.evaluate(scriptSource, ExecutionContext.noOp)
+            assertThat(result).isRightContaining(SuccessfulAudit)
+        }
+    }
 }

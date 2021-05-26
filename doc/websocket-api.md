@@ -205,6 +205,20 @@ should not be important to the web socket client, and it can be ignored. Each fi
 be displayed to the user. The `message` top-level field acts as a general message the user should see when being
 prompted to input the specified fields.
 
+#### Button command
+
+Requests button click from the user. Web socket message:
+
+```json
+{
+    "messageType": "COMMAND",
+    "command": "button",
+    "message": "Button message"
+}
+```
+
+Response: web socket client should send any value when the user clicks on the button.
+
 ### Output commands
 
 These commands inform the web socket client that something needs to be rendered and displayed to the user. The client

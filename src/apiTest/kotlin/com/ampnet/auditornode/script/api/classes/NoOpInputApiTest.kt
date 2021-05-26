@@ -94,4 +94,24 @@ class NoOpInputApiTest : ApiTestBase() {
             assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
         }
     }
+
+    @Test
+    fun `must execute script which uses button() call`() {
+        verify("call is successful") {
+            @Language("JavaScript") val scriptSource = jsAssertions + """
+                function audit(auditData) {
+                    Input.button("test");
+                    return AuditResult.success();
+                }
+            """.trimIndent()
+
+            val result = client.toBlocking().retrieve(
+                HttpRequest.POST("/script/execute", scriptSource).apply {
+                    contentType(MediaType.TEXT_PLAIN_TYPE)
+                }
+            )
+
+            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
+        }
+    }
 }

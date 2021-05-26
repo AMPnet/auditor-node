@@ -30,7 +30,6 @@ class ScriptController @Inject constructor(
 
     @Post(value = "/execute", produces = [MediaType.APPLICATION_JSON], consumes = [MediaType.TEXT_PLAIN])
     fun executeScript(@Body scriptSource: String): ExecuteScriptResponse {
-        logger.warn { "Got HTTP call" }
         val result = auditingService.evaluate(scriptSource, ExecutionContext.noOp)
         logger.info { "Evaluation result: $result" }
         return result.fold(

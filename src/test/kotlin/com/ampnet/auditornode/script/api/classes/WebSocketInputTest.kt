@@ -6,6 +6,7 @@ import com.ampnet.auditornode.TestUtils
 import com.ampnet.auditornode.TestUtils.toJson
 import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.jsAssertions
+import com.ampnet.auditornode.model.websocket.ButtonCommand
 import com.ampnet.auditornode.model.websocket.InputField
 import com.ampnet.auditornode.model.websocket.InputType
 import com.ampnet.auditornode.model.websocket.ReadBooleanCommand
@@ -209,6 +210,32 @@ class WebSocketInputTest : TestBase() {
                         )
                     ).toJson()
                 )
+        }
+    }
+
+    @Test
+    fun `must correctly read button click from web socket`() {
+        val input = WebSocketInput(webSocketApi)
+
+        suppose("some value will be sent via web socket") {
+            input.push("ignored dummy value")
+        }
+
+        verify("button click is correctly read from web socket") {
+            @Language("JavaScript") val scriptSource = jsAssertions + """
+                function audit(auditData) {
+                    Input.button("test");
+                    return AuditResult.success();
+                }
+            """.trimIndent()
+            val result = service.evaluate(scriptSource, ExecutionContext.noOp.copy(input = input))
+            assertThat(result).isRightContaining(SuccessfulAudit)
+        }
+
+        verify("correct web socket commands are sent") {
+            then(session)
+                .should(times(1))
+                .sendSync(ButtonCommand("test").toJson())
         }
     }
 }

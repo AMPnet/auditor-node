@@ -1,5 +1,15 @@
 <html lang="en">
     <title>Interactive auditing script example</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        td, th {
+            padding: 15px;
+        }
+    </style>
     <body>
         <label for="script-input">Auditing script:</label><br>
         <br>
@@ -65,6 +75,11 @@ function audit(auditData) {
         let inputIndex = 0;
         var webSocket = null;
 
+        function submitRawInput(index, value) {
+            document.getElementById("input-button-" + index).disabled = true;
+            webSocket.send(value);
+        }
+
         function submitInput(index, field) {
             document.getElementById("input-button-" + index).disabled = true;
             let inputElement = document.getElementById("input-" + index);
@@ -87,6 +102,19 @@ function audit(auditData) {
                     webSocket.send(inputElement.value);
                 }
             }
+        }
+
+        function createButton(message) {
+            let inputFieldDiv = document.createElement("div");
+            inputFieldDiv.innerHTML =
+                "<button id=\"input-button-" + inputIndex + "\" " + "onclick=\"submitRawInput(" + inputIndex +
+                ", 'click');\">" + message + "</button>";
+
+            let scriptIo = document.getElementById("script-io");
+            scriptIo.appendChild(inputFieldDiv);
+            scriptIo.appendChild(document.createElement("br"));
+
+            inputIndex += 1;
         }
 
         function createInputField(message, inputType, valueField) {
@@ -194,6 +222,8 @@ function audit(auditData) {
                 createInputField(message.message, "text", "value");
             } else if (message.command === "readFields") {
                 createInputForm(message.message, message.fields);
+            } else if (message.command === "button") {
+                createButton(message.message);
             } else if (message.command === "renderText") {
                 let textElement = document.createElement("div");
                 textElement.innerText = message.text;
