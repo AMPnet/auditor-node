@@ -70,7 +70,7 @@ compiled native image: `./gradlew apiTestNativeImage`.
 
 #### Full flow
 
-You can upload the test directory located in `examples/example-auditing-scritp` to IPFS to try out the application. To
+You can upload the test directory located in `examples/example-auditing-script` to IPFS to try out the application. To
 do so, execute the following commands from the project root:  
 `cp -r examples/example-auditing-script docker/ipfs-staging/`  
 `docker exec ipfs-node ipfs add -r /export/example-auditing-script`
@@ -84,11 +84,11 @@ If you are running the desktop IPFS application, you can upload the directory th
 directory will then be displayed there.
 
 When the application is started, it will listen to HTTP requests on port `8080`. Making a GET request to `/audit` will
-start the test audit procedure which will first try to fetch IPFS directory hash stored in the Ethereum contract with
-address `0x992E8FeA2D91807797717178Aa6abEc7F20c31a8` on the Ropsten testnet. After that, the script file will be fetched
-via public IPFS gateway (`https://ipfs.io/ipfs/`). The stored hash value will be fetched from contract via the Infura
-node on Ropsten network (`https://ropsten.infura.io/v3/08664baf7af14eda956db2b71a79f12f`). If you want to use local IPFS
-and Geth nodes instead, you can specify `--local-ipfs` and `-rpc.url=http://localhost:8545` as program arguments.
+start the test audit procedure which will first try to fetch asset info IPFS hash stored in the Ethereum contract with
+address `0xcaA9f2F9d9137E2fB806ecDf731CdD927aA9d97F` on the Ropsten testnet. After that, asset category ID and will be
+fetched from the same contract address. Using the retrieved asset category ID, auditing procedure directory IPFS hash is
+retrieved from registry contract with address `0x9C1d4593148c26249624d334AA8316A3446a0cD2`. The example procedure will
+stop here and return the fetched IPFS hashes and procedure ID.
 
 #### Scripts
 
@@ -101,10 +101,11 @@ interactively located in `examples/interactive-script.html`.
 
 | Argument | Description | Default value |
 |:--------:|:-----------:|:-------------:|
-| `-rpc.url=<url>` | Ethereum RPC API URL. | `http://localhost:8545` |
+| `-rpc.url=<url>` | Ethereum RPC API URL. | `https://ropsten.infura.io/v3/08664baf7af14eda956db2b71a79f12f` |
 | `-ipfs.gateway-url=<url>` | IPFS gateway URL, not used when `--local-ipfs` is specified; must contain  `{ipfsHash}` placeholder. | `https://ipfs.io/ipfs/{ipfsHash}` |
 | `-ipfs.local-client-port=<port>` | Port of local IPFS client, used when `--local-ipfs` is specified. | `5001` |
-| `-auditor.contract-address=<address>` | Ethereum address of auditor contract. | `0x992E8FeA2D91807797717178Aa6abEc7F20c31a8` |
+| `-auditor.asset-contract-address=<address>` | Ethereum address of the asset contract. | `0xcaA9f2F9d9137E2fB806ecDf731CdD927aA9d97F` |
+| `-auditor.registry-contract-address=<address>` | Ethereum address of the registry contract. | `0x9C1d4593148c26249624d334AA8316A3446a0cD2` |
 | `--local-ipfs` | Use local IPFS client to fetch files. | Disabled by default. |
 | `-script.properties.<propertyName>=<propertyValue>` | Sets specified `<propertyName>` and `<propertyValue>` which is then visible inside auditing scripts via `Properties` object. All property names are converted into `kebab-case` and property values are always strings. See auditor script API specification for more info. | No properties are set by default. |
 
