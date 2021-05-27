@@ -75,7 +75,7 @@ class InteractiveScriptWebSocket @Inject constructor(
         if (script == null) {
             logger.error { "Script not found for ID: $scriptId" }
             webSocketApi.sendInfoMessage(NotFoundInfoMessage)
-            session.close(CloseReason.NORMAL)
+            session.close(CloseReason.ABNORMAL_CLOSURE)
             return
         }
 
@@ -114,7 +114,7 @@ class InteractiveScriptWebSocket @Inject constructor(
         } catch (e: JacksonException) {
             logger.error(e) { "Error parsing input JSON" }
             webSocketApi.sendInfoMessage(InvalidInputJsonInfoMessage)
-            session.close(CloseReason.NORMAL)
+            session.close(CloseReason.ABNORMAL_CLOSURE)
             return
         }
 

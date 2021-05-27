@@ -133,7 +133,7 @@ class AuditWebSocket @Inject constructor(
             is RpcError -> webSocketApi.sendInfoMessage(RpcErrorInfoMessage)
         }
 
-        session.close(CloseReason.NORMAL)
+        session.close(CloseReason.ABNORMAL_CLOSURE)
     }
 
     private fun handleOnOpenSuccess(
