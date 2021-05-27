@@ -110,7 +110,7 @@ class DirectoryBasedIpfsApiTest : ApiTestWithPropertiesBase("ipfs-test-propertie
             client.assertNextMessage(ReadInputJsonCommand())
             client.send("{}")
             client.assertNextMessage(ExecutingInfoMessage)
-            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit, null))
             client.close()
         }
     }

@@ -5,6 +5,7 @@ import assertk.Assert
 import assertk.assertions.isEqualTo
 import assertk.assertions.support.expected
 import assertk.assertions.support.fail
+import com.fasterxml.jackson.databind.JsonNode
 import org.intellij.lang.annotations.Language
 
 fun <A, B> Assert<Either<A, B>>.isLeftSatisfying(assertions: (A) -> Unit) = given { actual ->
@@ -31,8 +32,10 @@ fun <A, B> Assert<Either<A, B>>.isRightContaining(expected: B) =
 
 fun Assert<String>.isJsonEqualTo(expected: Any) = given { actual ->
     val actualJson = TestUtils.objectMapper.readTree(actual)
-    if (actualJson != TestUtils.objectMapper.valueToTree(expected)) {
-        fail(expected, actual)
+    val expectedJson = TestUtils.objectMapper.valueToTree<JsonNode>(expected)
+
+    if (actualJson != expectedJson) {
+        fail(expectedJson, actualJson)
     }
 }
 

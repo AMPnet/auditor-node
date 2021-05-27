@@ -1,6 +1,8 @@
 package com.ampnet.auditornode.model.websocket
 
+import com.ampnet.auditornode.persistence.model.UnsignedTransaction
 import com.ampnet.auditornode.script.api.model.AuditResult
+import com.fasterxml.jackson.annotation.JsonInclude
 
 enum class MessageType {
     COMMAND, INFO, RESPONSE
@@ -62,6 +64,8 @@ object RpcErrorInfoMessage : WebSocketInfoMessage("rpcError")
 /* Response messages */
 sealed class WebSocketResponse(val success: Boolean) : WebSocketMessage(MessageType.RESPONSE)
 
-data class AuditResultResponse(val payload: AuditResult) : WebSocketResponse(success = true)
+@JsonInclude(JsonInclude.Include.ALWAYS)
+data class AuditResultResponse(val payload: AuditResult, val transaction: UnsignedTransaction?) :
+    WebSocketResponse(success = true)
 
 data class ErrorResponse(val payload: String) : WebSocketResponse(success = false)

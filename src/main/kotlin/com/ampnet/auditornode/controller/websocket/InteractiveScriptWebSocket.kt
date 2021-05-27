@@ -130,7 +130,7 @@ class InteractiveScriptWebSocket @Inject constructor(
                 },
                 ifRight = {
                     logger.info { "Script execution finished successfully, result: $it" }
-                    webSocketApi.sendResponse(AuditResultResponse(it))
+                    webSocketApi.sendResponse(AuditResultResponse(it, null))
                 }
             )
             session.scriptState = FinishedState

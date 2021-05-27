@@ -11,6 +11,9 @@ interface AuditorProperties {
 
     @get:Bindable(defaultValue = "0x9C1d4593148c26249624d334AA8316A3446a0cD2")
     val registryContractAddress: String
+
+    @get:Bindable(defaultValue = "0xE239E7a361e0C82A1CF9E8C8B53353186B616EB7")
+    val auditRegistryContractAddress: String
 }
 
 @Suppress("MagicNumber")

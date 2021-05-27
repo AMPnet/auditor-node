@@ -4,6 +4,7 @@ import arrow.core.Either
 import arrow.core.computations.either
 import arrow.core.left
 import arrow.core.right
+import com.ampnet.auditornode.configuration.properties.AuditorProperties
 import com.ampnet.auditornode.controller.websocket.WebSocketSessionHelper.scriptInput
 import com.ampnet.auditornode.controller.websocket.WebSocketSessionHelper.scriptState
 import com.ampnet.auditornode.controller.websocket.WebSocketSessionHelper.scriptTask
@@ -25,6 +26,7 @@ import com.ampnet.auditornode.model.websocket.IpfsReadErrorInfoMessage
 import com.ampnet.auditornode.model.websocket.ReadyState
 import com.ampnet.auditornode.model.websocket.RpcErrorInfoMessage
 import com.ampnet.auditornode.model.websocket.WebSocketApi
+import com.ampnet.auditornode.persistence.model.AssetContractAddress
 import com.ampnet.auditornode.persistence.model.IpfsTextFile
 import com.ampnet.auditornode.persistence.model.ScriptSource
 import com.ampnet.auditornode.persistence.repository.IpfsRepository
@@ -33,6 +35,7 @@ import com.ampnet.auditornode.script.api.classes.DirectoryBasedIpfs
 import com.ampnet.auditornode.script.api.classes.WebSocketInput
 import com.ampnet.auditornode.script.api.classes.WebSocketOutput
 import com.ampnet.auditornode.service.AssetContractService
+import com.ampnet.auditornode.service.AuditRegistryContractTransactionService
 import com.ampnet.auditornode.service.AuditingService
 import com.ampnet.auditornode.service.RegistryContractService
 import com.fasterxml.jackson.core.JacksonException
@@ -58,9 +61,11 @@ private val logger = KotlinLogging.logger {}
 class AuditWebSocket @Inject constructor(
     private val assetContractService: AssetContractService,
     private val registryContractService: RegistryContractService,
+    private val auditRegistryContractTransactionService: AuditRegistryContractTransactionService,
     private val auditingService: AuditingService,
     private val ipfsRepository: IpfsRepository,
     private val objectMapper: ObjectMapper,
+    private val auditorProperties: AuditorProperties,
     @Named(TaskExecutors.IO) executorService: ExecutorService
 ) {
 
@@ -155,7 +160,12 @@ class AuditWebSocket @Inject constructor(
                 },
                 ifRight = {
                     logger.info { "Script execution finished successfully, result: $it" }
-                    webSocketApi.sendResponse(AuditResultResponse(it)) // TODO generate transaction in SD-104
+                    // TODO asset address will not be hard-coded in the future
+                    val transaction = auditRegistryContractTransactionService.castAuditVoteForAsset(
+                        assetContractAddress = AssetContractAddress(auditorProperties.assetContractAddress),
+                        auditResult = it
+                    )
+                    webSocketApi.sendResponse(AuditResultResponse(it, transaction))
                 }
             )
             session.scriptState = FinishedState

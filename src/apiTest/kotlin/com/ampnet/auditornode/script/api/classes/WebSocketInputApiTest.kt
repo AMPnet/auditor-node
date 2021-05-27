@@ -66,7 +66,7 @@ class WebSocketInputApiTest : ApiTestBase() {
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(ReadBooleanCommand("test"))
             client.send("true")
-            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit, null))
             client.close()
         }
     }
@@ -102,7 +102,7 @@ class WebSocketInputApiTest : ApiTestBase() {
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(ReadNumberCommand("test"))
             client.send("123")
-            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit, null))
             client.close()
         }
     }
@@ -138,7 +138,7 @@ class WebSocketInputApiTest : ApiTestBase() {
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(ReadStringCommand("test"))
             client.send("example")
-            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit, null))
             client.close()
         }
     }
@@ -216,7 +216,7 @@ class WebSocketInputApiTest : ApiTestBase() {
             client.send("true")
             client.send("42")
             client.send("string field")
-            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit, null))
             client.close()
         }
     }
@@ -252,7 +252,7 @@ class WebSocketInputApiTest : ApiTestBase() {
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(ButtonCommand("test"))
             client.send("ignored dummy value")
-            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit, null))
             client.close()
         }
     }

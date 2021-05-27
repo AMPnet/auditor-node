@@ -360,6 +360,15 @@
         "allPublicClasses": true
     },
     {
+        "name": "com.ampnet.auditornode.persistence.model.UnsignedTransaction",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
         "name": "com.ampnet.auditornode.script.api.classes.HttpClient",
         "allPublicFields": true,
         "allPublicMethods": true

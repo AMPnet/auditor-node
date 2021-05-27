@@ -515,7 +515,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
             client.assertNextMessage(ExecutingInfoMessage)
-            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit, null))
             client.close()
         }
     }
