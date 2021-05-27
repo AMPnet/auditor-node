@@ -11,9 +11,17 @@
         }
     </style>
     <body>
-        <label for="script-input">Auditing script:</label><br>
+        <input type="radio" id="interactive-script-radio-button" name="flow-selection" value="interactive"
+               checked="checked" onclick="showInteractiveScriptFlow();">
+        <label for="interactive-script-radio-button">Interactive script</label>
+        <input type="radio" id="auditing-script-radio-button" name="flow-selection" value="auditing"
+               onclick="showAuditingScriptFlow();">
+        <label for="auditing-script-radio-button">Auditing script</label><br>
         <br>
-        <textarea id="script-input" rows="42" cols="120">
+        <div id="interactive-script-flow">
+            <label for="script-input">Auditing script:</label><br>
+            <br>
+            <textarea id="script-input" rows="42" cols="120">
 function audit(auditData) {
     let displayHtmlFragment = Input.readBoolean("Display HTML fragment?");
 
@@ -56,15 +64,19 @@ function audit(auditData) {
 
     return AuditResult.success();
 }</textarea><br>
-        <br>
-        <button id="store-script" onclick="saveScript();">Store script</button>
-        <br>
-        <p id="script-response"></p>
-        <div id="execute-script-block" hidden>
-            <label for="ipfs-directory-hash">Input optional IPFS directory hash:</label>
-            <input id="ipfs-directory-hash" type="text" size="56"
-                   value="QmdxwTrkQAmXSs7FEbMXJWrBqYQfZ6j9o5BzYrNLLuw4xg">
-            <button id="execute-script" onclick="executeScript();">Execute script</button>
+            <br>
+            <button id="store-script" onclick="saveScript();">Store script</button>
+            <br>
+            <p id="script-response"></p>
+            <div id="execute-interactive-script-block" hidden>
+                <label for="ipfs-directory-hash">Input optional IPFS directory hash:</label>
+                <input id="ipfs-directory-hash" type="text" size="56"
+                       value="QmdxwTrkQAmXSs7FEbMXJWrBqYQfZ6j9o5BzYrNLLuw4xg">
+                <button id="execute-interactive-script" onclick="executeInteractiveScript();">Execute script</button>
+            </div>
+        </div>
+        <div id="auditing-script-flow" hidden>
+            <button id="execute-auditing-script" onclick="executeAuditingScript();">Start auditing script</button>
         </div>
         <div id="script-log"></div>
         <div id="script-io"></div>
@@ -74,6 +86,16 @@ function audit(auditData) {
         let scriptId = "";
         let inputIndex = 0;
         var webSocket = null;
+
+        function showInteractiveScriptFlow() {
+            document.getElementById("interactive-script-flow").hidden = false;
+            document.getElementById("auditing-script-flow").hidden = true;
+        }
+
+        function showAuditingScriptFlow() {
+            document.getElementById("interactive-script-flow").hidden = true;
+            document.getElementById("auditing-script-flow").hidden = false;
+        }
 
         function submitRawInput(index, value) {
             document.getElementById("input-button-" + index).disabled = true;
@@ -280,9 +302,11 @@ function audit(auditData) {
 
                         document.getElementById("script-input").disabled = true;
                         document.getElementById("store-script").disabled = true;
+                        document.getElementById("interactive-script-radio-button").disabled = true;
+                        document.getElementById("auditing-script-radio-button").disabled = true;
                         document.getElementById("script-response").innerHTML = "Script stored under UUID: " +
                             responseJson.id;
-                        document.getElementById("execute-script-block").hidden = false;
+                        document.getElementById("execute-interactive-script-block").hidden = false;
                         scriptId = responseJson.id;
                     } else {
                         document.getElementById("script-response").innerHTML = "Error while storing the script";
@@ -292,18 +316,7 @@ function audit(auditData) {
             request.send(document.getElementById("script-input").value);
         }
 
-        function executeScript() {
-            document.getElementById("execute-script").disabled = true;
-            let ipfsDirectoryInput = document.getElementById("ipfs-directory-hash");
-            ipfsDirectoryInput.disabled = true;
-
-            let webSocketUrl = "ws://localhost:8080/script/interactive/" + scriptId;
-            let ipfsDirectoryHash = ipfsDirectoryInput.value;
-
-            if (ipfsDirectoryHash !== null && ipfsDirectoryHash.trim().length !== 0) {
-                webSocketUrl += "?ipfs-directory=" + ipfsDirectoryHash.trim();
-            }
-
+        function connectToWebSocket(webSocketUrl) {
             webSocket = new WebSocket(webSocketUrl);
 
             let scriptLog = document.getElementById("script-log");
@@ -319,6 +332,29 @@ function audit(auditData) {
             webSocket.onclose = function () {
                 document.getElementById("script-result").innerHTML += "<p>Connection closed</p>";
             }
+        }
+
+        function executeInteractiveScript() {
+            document.getElementById("execute-interactive-script").disabled = true;
+            let ipfsDirectoryInput = document.getElementById("ipfs-directory-hash");
+            ipfsDirectoryInput.disabled = true;
+
+            let webSocketUrl = "ws://localhost:8080/script/interactive/" + scriptId;
+            let ipfsDirectoryHash = ipfsDirectoryInput.value;
+
+            if (ipfsDirectoryHash !== null && ipfsDirectoryHash.trim().length !== 0) {
+                webSocketUrl += "?ipfs-directory=" + ipfsDirectoryHash.trim();
+            }
+
+            connectToWebSocket(webSocketUrl);
+        }
+
+        function executeAuditingScript() {
+            document.getElementById("interactive-script-radio-button").disabled = true;
+            document.getElementById("auditing-script-radio-button").disabled = true;
+            document.getElementById("execute-auditing-script").disabled = true;
+
+            connectToWebSocket("ws://localhost:8080/audit");
         }
     </script>
 </html>
