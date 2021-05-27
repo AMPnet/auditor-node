@@ -89,7 +89,11 @@ with address `0xcaA9f2F9d9137E2fB806ecDf731CdD927aA9d97F` on the Ropsten testnet
 be fetched from the same contract address. Using the retrieved asset category ID, auditing procedure directory IPFS hash
 is retrieved from registry contract with address `0x9C1d4593148c26249624d334AA8316A3446a0cD2`. This directory hash is
 then used to fetch the `audit.js` script file which the IPFS directory contains. The script is then executed
-interactively via web socket. After the execution finishes, the result of the audit is returned via web socket.
+interactively via web socket. After the execution finishes, the result of the audit is returned via web socket - this
+will also include an unsigned transaction which can be used to write audit result to blockchain. The transaction will
+only be generated if the auditing process was not aborted, i.e. only if the auditing result finished with success or
+failure. The contract for which the transaction will be generated has address
+`0xE239E7a361e0C82A1CF9E8C8B53353186B616EB7` on Ropsten testnet.
 
 #### Scripts
 
@@ -107,6 +111,7 @@ interactively located in `examples/interactive-script.html`.
 | `-ipfs.local-client-port=<port>` | Port of local IPFS client, used when `--local-ipfs` is specified. | `5001` |
 | `-auditor.asset-contract-address=<address>` | Ethereum address of the asset contract. | `0xcaA9f2F9d9137E2fB806ecDf731CdD927aA9d97F` |
 | `-auditor.registry-contract-address=<address>` | Ethereum address of the registry contract. | `0x9C1d4593148c26249624d334AA8316A3446a0cD2` |
+| `-auditor.audit-registry-contract-address=<address>` | Ethereum address of the audit registry contract. | `0xE239E7a361e0C82A1CF9E8C8B53353186B616EB7` |
 | `--local-ipfs` | Use local IPFS client to fetch files. | Disabled by default. |
 | `-script.properties.<propertyName>=<propertyValue>` | Sets specified `<propertyName>` and `<propertyValue>` which is then visible inside auditing scripts via `Properties` object. All property names are converted into `kebab-case` and property values are always strings. See auditor script API specification for more info. | No properties are set by default. |
 

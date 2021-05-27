@@ -90,13 +90,18 @@ web socket client:
     "message": "Script execution finished",
     "payload": {
         "success": true
+    },
+    "transaction": {
+        "to": "target contract address",
+        "data": "transaction data"
     }
 }
 ```
 
 The top-level `success` field indicates if the script execution finished without any unhandled errors. When this value
-is `true`, then the `payload` will contain and object as in the example above. When the value is `false`, then the
-payload will contain a string - error message description instead of an object.
+is `true`, then the `payload` will contain and object as in the example above. The `transaction` value is only included
+when the audit was not aborted, otherwise it will not be present. When the value is `false`, then the `payload` will
+contain a string - error message description instead of an object.
 
 ## Auditing script execution via web socket
 

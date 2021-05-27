@@ -85,7 +85,8 @@ function audit(auditData) {
     <script type="text/javascript">
         let scriptId = "";
         let inputIndex = 0;
-        var webSocket = null;
+        let generatedTransaction = null;
+        let webSocket = null;
 
         function showInteractiveScriptFlow() {
             document.getElementById("interactive-script-flow").hidden = false;
@@ -270,7 +271,23 @@ function audit(auditData) {
             let scriptResult = document.getElementById("script-result");
 
             if (message.success) {
-                scriptResult.innerHTML += "Result: " + JSON.stringify(message.payload);
+                scriptResult.innerHTML += "Result: <code>" + JSON.stringify(message.payload) + "</code>";
+
+                if (message.payload.status === "SUCCESS" && message.transaction) {
+                    generatedTransaction = message.transaction;
+                    scriptResult.innerHTML += "<br>Transaction: <code>" + JSON.stringify(message.transaction) +
+                        "</code>";
+                    scriptResult.innerHTML += "<br>Send successful audit transaction? ";
+                    scriptResult.innerHTML += "<button id='yes-transaction' onclick='sendTransaction();'>Yes</button>" +
+                        " <button id='no-transaction' onclick='cancelTransaction();'>No</button>";
+                } else if (message.payload.status === "FAILURE" && message.transaction) {
+                    generatedTransaction = message.transaction;
+                    scriptResult.innerHTML += "<br>Transaction: <code>" + JSON.stringify(message.transaction) +
+                        "</code>";
+                    scriptResult.innerHTML += "<br>Send failed audit transaction? ";
+                    scriptResult.innerHTML += "<button id='yes-transaction' onclick='sendTransaction();'>Yes</button>" +
+                        " <button id='no-transaction' onclick='cancelTransaction();'>No</button>";
+                }
             } else {
                 scriptResult.innerHTML += "Error: " + JSON.stringify(message.payload);
             }
@@ -355,6 +372,42 @@ function audit(auditData) {
             document.getElementById("execute-auditing-script").disabled = true;
 
             connectToWebSocket("ws://localhost:8080/audit");
+        }
+
+        async function sendTransaction() {
+            document.getElementById("yes-transaction").disabled = true;
+            document.getElementById("no-transaction").disabled = true;
+
+            if (!window.ethereum) {
+                window.alert("MetaMask needs to be installed in order to send a transaction");
+                return;
+            }
+
+            let accounts = await ethereum.request({method: 'eth_requestAccounts'});
+
+            if (!accounts && accounts.length === 0) {
+                window.alert("No available ethereum accounts");
+                return;
+            }
+
+            let transactionParameters = {
+                to: generatedTransaction.to,
+                from: ethereum.selectedAddress,
+                value: '0x00',
+                data: generatedTransaction.data
+            };
+
+            let txHash = await ethereum.request({
+                method: 'eth_sendTransaction',
+                params: [transactionParameters],
+            });
+
+            document.getElementById("script-result").innerHTML += "<br>Transaction hash: " + txHash;
+        }
+
+        function cancelTransaction() {
+            document.getElementById("yes-transaction").disabled = true;
+            document.getElementById("no-transaction").disabled = true;
         }
     </script>
 </html>
