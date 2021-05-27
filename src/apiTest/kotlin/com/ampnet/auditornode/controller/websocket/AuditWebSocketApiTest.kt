@@ -9,8 +9,8 @@ import com.ampnet.auditornode.model.websocket.ExecutingInfoMessage
 import com.ampnet.auditornode.model.websocket.InvalidInputJsonInfoMessage
 import com.ampnet.auditornode.model.websocket.IpfsReadErrorInfoMessage
 import com.ampnet.auditornode.model.websocket.RpcErrorInfoMessage
-import com.ampnet.auditornode.persistence.model.AssetCategoryId
 import com.ampnet.auditornode.persistence.model.IpfsHash
+import com.ampnet.auditornode.persistence.model.UnsignedTransaction
 import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
@@ -26,7 +26,6 @@ import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.math.BigInteger
 import javax.inject.Inject
 
 @MicronautTest(propertySources = ["audit-flow-test-properties.yaml"])
@@ -45,8 +44,12 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
         "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000" +
             "000000000000000000000087465737448617368000000000000000000000000000000000000000000000000"
 
-    private val testAssetCategoryId = AssetCategoryId(BigInteger.valueOf(123L))
     private val encodedTestAssetCategoryId = "0x000000000000000000000000000000000000000000000000000000000000007b"
+
+    private val auditRegistryContractAddress = "0x0000000000000000000000000000000000000003"
+    private val encodedCastVoteMethodCall = "1a419c0c000000000000000000000000"
+    private val encodedAssetContractAddress = "0000000000000000000000000000000000000001"
+    private val encodedTrueBoolean = "0000000000000000000000000000000000000000000000000000000000000001"
 
     @BeforeEach
     fun beforeEach() {
@@ -515,7 +518,15 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
             client.assertNextMessage(ExecutingInfoMessage)
-            client.assertNextMessage(AuditResultResponse(SuccessfulAudit, null))
+            client.assertNextMessage(
+                AuditResultResponse(
+                    SuccessfulAudit,
+                    UnsignedTransaction(
+                        to = auditRegistryContractAddress,
+                        data = "0x$encodedCastVoteMethodCall$encodedAssetContractAddress$encodedTrueBoolean"
+                    )
+                )
+            )
             client.close()
         }
     }
