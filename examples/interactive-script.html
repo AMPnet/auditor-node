@@ -71,7 +71,7 @@ function audit(auditData) {
             <div id="execute-interactive-script-block" hidden>
                 <label for="ipfs-directory-hash">Input optional IPFS directory hash:</label>
                 <input id="ipfs-directory-hash" type="text" size="56"
-                       value="QmdxwTrkQAmXSs7FEbMXJWrBqYQfZ6j9o5BzYrNLLuw4xg">
+                       value="QmXXFKbcs8n2brZrs9rnbt8FUeow5NKJbHfqbzEWm28vnW">
                 <button id="execute-interactive-script" onclick="executeInteractiveScript();">Execute script</button>
             </div>
         </div>
@@ -356,7 +356,7 @@ function audit(auditData) {
             const ipfsDirectoryInput = document.getElementById("ipfs-directory-hash");
             ipfsDirectoryInput.disabled = true;
 
-            const webSocketUrl = "ws://localhost:8080/script/interactive/" + scriptId;
+            let webSocketUrl = "ws://localhost:8080/script/interactive/" + scriptId;
             const ipfsDirectoryHash = ipfsDirectoryInput.value;
 
             if (ipfsDirectoryHash !== null && ipfsDirectoryHash.trim().length !== 0) {

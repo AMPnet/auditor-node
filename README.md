@@ -76,7 +76,7 @@ do so, execute the following commands from the project root:
 `docker exec ipfs-node ipfs add -r /export/example-auditing-script`
 
 The second command will print the IPFS file hashes as well as the directory hash. Current version of the script
-directory should produce the hash value of `QmdxwTrkQAmXSs7FEbMXJWrBqYQfZ6j9o5BzYrNLLuw4xg`.
+directory should produce the hash value of `QmXXFKbcs8n2brZrs9rnbt8FUeow5NKJbHfqbzEWm28vnW`.
 
 While the Docker IPFS container is running, you can access its web-ui via `http://localhost:5001/webui`.
 
