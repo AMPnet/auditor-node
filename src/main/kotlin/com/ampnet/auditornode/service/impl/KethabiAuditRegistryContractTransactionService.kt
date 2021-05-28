@@ -25,7 +25,7 @@ class KethabiAuditRegistryContractTransactionService @Inject constructor(
     private val contractAddress = Address(auditorProperties.auditRegistryContractAddress)
     private val contractTransactionGenerator = AuditRegistryContractTransactionGenerator(contractAddress)
 
-    override fun castAuditVoteForAsset(
+    override fun generateTxForCastAuditVote(
         assetContractAddress: AssetContractAddress,
         auditResult: AuditResult
     ): UnsignedTransaction? {

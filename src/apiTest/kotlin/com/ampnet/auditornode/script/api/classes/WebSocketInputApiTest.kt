@@ -150,7 +150,7 @@ class WebSocketInputApiTest : ApiTestBase() {
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let fields = [
+                    const fields = [
                         {
                             "type": "boolean",
                             "name": "booleanField",
@@ -167,7 +167,7 @@ class WebSocketInputApiTest : ApiTestBase() {
                             "description": "test3"
                         }
                     ];
-                    let values = Input.readFields(fields, "test");
+                    const values = Input.readFields(fields, "test");
 
                     assertEquals("values.get(\"booleanField\")", true, values.get("booleanField"));
                     assertEquals("values.get(\"numberField\")", 42, values.get("numberField"));

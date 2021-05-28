@@ -23,7 +23,7 @@
             <br>
             <textarea id="script-input" rows="42" cols="120">
 function audit(auditData) {
-    let displayHtmlFragment = Input.readBoolean("Display HTML fragment?");
+    const displayHtmlFragment = Input.readBoolean("Display HTML fragment?");
 
     if (displayHtmlFragment) {
         Output.renderHtml(Ipfs.getFile("fragment.html"));
@@ -31,16 +31,16 @@ function audit(auditData) {
         Output.renderText("HTML fragment not rendered");
     }
 
-    let booleanValue = Input.readBoolean("Example boolean input:");
+    const booleanValue = Input.readBoolean("Example boolean input:");
     Output.renderText("Got value: " + booleanValue);
 
-    let numberValue = Input.readNumber("Example number input:");
+    const numberValue = Input.readNumber("Example number input:");
     Output.renderText("Got value: " + numberValue);
 
-    let stringValue = Input.readString("Example string input:");
+    const stringValue = Input.readString("Example string input:");
     Output.renderText("Got value: " + stringValue);
 
-    let fieldValues = Input.readFields(
+    const fieldValues = Input.readFields(
         [
             {
                 "type": "boolean",
@@ -105,7 +105,7 @@ function audit(auditData) {
 
         function submitInput(index, field) {
             document.getElementById("input-button-" + index).disabled = true;
-            let inputElement = document.getElementById("input-" + index);
+            const inputElement = document.getElementById("input-" + index);
             inputElement.disabled = true;
             webSocket.send(inputElement[field]);
         }
@@ -118,7 +118,7 @@ function audit(auditData) {
             document.getElementById("input-button-" + index).disabled = true;
 
             for (let i = 0; i < numFields; i++) {
-                let inputElement = document.getElementById("input-" + index + "-" + i);
+                const inputElement = document.getElementById("input-" + index + "-" + i);
                 if (inputElement.type === "checkbox") {
                     webSocket.send(inputElement.checked);
                 } else {
@@ -128,12 +128,12 @@ function audit(auditData) {
         }
 
         function createButton(message) {
-            let inputFieldDiv = document.createElement("div");
+            const inputFieldDiv = document.createElement("div");
             inputFieldDiv.innerHTML =
                 "<button id=\"input-button-" + inputIndex + "\" " + "onclick=\"submitRawInput(" + inputIndex +
                 ", 'click');\">" + message + "</button>";
 
-            let scriptIo = document.getElementById("script-io");
+            const scriptIo = document.getElementById("script-io");
             scriptIo.appendChild(inputFieldDiv);
             scriptIo.appendChild(document.createElement("br"));
 
@@ -141,14 +141,14 @@ function audit(auditData) {
         }
 
         function createInputField(message, inputType, valueField) {
-            let inputFieldDiv = document.createElement("div");
+            const inputFieldDiv = document.createElement("div");
             inputFieldDiv.innerHTML =
                 "<label for=\"input-" + inputIndex + "\">" + message +
                 "</label> <input id=\"input-" + inputIndex + "\" type=\"" + inputType +
                 "\"> <button id=\"input-button-" + inputIndex + "\" " +
                 "onclick=\"submitInput(" + inputIndex + ", '" + valueField + "');\">Submit</button>";
 
-            let scriptIo = document.getElementById("script-io");
+            const scriptIo = document.getElementById("script-io");
             scriptIo.appendChild(inputFieldDiv);
             scriptIo.appendChild(document.createElement("br"));
 
@@ -156,14 +156,14 @@ function audit(auditData) {
         }
 
         function createTextAreaInput(message) {
-            let inputFieldDiv = document.createElement("div");
+            const inputFieldDiv = document.createElement("div");
             inputFieldDiv.innerHTML =
                 "<label for=\"input-" + inputIndex + "\">" + message +
                 "</label><br><textarea id=\"input-" + inputIndex + "\" rows=\"20\" cols=\"120\"></textarea>" +
                 "<br><br><button id=\"input-button-" + inputIndex + "\" " +
                 "onclick=\"submitInput(" + inputIndex + ", 'value');\">Submit</button>";
 
-            let scriptLog = document.getElementById("script-log");
+            const scriptLog = document.getElementById("script-log");
             scriptLog.appendChild(inputFieldDiv);
             scriptLog.appendChild(document.createElement("br"));
 
@@ -171,12 +171,12 @@ function audit(auditData) {
         }
 
         function createInputForm(message, fields) {
-            let fieldsElement = document.createElement("div");
+            const fieldsElement = document.createElement("div");
             fieldsElement.id = "input-" + inputIndex;
             fieldsElement.innerHTML += "<h3>" + message + "</h3>";
 
             for (let i = 0; i < fields.length; i++) {
-                let field = fields[i];
+                const field = fields[i];
                 let inputType;
 
                 if (field.type === "BOOLEAN") {
@@ -190,7 +190,7 @@ function audit(auditData) {
                     inputType = "text";
                 }
 
-                let formFieldDiv = document.createElement("div");
+                const formFieldDiv = document.createElement("div");
                 formFieldDiv.innerHTML =
                     "<label for=\"input-" + inputIndex + "-" + i + "\">" + field.description +
                     "</label> <input id=\"input-" + inputIndex + "-" + i + "\" type=\"" + inputType +
@@ -199,21 +199,21 @@ function audit(auditData) {
                 fieldsElement.appendChild(formFieldDiv);
             }
 
-            let fieldsFinalElement = document.createElement("div");
+            const fieldsFinalElement = document.createElement("div");
             fieldsFinalElement.innerHTML =
                 "<button id=\"input-button-" + inputIndex + "\" " +
                 "onclick=\"submitForm(" + inputIndex + ", " + fields.length + ");\">Submit</button>";
 
             fieldsElement.appendChild(fieldsFinalElement);
 
-            let scriptIo = document.getElementById("script-io");
+            const scriptIo = document.getElementById("script-io");
             scriptIo.appendChild(fieldsElement);
             scriptIo.appendChild(document.createElement("br"));
         }
 
         function processInfoMessage(message) {
-            let scriptLog = document.getElementById("script-log");
-            let newElement = document.createElement("p");
+            const scriptLog = document.getElementById("script-log");
+            const newElement = document.createElement("p");
 
             if (message.message === "connected") {
                 newElement.innerText = "Connection established";
@@ -224,7 +224,7 @@ function audit(auditData) {
             } else if (message.message === "invalidInputJson") {
                 newElement.innerText = "Invalid input JSON was provided";
             } else {
-                let unknownMessage = "Unknown WS INFO message: " + JSON.stringify(message)
+                const unknownMessage = "Unknown WS INFO message: " + JSON.stringify(message)
                 window.alert(unknownMessage);
                 newElement.innerText = unknownMessage;
             }
@@ -233,7 +233,7 @@ function audit(auditData) {
         }
 
         function processCommandMessage(message) {
-            let scriptIo = document.getElementById("script-io");
+            const scriptIo = document.getElementById("script-io");
 
             if (message.command === "readInputJson") {
                 createTextAreaInput(message.message);
@@ -248,17 +248,17 @@ function audit(auditData) {
             } else if (message.command === "button") {
                 createButton(message.message);
             } else if (message.command === "renderText") {
-                let textElement = document.createElement("div");
+                const textElement = document.createElement("div");
                 textElement.innerText = message.text;
                 scriptIo.appendChild(textElement);
                 scriptIo.appendChild(document.createElement("br"));
             } else if (message.command === "renderHtml") {
-                let htmlElement = document.createElement("div");
+                const htmlElement = document.createElement("div");
                 htmlElement.innerHTML = message.html;
                 scriptIo.appendChild(htmlElement);
                 scriptIo.appendChild(document.createElement("br"));
             } else if (message.command === "renderMarkdown") {
-                let markdownElement = document.createElement("pre");
+                const markdownElement = document.createElement("pre");
                 markdownElement.innerText = message.markdown;
                 scriptIo.appendChild(markdownElement);
                 scriptIo.appendChild(document.createElement("br"));
@@ -268,7 +268,7 @@ function audit(auditData) {
         }
 
         function processResponseMessage(message) {
-            let scriptResult = document.getElementById("script-result");
+            const scriptResult = document.getElementById("script-result");
 
             if (message.success) {
                 scriptResult.innerHTML += "Result: <code>" + JSON.stringify(message.payload) + "</code>";
@@ -294,7 +294,7 @@ function audit(auditData) {
         }
 
         function processWsMessage(rawMessage) {
-            let message = JSON.parse(rawMessage);
+            const message = JSON.parse(rawMessage);
 
             if (message.messageType === "INFO") {
                 processInfoMessage(message);
@@ -308,14 +308,14 @@ function audit(auditData) {
         }
 
         function saveScript() {
-            let request = new XMLHttpRequest();
+            const request = new XMLHttpRequest();
 
             request.open("POST", "http://localhost:8080/script/store", true);
             request.setRequestHeader("Content-Type", "text/plain");
             request.onreadystatechange = function () {
                 if (this.readyState === XMLHttpRequest.DONE) {
                     if (this.status === 200) {
-                        let responseJson = JSON.parse(this.responseText);
+                        const responseJson = JSON.parse(this.responseText);
 
                         document.getElementById("script-input").disabled = true;
                         document.getElementById("store-script").disabled = true;
@@ -336,7 +336,7 @@ function audit(auditData) {
         function connectToWebSocket(webSocketUrl) {
             webSocket = new WebSocket(webSocketUrl);
 
-            let scriptLog = document.getElementById("script-log");
+            const scriptLog = document.getElementById("script-log");
 
             webSocket.onopen = function () {
                 scriptLog.innerHTML += "<p>Connection opened</p>";
@@ -353,11 +353,11 @@ function audit(auditData) {
 
         function executeInteractiveScript() {
             document.getElementById("execute-interactive-script").disabled = true;
-            let ipfsDirectoryInput = document.getElementById("ipfs-directory-hash");
+            const ipfsDirectoryInput = document.getElementById("ipfs-directory-hash");
             ipfsDirectoryInput.disabled = true;
 
-            let webSocketUrl = "ws://localhost:8080/script/interactive/" + scriptId;
-            let ipfsDirectoryHash = ipfsDirectoryInput.value;
+            const webSocketUrl = "ws://localhost:8080/script/interactive/" + scriptId;
+            const ipfsDirectoryHash = ipfsDirectoryInput.value;
 
             if (ipfsDirectoryHash !== null && ipfsDirectoryHash.trim().length !== 0) {
                 webSocketUrl += "?ipfs-directory=" + ipfsDirectoryHash.trim();
@@ -383,21 +383,21 @@ function audit(auditData) {
                 return;
             }
 
-            let accounts = await ethereum.request({method: 'eth_requestAccounts'});
+            const accounts = await ethereum.request({method: 'eth_requestAccounts'});
 
             if (!accounts && accounts.length === 0) {
                 window.alert("No available ethereum accounts");
                 return;
             }
 
-            let transactionParameters = {
+            const transactionParameters = {
                 to: generatedTransaction.to,
                 from: ethereum.selectedAddress,
                 value: '0x00',
                 data: generatedTransaction.data
             };
 
-            let txHash = await ethereum.request({
+            const txHash = await ethereum.request({
                 method: 'eth_sendTransaction',
                 params: [transactionParameters],
             });

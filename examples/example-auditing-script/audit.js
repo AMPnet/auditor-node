@@ -1,10 +1,10 @@
 function audit(auditData) {
     Output.renderText("Script input: " + JSON.stringify(auditData));
 
-    let displayHtmlFragment = Input.readBoolean("Display HTML fragment?");
+    const displayHtmlFragment = Input.readBoolean("Display HTML fragment?");
 
     if (displayHtmlFragment) {
-        let htmlFragment = Ipfs.getFile("fragment.html");
+        const htmlFragment = Ipfs.getFile("fragment.html");
 
         if (htmlFragment === null) {
             Output.renderText("Cannot fetch file named 'fragment.html' from specified IPFS directory.");

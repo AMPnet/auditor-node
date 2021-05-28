@@ -20,20 +20,20 @@ class ConvertersJavaScriptApiTest : ApiTestBase() {
         verify("list converters work correctly") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let array = [1, 2, "three"];
-                    let list = Converters.arrayToList(array);
+                    const array = [1, 2, "three"];
+                    const list = Converters.arrayToList(array);
 
                     assertEquals("list.length", array.length, list.length);
 
-                    for (var i = 0; i < list.length; i++) {
+                    for (let i = 0; i < list.length; i++) {
                         assertEquals("list.get(" + i + ")", array[i], list.get(i));
                     }
 
-                    let newArray = Converters.listToArray(list);
+                    const newArray = Converters.listToArray(list);
 
                     assertEquals("newArray.length", array.length, newArray.length);
 
-                    for (i = 0; i < newArray.length; i++) {
+                    for (let i = 0; i < newArray.length; i++) {
                         assertEquals("newArray[" + i + "]", array[i], newArray[i]);
                     }
 
@@ -57,25 +57,25 @@ class ConvertersJavaScriptApiTest : ApiTestBase() {
             @Suppress("JSUnfilteredForInLoop")
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let object = {
+                    const object = {
                         prop1: "string",
                         prop2: 123,
                         "other-prop": "test"
                     };
-                    let map = Converters.objectToMap(object);
+                    const map = Converters.objectToMap(object);
 
                     assertEquals("map.size", Object.getOwnPropertyNames(object).length, map.size);
 
-                    let keys = map.keys();
+                    const keys = map.keys();
 
                     assertEquals("keys.length", map.size, keys.length);
 
-                    for (var i = 0; i < keys.length; i++) {
-                        let key = keys.get(i);
+                    for (let i = 0; i < keys.length; i++) {
+                        const key = keys.get(i);
                         assertEquals("map.get(\"" + key + "\")", map.get(key), object[key]);
                     }
 
-                    let newObject = Converters.mapToObject(map);
+                    const newObject = Converters.mapToObject(map);
 
                     assertEquals(
                         "Object.getOwnPropertyNames(newObject).length",
@@ -83,7 +83,7 @@ class ConvertersJavaScriptApiTest : ApiTestBase() {
                         Object.getOwnPropertyNames(newObject).length
                     );
 
-                    for (property in newObject) {
+                    for (const property in newObject) {
                         assertEquals("newObject[\"" + property + "\"]", object[property], newObject[property]);
                     }
 

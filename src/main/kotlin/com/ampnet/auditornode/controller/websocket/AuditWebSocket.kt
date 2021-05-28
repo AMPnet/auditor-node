@@ -161,7 +161,7 @@ class AuditWebSocket @Inject constructor(
                 ifRight = {
                     logger.info { "Script execution finished successfully, result: $it" }
                     // TODO asset address will not be hard-coded in the future
-                    val transaction = auditRegistryContractTransactionService.castAuditVoteForAsset(
+                    val transaction = auditRegistryContractTransactionService.generateTxForCastAuditVote(
                         assetContractAddress = AssetContractAddress(auditorProperties.assetContractAddress),
                         auditResult = it
                     )

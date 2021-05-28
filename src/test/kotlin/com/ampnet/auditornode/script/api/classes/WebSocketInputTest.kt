@@ -156,7 +156,7 @@ class WebSocketInputTest : TestBase() {
         verify("field values are correctly read from web socket") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let fields = [
+                    const fields = [
                         {
                             "type": "boolean",
                             "name": "booleanField",
@@ -173,7 +173,7 @@ class WebSocketInputTest : TestBase() {
                             "description": "test3"
                         }
                     ];
-                    let values = Input.readFields(fields, "test");
+                    const values = Input.readFields(fields, "test");
 
                     assertEquals("values.get(\"booleanField\")", true, values.get("booleanField"));
                     assertEquals("values.get(\"numberField\")", 42, values.get("numberField"));

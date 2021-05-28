@@ -43,7 +43,8 @@ fun Assert<String>.isJsonEqualTo(expected: Any) = given { actual ->
 val jsAssertions = """
     function assertEquals(name, expected, actual) {
         if (expected !== actual) {
-            let message = "Assertion failed for '" + name + "'; expected: '" + expected + "', actual: '" + actual + "'";
+            const message = "Assertion failed for '" + name + "'; expected: '" + expected + "', actual: '" + actual +
+                "'";
             console.log(message);
             throw message;
         } else {
@@ -59,14 +60,14 @@ val jsAssertions = """
             return;
         }
 
-        let message = "Expected '" + name + "' to throw an exception";
+        const message = "Expected '" + name + "' to throw an exception";
         console.log(message);
         throw message;
     }
 
     function assertNonNull(name, value) {
         if (value === null || value === undefined) {
-            let message = "Assertion failed for '" + name + "'; expected non-null (defined) value";
+            const message = "Assertion failed for '" + name + "'; expected non-null (defined) value";
             console.log(message);
             throw message;
         } else {
@@ -78,7 +79,7 @@ val jsAssertions = """
         if (value === null) {
             console.log("Assertion success for '" + name + "', got null as expected");
         } else {
-            let message = "Assertion failed for '" + name + "'; expected null, got value: '" + value + "'";
+            const message = "Assertion failed for '" + name + "'; expected null, got value: '" + value + "'";
             console.log(message);
             throw message;
         }

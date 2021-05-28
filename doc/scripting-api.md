@@ -240,7 +240,7 @@ be displayed to the user.
 Full example on calling `readFields` method:
 
 ```javascript
-let fields = [
+const fields = [
     {
         "type": "boolean",
         "name": "booleanField",
@@ -258,7 +258,7 @@ let fields = [
     }
 ];
 
-let userInput = Input.readFields(fields, "Form header message");
+const userInput = Input.readFields(fields, "Form header message");
 
 console.log(userInput.get("booleanField"));
 console.log(userInput.get("numberField"));

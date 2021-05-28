@@ -32,7 +32,7 @@ class KethabiAuditRegistryContractTransactionServiceTest : TestBase() {
     @Test
     fun `must correctly generate transaction for successful audit result`() {
         verify("correct transaction is generated for successful audit result") {
-            val transaction = service.castAuditVoteForAsset(assetContractAddress, SuccessfulAudit)
+            val transaction = service.generateTxForCastAuditVote(assetContractAddress, SuccessfulAudit)
 
             assertThat(transaction)
                 .isNotNull()
@@ -48,7 +48,7 @@ class KethabiAuditRegistryContractTransactionServiceTest : TestBase() {
     @Test
     fun `must correctly generate transaction for failed audit result`() {
         verify("correct transaction is generated for failed audit result") {
-            val transaction = service.castAuditVoteForAsset(assetContractAddress, FailedAudit("failed"))
+            val transaction = service.generateTxForCastAuditVote(assetContractAddress, FailedAudit("failed"))
 
             assertThat(transaction)
                 .isNotNull()
@@ -64,7 +64,7 @@ class KethabiAuditRegistryContractTransactionServiceTest : TestBase() {
     @Test
     fun `must not generate transaction for aborted audit result`() {
         verify("no transaction is generated for aborted audit result") {
-            val transaction = service.castAuditVoteForAsset(assetContractAddress, AbortedAudit("aborted"))
+            val transaction = service.generateTxForCastAuditVote(assetContractAddress, AbortedAudit("aborted"))
 
             assertThat(transaction)
                 .isNull()

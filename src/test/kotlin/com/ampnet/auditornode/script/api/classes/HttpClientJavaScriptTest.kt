@@ -79,25 +79,25 @@ class HttpClientJavaScriptTest : TestBase() {
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let response = HttpClient.get("http://localhost:8080");
+                    const response = HttpClient.get("http://localhost:8080");
 
                     assertEquals("response.body", "$responseBody", response.body);
                     assertEquals("response.statusCode", $responseCode, response.statusCode);
                     assertEquals("response.headers.size", ${responseHeaders.size}, response.headers.size);
 
-                    let header1List = response.headers.get("header1");
+                    const header1List = response.headers.get("header1");
 
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
-                    let header2List = response.headers.get("header2");
+                    const header2List = response.headers.get("header2");
 
                     assertEquals("header2List.length", 1, header2List.length);
                     assertEquals("header2List.get(0)", "${responseHeaders["header2"]}", header2List.get(0));
 
                     assertEquals("response.cookies.length", 1, response.cookies.length);
 
-                    let cookie = response.cookies.get(0);
+                    const cookie = response.cookies.get(0);
 
                     assertEquals("cookie.name", "${responseCookie.name}", cookie.name);
                     assertEquals("cookie.value", "${responseCookie.value}", cookie.value);
@@ -160,7 +160,7 @@ class HttpClientJavaScriptTest : TestBase() {
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let response = HttpClient.get(
+                    const response = HttpClient.get(
                         "http://localhost:8080",
                         {
                             requestHeader1: "headerValue1",
@@ -172,19 +172,19 @@ class HttpClientJavaScriptTest : TestBase() {
                     assertEquals("response.statusCode", $responseCode, response.statusCode);
                     assertEquals("response.headers.size", ${responseHeaders.size}, response.headers.size);
 
-                    let header1List = response.headers.get("header1");
+                    const header1List = response.headers.get("header1");
 
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
-                    let header2List = response.headers.get("header2");
+                    const header2List = response.headers.get("header2");
 
                     assertEquals("header2List.length", 1, header2List.length);
                     assertEquals("header2List.get(0)", "${responseHeaders["header2"]}", header2List.get(0));
 
                     assertEquals("response.cookies.length", 1, response.cookies.length);
 
-                    let cookie = response.cookies.get(0);
+                    const cookie = response.cookies.get(0);
 
                     assertEquals("cookie.name", "${responseCookie.name}", cookie.name);
                     assertEquals("cookie.value", "${responseCookie.value}", cookie.value);
@@ -272,25 +272,25 @@ class HttpClientJavaScriptTest : TestBase() {
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let response = HttpClient.post("http://localhost:8080");
+                    const response = HttpClient.post("http://localhost:8080");
 
                     assertEquals("response.body", "$responseBody", response.body);
                     assertEquals("response.statusCode", $responseCode, response.statusCode);
                     assertEquals("response.headers.size", ${responseHeaders.size}, response.headers.size);
 
-                    let header1List = response.headers.get("header1");
+                    const header1List = response.headers.get("header1");
 
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
-                    let header2List = response.headers.get("header2");
+                    const header2List = response.headers.get("header2");
 
                     assertEquals("header2List.length", 1, header2List.length);
                     assertEquals("header2List.get(0)", "${responseHeaders["header2"]}", header2List.get(0));
 
                     assertEquals("response.cookies.length", 1, response.cookies.length);
 
-                    let cookie = response.cookies.get(0);
+                    const cookie = response.cookies.get(0);
 
                     assertEquals("cookie.name", "${responseCookie.name}", cookie.name);
                     assertEquals("cookie.value", "${responseCookie.value}", cookie.value);
@@ -351,25 +351,25 @@ class HttpClientJavaScriptTest : TestBase() {
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let response = HttpClient.post("http://localhost:8080", "$requestBody");
+                    const response = HttpClient.post("http://localhost:8080", "$requestBody");
 
                     assertEquals("response.body", "$responseBody", response.body);
                     assertEquals("response.statusCode", $responseCode, response.statusCode);
                     assertEquals("response.headers.size", ${responseHeaders.size}, response.headers.size);
 
-                    let header1List = response.headers.get("header1");
+                    const header1List = response.headers.get("header1");
 
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
-                    let header2List = response.headers.get("header2");
+                    const header2List = response.headers.get("header2");
 
                     assertEquals("header2List.length", 1, header2List.length);
                     assertEquals("header2List.get(0)", "${responseHeaders["header2"]}", header2List.get(0));
 
                     assertEquals("response.cookies.length", 1, response.cookies.length);
 
-                    let cookie = response.cookies.get(0);
+                    const cookie = response.cookies.get(0);
 
                     assertEquals("cookie.name", "${responseCookie.name}", cookie.name);
                     assertEquals("cookie.value", "${responseCookie.value}", cookie.value);
@@ -435,7 +435,7 @@ class HttpClientJavaScriptTest : TestBase() {
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let response = HttpClient.post(
+                    const response = HttpClient.post(
                         "http://localhost:8080",
                         "$requestBody",
                         {
@@ -449,19 +449,19 @@ class HttpClientJavaScriptTest : TestBase() {
                     assertEquals("response.statusCode", $responseCode, response.statusCode);
                     assertEquals("response.headers.size", ${responseHeaders.size}, response.headers.size);
 
-                    let header1List = response.headers.get("header1");
+                    const header1List = response.headers.get("header1");
 
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
-                    let header2List = response.headers.get("header2");
+                    const header2List = response.headers.get("header2");
 
                     assertEquals("header2List.length", 1, header2List.length);
                     assertEquals("header2List.get(0)", "${responseHeaders["header2"]}", header2List.get(0));
 
                     assertEquals("response.cookies.length", 1, response.cookies.length);
 
-                    let cookie = response.cookies.get(0);
+                    const cookie = response.cookies.get(0);
 
                     assertEquals("cookie.name", "${responseCookie.name}", cookie.name);
                     assertEquals("cookie.value", "${responseCookie.value}", cookie.value);
@@ -550,25 +550,25 @@ class HttpClientJavaScriptTest : TestBase() {
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let response = HttpClient.request("http://localhost:8080", "$customMethodName");
+                    const response = HttpClient.request("http://localhost:8080", "$customMethodName");
 
                     assertEquals("response.body", "$responseBody", response.body);
                     assertEquals("response.statusCode", $responseCode, response.statusCode);
                     assertEquals("response.headers.size", ${responseHeaders.size}, response.headers.size);
 
-                    let header1List = response.headers.get("header1");
+                    const header1List = response.headers.get("header1");
 
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
-                    let header2List = response.headers.get("header2");
+                    const header2List = response.headers.get("header2");
 
                     assertEquals("header2List.length", 1, header2List.length);
                     assertEquals("header2List.get(0)", "${responseHeaders["header2"]}", header2List.get(0));
 
                     assertEquals("response.cookies.length", 1, response.cookies.length);
 
-                    let cookie = response.cookies.get(0);
+                    const cookie = response.cookies.get(0);
 
                     assertEquals("cookie.name", "${responseCookie.name}", cookie.name);
                     assertEquals("cookie.value", "${responseCookie.value}", cookie.value);
@@ -631,25 +631,25 @@ class HttpClientJavaScriptTest : TestBase() {
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let response = HttpClient.request("http://localhost:8080", "$customMethodName", "$requestBody");
+                    const response = HttpClient.request("http://localhost:8080", "$customMethodName", "$requestBody");
 
                     assertEquals("response.body", "$responseBody", response.body);
                     assertEquals("response.statusCode", $responseCode, response.statusCode);
                     assertEquals("response.headers.size", ${responseHeaders.size}, response.headers.size);
 
-                    let header1List = response.headers.get("header1");
+                    const header1List = response.headers.get("header1");
 
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
-                    let header2List = response.headers.get("header2");
+                    const header2List = response.headers.get("header2");
 
                     assertEquals("header2List.length", 1, header2List.length);
                     assertEquals("header2List.get(0)", "${responseHeaders["header2"]}", header2List.get(0));
 
                     assertEquals("response.cookies.length", 1, response.cookies.length);
 
-                    let cookie = response.cookies.get(0);
+                    const cookie = response.cookies.get(0);
 
                     assertEquals("cookie.name", "${responseCookie.name}", cookie.name);
                     assertEquals("cookie.value", "${responseCookie.value}", cookie.value);
@@ -716,7 +716,7 @@ class HttpClientJavaScriptTest : TestBase() {
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let response = HttpClient.request(
+                    const response = HttpClient.request(
                         "http://localhost:8080",
                         "$customMethodName",
                         "$requestBody",
@@ -731,19 +731,19 @@ class HttpClientJavaScriptTest : TestBase() {
                     assertEquals("response.statusCode", $responseCode, response.statusCode);
                     assertEquals("response.headers.size", ${responseHeaders.size}, response.headers.size);
 
-                    let header1List = response.headers.get("header1");
+                    const header1List = response.headers.get("header1");
 
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
-                    let header2List = response.headers.get("header2");
+                    const header2List = response.headers.get("header2");
 
                     assertEquals("header2List.length", 1, header2List.length);
                     assertEquals("header2List.get(0)", "${responseHeaders["header2"]}", header2List.get(0));
 
                     assertEquals("response.cookies.length", 1, response.cookies.length);
 
-                    let cookie = response.cookies.get(0);
+                    const cookie = response.cookies.get(0);
 
                     assertEquals("cookie.name", "${responseCookie.name}", cookie.name);
                     assertEquals("cookie.value", "${responseCookie.value}", cookie.value);

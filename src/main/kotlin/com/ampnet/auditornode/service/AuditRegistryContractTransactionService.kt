@@ -5,7 +5,7 @@ import com.ampnet.auditornode.persistence.model.UnsignedTransaction
 import com.ampnet.auditornode.script.api.model.AuditResult
 
 interface AuditRegistryContractTransactionService {
-    fun castAuditVoteForAsset(
+    fun generateTxForCastAuditVote(
         assetContractAddress: AssetContractAddress,
         auditResult: AuditResult
     ): UnsignedTransaction?

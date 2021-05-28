@@ -68,10 +68,10 @@ function audit(auditData) {
         return abortOrInvalidateAudit("Ownership document not found");
     }
 
-    let tableRowTemplate = Ipfs.getFile("step-9-table-row-template.html");
+    const tableRowTemplate = Ipfs.getFile("step-9-table-row-template.html");
     let tableRows = "";
 
-    for (owner of auditData.ownerInfo) {
+    for (const owner of auditData.ownerInfo) {
         tableRows += tableRowTemplate
             .replace(/{ordinalNumber}/g, owner.ordinalNumber)
             .replace(/{totalAssetShares}/g, owner.totalAssetShares)
