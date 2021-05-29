@@ -15,6 +15,7 @@ import com.ampnet.auditornode.service.impl.KethabiAuditRegistryContractTransacti
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
+import org.web3j.utils.Numeric
 
 class KethabiAuditRegistryContractTransactionServiceTest : TestBase() {
 
@@ -25,7 +26,7 @@ class KethabiAuditRegistryContractTransactionServiceTest : TestBase() {
 
     private val assetContractAddress = AssetContractAddress("0x1111111111111111111111111111111111111111")
     private val encodedCastVoteMethodCall = "1a419c0c000000000000000000000000"
-    private val encodedAssetContractAddress = assetContractAddress.value.removePrefix("0x")
+    private val encodedAssetContractAddress = Numeric.cleanHexPrefix(assetContractAddress.value)
     private val encodedTrueBoolean = "0000000000000000000000000000000000000000000000000000000000000001"
     private val encodedFalseBoolean = "0000000000000000000000000000000000000000000000000000000000000000"
 
