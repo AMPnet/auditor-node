@@ -1,6 +1,6 @@
 package com.ampnet.auditornode.controller.websocket
 
-import com.ampnet.auditornode.model.websocket.ReadyState
+import com.ampnet.auditornode.model.websocket.InitState
 import com.ampnet.auditornode.model.websocket.WebSocketScriptState
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.persistence.model.ScriptSource
@@ -41,7 +41,7 @@ object WebSocketSessionHelper {
         }
 
     var WebSocketSession.scriptState: WebSocketScriptState
-        get() = attributes[SCRIPT_STATE_ATTRIBUTE, WebSocketScriptState::class.java].orElse(ReadyState)
+        get() = attributes[SCRIPT_STATE_ATTRIBUTE, WebSocketScriptState::class.java].orElse(InitState)
         set(value) {
             attributes.put(SCRIPT_STATE_ATTRIBUTE, value)
         }

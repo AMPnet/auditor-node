@@ -83,12 +83,13 @@ While the Docker IPFS container is running, you can access its web-ui via `http:
 If you are running the desktop IPFS application, you can upload the directory through its interface. The hash of the
 directory will then be displayed there.
 
-When the application is started, it will listen to HTTP requests on port `8080`. Making a GET request to `/audit` will
-start the test audit procedure which will first try to fetch asset info IPFS hash stored in the Ethereum contract with
-address `0xcaA9f2F9d9137E2fB806ecDf731CdD927aA9d97F` on the Ropsten testnet. After that, asset category ID and will be
-fetched from the same contract address. Using the retrieved asset category ID, auditing procedure directory IPFS hash is
-retrieved from registry contract with address `0x9C1d4593148c26249624d334AA8316A3446a0cD2`. The example procedure will
-stop here and return the fetched IPFS hashes and procedure ID.
+When the application is started, it will listen to HTTP requests on port `8080`. Connecting to `/audit` via web socket
+will start the test audit procedure which will first try to fetch asset info IPFS hash stored in the Ethereum contract
+with address `0xcaA9f2F9d9137E2fB806ecDf731CdD927aA9d97F` on the Ropsten testnet. After that, asset category ID and will
+be fetched from the same contract address. Using the retrieved asset category ID, auditing procedure directory IPFS hash
+is retrieved from registry contract with address `0x9C1d4593148c26249624d334AA8316A3446a0cD2`. This directory hash is
+then used to fetch the `audit.js` script file which the IPFS directory contains. The script is then executed
+interactively via web socket. After the execution finishes, the result of the audit is returned via web socket.
 
 #### Scripts
 

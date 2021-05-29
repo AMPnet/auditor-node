@@ -24,7 +24,7 @@ import java.util.UUID
 import javax.inject.Inject
 
 @MicronautTest
-class ScriptWebSocketApiTest : ApiTestBase() {
+class InteractiveScriptWebSocketApiTest : ApiTestBase() {
 
     @Inject
     @field:Client("/")

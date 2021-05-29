@@ -55,6 +55,10 @@ object InvalidInputJsonInfoMessage : WebSocketInfoMessage("invalidInputJson")
 
 object ExecutingInfoMessage : WebSocketInfoMessage("executing")
 
+object IpfsReadErrorInfoMessage : WebSocketInfoMessage("ipfsReadError")
+
+object RpcErrorInfoMessage : WebSocketInfoMessage("rpcError")
+
 /* Response messages */
 sealed class WebSocketResponse(val success: Boolean) : WebSocketMessage(MessageType.RESPONSE)
 

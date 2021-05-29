@@ -33,7 +33,7 @@ class GethEthereumRpc @Inject constructor(private val web3j: Web3j) : EthereumRP
             transaction.to?.hex,
             transaction.input.toHexString()
         )
-        logger.info {
+        logger.debug {
             "Geth RPC call: eth_call(from: ${web3jTransaction.from}, to: ${web3jTransaction.to}," +
                 " data: ${web3jTransaction.data})"
         }
@@ -42,7 +42,7 @@ class GethEthereumRpc @Inject constructor(private val web3j: Web3j) : EthereumRP
             ?.let { DefaultBlockParameter.valueOf(it) }
             ?: DefaultBlockParameter.valueOf(block)
         val result = web3j.ethCall(web3jTransaction, blockParameter)?.send()?.value
-        logger.info { "Got result for eth_call: $result" }
+        logger.debug { "Got result for eth_call: $result" }
 
         return result?.let { HexString(it) }
     }

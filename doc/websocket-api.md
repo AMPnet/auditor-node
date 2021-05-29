@@ -1,4 +1,4 @@
-# Web socket API
+# Interactive script web socket API
 
 Scripts can be run interactively via web socket. When running in this mode, input values can be requested from the user
 and rendering of text, HTML and Markdown is possible. All the web socket messages sent by the auditor application will
@@ -97,6 +97,40 @@ web socket client:
 The top-level `success` field indicates if the script execution finished without any unhandled errors. When this value
 is `true`, then the `payload` will contain and object as in the example above. When the value is `false`, then the
 payload will contain a string - error message description instead of an object.
+
+## Auditing script execution via web socket
+
+Auditing procedure can be executed by connecting to `/audit` via web socket. The web socket messages received on this
+endpoint are similar to the ones received on the interactive script execution endpoint - the main difference is that the
+input JSON does not need to be provided as it is fetched from IPFS. There are three possible errors that can happen
+before the script execution starts:
+
+1) Invalid input JSON - this message is sent if the audit info file contains invalid JSON
+
+```json
+{
+    "messageType": "INFO",
+    "message": "invalidInputJson"
+}
+```
+
+2) RPC error - this message is sent if it is not possible to connect to RPC or read values from the auditing contracts
+
+```json
+{
+    "messageType": "INFO",
+    "message": "rpcError"
+}
+```
+
+3) IPFS read error - this message is sent if IPFS is not available or if any specific file cannot be fetched
+
+```json
+{
+    "messageType": "INFO",
+    "message": "ipfsReadError"
+}
+```
 
 ## Web socket command messages
 
