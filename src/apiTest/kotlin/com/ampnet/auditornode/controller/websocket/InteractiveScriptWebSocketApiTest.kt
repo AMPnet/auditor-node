@@ -71,7 +71,7 @@ class InteractiveScriptWebSocketApiTest : ApiTestBase() {
             client.assertNextMessage(ReadInputJsonCommand())
             client.send("{}")
             client.assertNextMessage(ExecutingInfoMessage)
-            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit, null))
             client.close()
         }
     }
@@ -106,7 +106,7 @@ class InteractiveScriptWebSocketApiTest : ApiTestBase() {
             client.assertNextMessage(ReadInputJsonCommand())
             client.send("{\"exampleValue\":123}")
             client.assertNextMessage(ExecutingInfoMessage)
-            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit, null))
             client.close()
         }
     }

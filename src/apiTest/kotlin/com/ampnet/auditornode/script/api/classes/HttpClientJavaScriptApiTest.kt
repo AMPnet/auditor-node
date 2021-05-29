@@ -101,19 +101,19 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let response = HttpClient.get("http://localhost:${wireMockServer.port()}/example");
+                    const response = HttpClient.get("http://localhost:${wireMockServer.port()}/example");
 
                     assertEquals("response.body", "$responseBody", response.body);
                     assertEquals("response.statusCode", $responseCode, response.statusCode);
                     assertNonNull("response.headers.size", response.headers.size);
 
-                    let header1List = response.headers.get("header1");
+                    const header1List = response.headers.get("header1");
 
                     assertNonNull("response.headers.get(\"header1\")", header1List);
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
-                    let header2List = response.headers.get("header2");
+                    const header2List = response.headers.get("header2");
 
                     assertNonNull("response.headers.get(\"header2\")", header2List);
                     assertEquals("header2List.length", 1, header2List.length);
@@ -121,7 +121,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
 
                     assertEquals("response.cookies.length", 1, response.cookies.length);
 
-                    let cookie = response.cookies.get(0);
+                    const cookie = response.cookies.get(0);
 
                     assertEquals("cookie.name", "${responseCookie.name}", cookie.name);
                     assertEquals("cookie.value", "${responseCookie.value}", cookie.value);
@@ -182,7 +182,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let response = HttpClient.get(
+                    const response = HttpClient.get(
                         "http://localhost:${wireMockServer.port()}/example",
                         {
                             requestHeader1: "headerValue1",
@@ -194,13 +194,13 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("response.statusCode", $responseCode, response.statusCode);
                     assertNonNull("response.headers.size", response.headers.size);
 
-                    let header1List = response.headers.get("header1");
+                    const header1List = response.headers.get("header1");
 
                     assertNonNull("response.headers.get(\"header1\")", header1List);
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
-                    let header2List = response.headers.get("header2");
+                    const header2List = response.headers.get("header2");
 
                     assertNonNull("response.headers.get(\"header2\")", header2List);
                     assertEquals("header2List.length", 1, header2List.length);
@@ -208,7 +208,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
 
                     assertEquals("response.cookies.length", 1, response.cookies.length);
 
-                    let cookie = response.cookies.get(0);
+                    const cookie = response.cookies.get(0);
 
                     assertEquals("cookie.name", "${responseCookie.name}", cookie.name);
                     assertEquals("cookie.value", "${responseCookie.value}", cookie.value);
@@ -299,19 +299,19 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let response = HttpClient.post("http://localhost:${wireMockServer.port()}/example");
+                    const response = HttpClient.post("http://localhost:${wireMockServer.port()}/example");
 
                     assertEquals("response.body", "$responseBody", response.body);
                     assertEquals("response.statusCode", $responseCode, response.statusCode);
                     assertNonNull("response.headers.size", response.headers.size);
 
-                    let header1List = response.headers.get("header1");
+                    const header1List = response.headers.get("header1");
 
                     assertNonNull("response.headers.get(\"header1\")", header1List);
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
-                    let header2List = response.headers.get("header2");
+                    const header2List = response.headers.get("header2");
 
                     assertNonNull("response.headers.get(\"header2\")", header2List);
                     assertEquals("header2List.length", 1, header2List.length);
@@ -319,7 +319,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
 
                     assertEquals("response.cookies.length", 1, response.cookies.length);
 
-                    let cookie = response.cookies.get(0);
+                    const cookie = response.cookies.get(0);
 
                     assertEquals("cookie.name", "${responseCookie.name}", cookie.name);
                     assertEquals("cookie.value", "${responseCookie.value}", cookie.value);
@@ -381,7 +381,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let response = HttpClient.post(
+                    const response = HttpClient.post(
                         "http://localhost:${wireMockServer.port()}/example",
                         "$requestBody"
                     );
@@ -390,13 +390,13 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("response.statusCode", $responseCode, response.statusCode);
                     assertNonNull("response.headers.size", response.headers.size);
 
-                    let header1List = response.headers.get("header1");
+                    const header1List = response.headers.get("header1");
 
                     assertNonNull("response.headers.get(\"header1\")", header1List);
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
-                    let header2List = response.headers.get("header2");
+                    const header2List = response.headers.get("header2");
 
                     assertNonNull("response.headers.get(\"header2\")", header2List);
                     assertEquals("header2List.length", 1, header2List.length);
@@ -404,7 +404,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
 
                     assertEquals("response.cookies.length", 1, response.cookies.length);
 
-                    let cookie = response.cookies.get(0);
+                    const cookie = response.cookies.get(0);
 
                     assertEquals("cookie.name", "${responseCookie.name}", cookie.name);
                     assertEquals("cookie.value", "${responseCookie.value}", cookie.value);
@@ -468,7 +468,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let response = HttpClient.post(
+                    const response = HttpClient.post(
                         "http://localhost:${wireMockServer.port()}/example",
                         "$requestBody",
                         {
@@ -482,13 +482,13 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("response.statusCode", $responseCode, response.statusCode);
                     assertNonNull("response.headers.size", response.headers.size);
 
-                    let header1List = response.headers.get("header1");
+                    const header1List = response.headers.get("header1");
 
                     assertNonNull("response.headers.get(\"header1\")", header1List);
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
-                    let header2List = response.headers.get("header2");
+                    const header2List = response.headers.get("header2");
 
                     assertNonNull("response.headers.get(\"header2\")", header2List);
                     assertEquals("header2List.length", 1, header2List.length);
@@ -496,7 +496,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
 
                     assertEquals("response.cookies.length", 1, response.cookies.length);
 
-                    let cookie = response.cookies.get(0);
+                    const cookie = response.cookies.get(0);
 
                     assertEquals("cookie.name", "${responseCookie.name}", cookie.name);
                     assertEquals("cookie.value", "${responseCookie.value}", cookie.value);
@@ -594,7 +594,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let response = HttpClient.request(
+                    const response = HttpClient.request(
                         "http://localhost:${wireMockServer.port()}/example",
                         "$customMethodName"
                     );
@@ -603,13 +603,13 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("response.statusCode", $responseCode, response.statusCode);
                     assertNonNull("response.headers.size", response.headers.size);
 
-                    let header1List = response.headers.get("header1");
+                    const header1List = response.headers.get("header1");
 
                     assertNonNull("response.headers.get(\"header1\")", header1List);
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
-                    let header2List = response.headers.get("header2");
+                    const header2List = response.headers.get("header2");
 
                     assertNonNull("response.headers.get(\"header2\")", header2List);
                     assertEquals("header2List.length", 1, header2List.length);
@@ -617,7 +617,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
 
                     assertEquals("response.cookies.length", 1, response.cookies.length);
 
-                    let cookie = response.cookies.get(0);
+                    const cookie = response.cookies.get(0);
 
                     assertEquals("cookie.name", "${responseCookie.name}", cookie.name);
                     assertEquals("cookie.value", "${responseCookie.value}", cookie.value);
@@ -680,7 +680,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let response = HttpClient.request(
+                    const response = HttpClient.request(
                         "http://localhost:${wireMockServer.port()}/example",
                         "$customMethodName",
                         "$requestBody"
@@ -690,13 +690,13 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("response.statusCode", $responseCode, response.statusCode);
                     assertNonNull("response.headers.size", response.headers.size);
 
-                    let header1List = response.headers.get("header1");
+                    const header1List = response.headers.get("header1");
 
                     assertNonNull("response.headers.get(\"header1\")", header1List);
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
-                    let header2List = response.headers.get("header2");
+                    const header2List = response.headers.get("header2");
 
                     assertNonNull("response.headers.get(\"header2\")", header2List);
                     assertEquals("header2List.length", 1, header2List.length);
@@ -704,7 +704,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
 
                     assertEquals("response.cookies.length", 1, response.cookies.length);
 
-                    let cookie = response.cookies.get(0);
+                    const cookie = response.cookies.get(0);
 
                     assertEquals("cookie.name", "${responseCookie.name}", cookie.name);
                     assertEquals("cookie.value", "${responseCookie.value}", cookie.value);
@@ -769,7 +769,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
         verify("correct response body is returned") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let response = HttpClient.request(
+                    const response = HttpClient.request(
                         "http://localhost:${wireMockServer.port()}/example",
                         "$customMethodName",
                         "$requestBody",
@@ -784,13 +784,13 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
                     assertEquals("response.statusCode", $responseCode, response.statusCode);
                     assertNonNull("response.headers.size", response.headers.size);
 
-                    let header1List = response.headers.get("header1");
+                    const header1List = response.headers.get("header1");
 
                     assertNonNull("response.headers.get(\"header1\")", header1List);
                     assertEquals("header1List.length", 1, header1List.length);
                     assertEquals("header1List.get(0)", "${responseHeaders["header1"]}", header1List.get(0));
 
-                    let header2List = response.headers.get("header2");
+                    const header2List = response.headers.get("header2");
 
                     assertNonNull("response.headers.get(\"header2\")", header2List);
                     assertEquals("header2List.length", 1, header2List.length);
@@ -798,7 +798,7 @@ class HttpClientJavaScriptApiTest : ApiTestBase() {
 
                     assertEquals("response.cookies.length", 1, response.cookies.length);
 
-                    let cookie = response.cookies.get(0);
+                    const cookie = response.cookies.get(0);
 
                     assertEquals("cookie.name", "${responseCookie.name}", cookie.name);
                     assertEquals("cookie.value", "${responseCookie.value}", cookie.value);

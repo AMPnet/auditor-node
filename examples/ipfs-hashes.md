@@ -4,5 +4,5 @@ The table below lists IPFS hashes of provided example folders.
 
 | Folder name | IPFS hash |
 | ----------- | --------- |
-| example-auditing-script | `QmdxwTrkQAmXSs7FEbMXJWrBqYQfZ6j9o5BzYrNLLuw4xg` |
-| audit-croatia | `QmSoGHRmiWVJDJMUsPrUrDXMyozetQMg9pCPHVKygRfzgb` |
+| example-auditing-script | `QmXXFKbcs8n2brZrs9rnbt8FUeow5NKJbHfqbzEWm28vnW` |
+| audit-croatia | `QmSQKi9jddjyTAQkH8cHb4R44ckhQCZCQzy6FkgykgA7CY` |

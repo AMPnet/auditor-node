@@ -13,22 +13,22 @@ object Converters : JavaScriptApiObject {
         @Language("JavaScript") val objectCreator = """
             (function() {
                 $apiObject
-                let out = {
+                const out = {
                     arrayToList: ${apiObjectName()}.arrayToList,
                     objectToMap: ${apiObjectName()}.objectToMap
                 };
                 out.listToArray = function(list) {
-                    let out = [];
-                    for (var i = 0; i < list.length; i++) {
+                    const out = [];
+                    for (let i = 0; i < list.length; i++) {
                         out.push(list.get(i));
                     }
                     return out;
                 };
                 out.mapToObject = function(map) {
-                    let out = {};
-                    let keys = map.keys();
-                    for (var i = 0; i < keys.length; i++) {
-                        let key = keys.get(i);
+                    const out = {};
+                    const keys = map.keys();
+                    for (let i = 0; i < keys.length; i++) {
+                        const key = keys.get(i);
                         out[key] = map.get(key);
                     }
                     return out;

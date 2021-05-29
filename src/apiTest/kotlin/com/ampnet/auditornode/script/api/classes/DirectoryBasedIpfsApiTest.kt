@@ -80,10 +80,10 @@ class DirectoryBasedIpfsApiTest : ApiTestWithPropertiesBase("ipfs-test-propertie
         suppose("script is stored for interactive execution") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
-                    let file1Content = Ipfs.getFile("file1");
+                    const file1Content = Ipfs.getFile("file1");
                     assertEquals("file1Content", "example file 1", file1Content);
 
-                    let file2Content = Ipfs.getFile("file2");
+                    const file2Content = Ipfs.getFile("file2");
                     assertEquals("file2Content", "example file 2", file2Content);
 
                     return AuditResult.success();
@@ -110,7 +110,7 @@ class DirectoryBasedIpfsApiTest : ApiTestWithPropertiesBase("ipfs-test-propertie
             client.assertNextMessage(ReadInputJsonCommand())
             client.send("{}")
             client.assertNextMessage(ExecutingInfoMessage)
-            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit, null))
             client.close()
         }
     }

@@ -61,7 +61,7 @@ class WebSocketOutputApiTest : ApiTestBase() {
             client.send("{}")
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(RenderTextCommand("test"))
-            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit, null))
             client.close()
         }
     }
@@ -96,7 +96,7 @@ class WebSocketOutputApiTest : ApiTestBase() {
             client.send("{}")
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(RenderHtmlCommand("test"))
-            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit, null))
             client.close()
         }
     }
@@ -131,7 +131,7 @@ class WebSocketOutputApiTest : ApiTestBase() {
             client.send("{}")
             client.assertNextMessage(ExecutingInfoMessage)
             client.assertNextMessage(RenderMarkdownCommand("test"))
-            client.assertNextMessage(AuditResultResponse(SuccessfulAudit))
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit, null))
             client.close()
         }
     }
