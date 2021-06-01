@@ -2,10 +2,12 @@ package com.ampnet.auditornode.script.api.objects
 
 import com.ampnet.auditornode.script.api.model.ListApi
 import com.ampnet.auditornode.script.api.model.MapApi
+import com.ampnet.auditornode.util.NativeReflection
 import org.graalvm.polyglot.HostAccess.Export
 import org.graalvm.polyglot.Value
 import org.intellij.lang.annotations.Language
 
+@NativeReflection
 object Converters : JavaScriptApiObject {
 
     override fun createJavaScriptApiObject(): String {

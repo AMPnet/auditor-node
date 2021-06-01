@@ -1,7 +1,9 @@
 package com.ampnet.auditornode.script.api.model
 
+import com.ampnet.auditornode.util.NativeReflection
 import org.graalvm.polyglot.HostAccess.Export
 
+@NativeReflection
 class ListApi<out E>(private val underlying: List<E>) {
 
     @Export
@@ -12,6 +14,7 @@ class ListApi<out E>(private val underlying: List<E>) {
     val length: Int = underlying.size
 }
 
+@NativeReflection
 class MapApi<K, out V>(private val underlying: Map<K, V>) {
 
     @Export

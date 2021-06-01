@@ -1,9 +1,11 @@
 package com.ampnet.auditornode.script.api.classes
 
 import com.ampnet.auditornode.script.api.model.MapApi
+import com.ampnet.auditornode.util.NativeReflection
 import org.graalvm.polyglot.HostAccess.Export
 import org.graalvm.polyglot.Value
 
+@NativeReflection
 object NoOpInput : Input {
 
     @Export

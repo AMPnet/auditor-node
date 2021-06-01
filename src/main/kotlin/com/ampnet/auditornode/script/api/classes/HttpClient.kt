@@ -5,6 +5,7 @@ import com.ampnet.auditornode.script.api.model.HttpCookie
 import com.ampnet.auditornode.script.api.model.HttpResponse
 import com.ampnet.auditornode.script.api.model.ListApi
 import com.ampnet.auditornode.script.api.model.MapApi
+import com.ampnet.auditornode.util.NativeReflection
 import io.micronaut.http.HttpMethod
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.MediaType
@@ -16,6 +17,7 @@ import org.graalvm.polyglot.Value
 import javax.inject.Singleton
 
 @Singleton
+@NativeReflection
 class HttpClient(private val blockingHttpClient: BlockingHttpClient) { // TODO add support for promises
 
     @Export

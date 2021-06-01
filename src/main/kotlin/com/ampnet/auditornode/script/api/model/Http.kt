@@ -1,7 +1,9 @@
 package com.ampnet.auditornode.script.api.model
 
+import com.ampnet.auditornode.util.NativeReflection
 import org.graalvm.polyglot.HostAccess.Export
 
+@NativeReflection
 class HttpCookie(
     @Export
     @JvmField
@@ -29,6 +31,7 @@ class HttpCookie(
     val sameSite: String
 )
 
+@NativeReflection
 class HttpResponse(
     @Export
     @JvmField
