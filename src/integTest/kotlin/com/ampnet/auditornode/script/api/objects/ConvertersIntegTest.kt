@@ -1,23 +1,26 @@
 package com.ampnet.auditornode.script.api.objects
 
 import assertk.assertThat
-import com.ampnet.auditornode.ApiTestBase
-import com.ampnet.auditornode.isJsonEqualTo
+import com.ampnet.auditornode.TestBase
+import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.jsAssertions
-import com.ampnet.auditornode.model.response.ExecuteScriptOkResponse
+import com.ampnet.auditornode.script.api.ExecutionContext
+import com.ampnet.auditornode.script.api.classes.HttpClient
 import com.ampnet.auditornode.script.api.model.SuccessfulAudit
-import io.micronaut.http.HttpRequest
-import io.micronaut.http.MediaType
-import io.micronaut.test.extensions.junit5.annotation.MicronautTest
+import com.ampnet.auditornode.service.impl.JavaScriptAuditingService
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.mock
 
-@MicronautTest
-class ConvertersJavaScriptApiTest : ApiTestBase() {
+class ConvertersIntegTest : TestBase() {
+
+    private val httpClient = HttpClient(mock())
+    private val environment = Properties(mock())
+    private val service = JavaScriptAuditingService(httpClient, environment)
 
     @Test
-    fun `must correctly execute auditing script which uses Converters list API`() {
-        verify("list converters work correctly") {
+    fun `must correctly convert JS array into a list and vice-versa`() {
+        verify("JS array is correctly converted into a list and then back into an array") {
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
                     const array = [1, 2, "three"];
@@ -40,20 +43,14 @@ class ConvertersJavaScriptApiTest : ApiTestBase() {
                     return AuditResult.success();
                 }
             """.trimIndent()
-
-            val result = client.toBlocking().retrieve(
-                HttpRequest.POST("/script/execute", scriptSource).apply {
-                    contentType(MediaType.TEXT_PLAIN_TYPE)
-                }
-            )
-
-            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
+            val result = service.evaluate(scriptSource, ExecutionContext.noOp)
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 
     @Test
-    fun `must correctly execute auditing script which uses Converters map API`() {
-        verify("map converters work correctly") {
+    fun `must correctly convert JS object into a map and vice-versa`() {
+        verify("JS object is correctly converted into a map and then back into an object") {
             @Suppress("JSUnfilteredForInLoop")
             @Language("JavaScript") val scriptSource = jsAssertions + """
                 function audit(auditData) {
@@ -90,14 +87,8 @@ class ConvertersJavaScriptApiTest : ApiTestBase() {
                     return AuditResult.success();
                 }
             """.trimIndent()
-
-            val result = client.toBlocking().retrieve(
-                HttpRequest.POST("/script/execute", scriptSource).apply {
-                    contentType(MediaType.TEXT_PLAIN_TYPE)
-                }
-            )
-
-            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
+            val result = service.evaluate(scriptSource, ExecutionContext.noOp)
+            assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
 }

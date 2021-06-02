@@ -29,7 +29,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 @MicronautTest
-class HttpClientJavaScriptApiTest : ApiTestBase() {
+class HttpClientApiTest : ApiTestBase() {
 
     private val wireMockServer = WireMockServer(wireMockConfig().dynamicPort())
 

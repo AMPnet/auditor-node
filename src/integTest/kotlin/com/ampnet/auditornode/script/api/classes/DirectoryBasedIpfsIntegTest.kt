@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 
-class DirectoryBasedIpfsTest : TestBase() {
+class DirectoryBasedIpfsIntegTest : TestBase() {
 
     private val httpClient = HttpClient(mock())
     private val environment = Properties(mock())

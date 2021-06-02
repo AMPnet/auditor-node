@@ -12,7 +12,7 @@ import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 
-class NoOpInputTest : TestBase() {
+class NoOpInputIntegTest : TestBase() {
 
     private val httpClient = HttpClient(mock())
     private val environment = Properties(mock())

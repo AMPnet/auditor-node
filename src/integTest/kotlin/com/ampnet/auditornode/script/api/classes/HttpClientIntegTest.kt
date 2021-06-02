@@ -28,7 +28,7 @@ import org.mockito.kotlin.mock
 import java.net.URI
 import java.util.Optional
 
-class HttpClientJavaScriptTest : TestBase() {
+class HttpClientIntegTest : TestBase() {
 
     private val properties = Properties(
         mock {

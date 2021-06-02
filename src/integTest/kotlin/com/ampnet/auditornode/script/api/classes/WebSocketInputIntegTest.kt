@@ -27,7 +27,7 @@ import org.mockito.kotlin.reset
 import org.mockito.kotlin.then
 import org.mockito.kotlin.times
 
-class WebSocketInputTest : TestBase() {
+class WebSocketInputIntegTest : TestBase() {
 
     private val session = mock<WebSocketSession>()
     private val webSocketApi = WebSocketApi(session, TestUtils.objectMapper)
