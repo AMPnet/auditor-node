@@ -3,8 +3,10 @@ package com.ampnet.auditornode.persistence.model
 import com.ampnet.auditornode.util.NativeReflection
 import java.util.UUID
 
+@JvmInline
 @NativeReflection
-inline class ScriptSource(val content: String) // TODO use `value class` instead on later Kotlin version
+value class ScriptSource(val content: String)
 
+@JvmInline
 @NativeReflection
-inline class ScriptId(val value: UUID) // TODO use `value class` instead on later Kotlin version
+value class ScriptId(val value: UUID)

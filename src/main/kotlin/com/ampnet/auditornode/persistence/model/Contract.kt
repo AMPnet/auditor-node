@@ -3,9 +3,11 @@ package com.ampnet.auditornode.persistence.model
 import com.ampnet.auditornode.util.NativeReflection
 import java.math.BigInteger
 
-inline class AssetCategoryId(val value: BigInteger) // TODO use `value class` instead on later Kotlin version
+@JvmInline
+value class AssetCategoryId(val value: BigInteger)
 
-inline class AssetContractAddress(val value: String) // TODO use `value class` instead on later Kotlin version
+@JvmInline
+value class AssetContractAddress(val value: String)
 
 @NativeReflection
 data class UnsignedTransaction(
