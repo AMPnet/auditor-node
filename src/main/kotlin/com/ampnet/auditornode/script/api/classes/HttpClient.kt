@@ -18,7 +18,7 @@ import javax.inject.Singleton
 
 @Singleton
 @NativeReflection
-class HttpClient(private val blockingHttpClient: BlockingHttpClient) { // TODO add support for promises
+class HttpClient(private val blockingHttpClient: BlockingHttpClient) {
 
     @Export
     @JvmOverloads

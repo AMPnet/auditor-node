@@ -8,10 +8,10 @@ import com.ampnet.auditornode.util.NativeReflection
 data class StoreScriptResponse(val id: ScriptId)
 
 @NativeReflection
-sealed class ExecuteScriptResponse
+sealed interface ExecuteScriptResponse
 
 @NativeReflection
-data class ExecuteScriptOkResponse(val payload: AuditResult) : ExecuteScriptResponse()
+data class ExecuteScriptOkResponse(val payload: AuditResult) : ExecuteScriptResponse
 
 @NativeReflection
-data class ExecuteScriptErrorResponse(val error: String?) : ExecuteScriptResponse()
+data class ExecuteScriptErrorResponse(val error: String?) : ExecuteScriptResponse
