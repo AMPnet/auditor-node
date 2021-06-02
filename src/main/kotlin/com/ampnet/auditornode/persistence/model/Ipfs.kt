@@ -1,5 +1,7 @@
 package com.ampnet.auditornode.persistence.model
 
-inline class IpfsHash(val value: String) // TODO use `value class` instead on later Kotlin version
+@JvmInline
+value class IpfsHash(val value: String)
 
-inline class IpfsTextFile(val content: String) // TODO use `value class` instead on later Kotlin version
+@JvmInline
+value class IpfsTextFile(val content: String)

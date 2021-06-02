@@ -4,8 +4,10 @@ import com.ampnet.auditornode.model.websocket.RenderHtmlCommand
 import com.ampnet.auditornode.model.websocket.RenderMarkdownCommand
 import com.ampnet.auditornode.model.websocket.RenderTextCommand
 import com.ampnet.auditornode.model.websocket.WebSocketApi
+import com.ampnet.auditornode.util.NativeReflection
 import org.graalvm.polyglot.HostAccess.Export
 
+@NativeReflection
 class WebSocketOutput(private val webSocketApi: WebSocketApi) : Output {
 
     @Export

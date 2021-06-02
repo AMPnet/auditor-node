@@ -9,10 +9,12 @@ import com.ampnet.auditornode.model.websocket.ReadNumberCommand
 import com.ampnet.auditornode.model.websocket.ReadStringCommand
 import com.ampnet.auditornode.model.websocket.WebSocketApi
 import com.ampnet.auditornode.script.api.model.MapApi
+import com.ampnet.auditornode.util.NativeReflection
 import org.graalvm.polyglot.HostAccess.Export
 import org.graalvm.polyglot.Value
 import java.util.concurrent.LinkedBlockingQueue
 
+@NativeReflection
 class WebSocketInput(private val webSocketApi: WebSocketApi) : Input {
 
     private val queue = LinkedBlockingQueue<String>()

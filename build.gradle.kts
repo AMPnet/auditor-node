@@ -3,6 +3,7 @@ import io.gitlab.arturbosch.detekt.Detekt
 import io.micronaut.gradle.MicronautRuntime
 import io.micronaut.gradle.MicronautTestRuntime
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
 buildscript {
     repositories {
@@ -10,27 +11,31 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.github.komputing:kethabi:0.1.9")
+        classpath("com.github.komputing:kethabi:0.2.0")
     }
 }
 
 apply(plugin = "kethabi")
 
 plugins {
-    val kotlinVersion = "1.4.0"
+    val kotlinVersion = "1.5.0"
     kotlin("jvm").version(kotlinVersion)
     kotlin("kapt").version(kotlinVersion)
 
     id("org.jetbrains.kotlin.plugin.allopen").version(kotlinVersion)
     id("org.jlleitschuh.gradle.ktlint").version("10.0.0")
-    id("io.gitlab.arturbosch.detekt").version("1.16.0")
-    id("org.unbroken-dome.test-sets").version("3.0.1")
+    id("io.gitlab.arturbosch.detekt").version("1.17.1")
+    id("org.unbroken-dome.test-sets").version("4.0.0")
     id("com.adarshr.test-logger").version("3.0.0")
     id("io.micronaut.application").version("1.5.0")
     id("com.github.johnrengelman.shadow").version("6.1.0")
     id("application")
     idea
     jacoco
+}
+
+extensions.configure(KtlintExtension::class.java) {
+    version.set("0.41.0")
 }
 
 group = "com.ampnet"
@@ -45,7 +50,7 @@ repositories {
 }
 
 micronaut {
-    version("2.5.0")
+    version("2.5.4")
     runtime(MicronautRuntime.NETTY)
     testRuntime(MicronautTestRuntime.JUNIT_5)
 }
@@ -77,11 +82,11 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("com.squareup.okhttp3:okhttp:4.9.0")
-    implementation("org.graalvm.sdk:graal-sdk:21.0.0")
-    implementation("org.web3j:core:4.8.4")
+    implementation("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation("org.graalvm.sdk:graal-sdk:21.0.0.2")
+    implementation("org.web3j:core:5.0.0")
     implementation("io.arrow-kt:arrow-core:0.13.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.6")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")
@@ -94,7 +99,7 @@ dependencies {
     kaptApiTest("io.micronaut:micronaut-inject-java")
     apiTestImplementation(platform("io.micronaut:micronaut-bom:${micronaut.version}"))
     apiTestImplementation("io.micronaut.test:micronaut-test-junit5")
-    apiTestImplementation("io.micronaut.test:micronaut-test-core:2.3.3")
+    apiTestImplementation("io.micronaut.test:micronaut-test-core:2.3.6")
     apiTestImplementation("com.github.tomakehurst:wiremock-jre8:2.27.2")
     apiTestImplementation(sourceSets.test.get().output)
 }
@@ -105,7 +110,7 @@ application {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict", "-Xinline-classes")
+        freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "1.8"
     }
 }
