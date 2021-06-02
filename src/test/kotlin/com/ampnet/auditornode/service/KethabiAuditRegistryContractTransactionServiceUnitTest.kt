@@ -17,7 +17,7 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.web3j.utils.Numeric
 
-class KethabiAuditRegistryContractTransactionServiceTest : TestBase() {
+class KethabiAuditRegistryContractTransactionServiceUnitTest : TestBase() {
 
     private val auditorProperties = mock<AuditorProperties> {
         on { auditRegistryContractAddress } doReturn "0xTestContractAddress"

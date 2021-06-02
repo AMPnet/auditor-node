@@ -13,7 +13,7 @@ import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import java.util.UUID
 
-class InMemoryScriptRepositoryTest : TestBase() {
+class InMemoryScriptRepositoryUnitTest : TestBase() {
 
     private val uuidProvider = mock<UuidProvider>()
     private val repository = InMemoryScriptRepository(uuidProvider)

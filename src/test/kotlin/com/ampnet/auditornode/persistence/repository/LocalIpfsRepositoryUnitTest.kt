@@ -22,7 +22,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import java.util.Optional
 
-class LocalIpfsRepositoryTest : TestBase() {
+class LocalIpfsRepositoryUnitTest : TestBase() {
 
     private val properties = mock<IpfsProperties>()
     private val client = mock<BlockingHttpClient>()

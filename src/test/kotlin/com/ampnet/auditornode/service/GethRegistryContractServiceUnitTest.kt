@@ -23,7 +23,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import java.math.BigInteger
 
-class GethRegistryContractServiceTest : TestBase() {
+class GethRegistryContractServiceUnitTest : TestBase() {
 
     private val auditorProperties = mock<AuditorProperties> {
         on { registryContractAddress } doReturn "0xTestContractAddress"

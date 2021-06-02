@@ -20,7 +20,7 @@ import org.web3j.protocol.core.Request
 import org.web3j.protocol.core.methods.response.EthCall
 import java.math.BigInteger
 
-class GethEthereumRpcTest : TestBase() {
+class GethEthereumRpcUnitTest : TestBase() {
 
     private val web3j = mock<Web3j>()
     private val rpc = GethEthereumRpc(web3j)

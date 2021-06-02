@@ -21,7 +21,7 @@ import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 
-class GatewayIpfsRepositoryTest : TestBase() {
+class GatewayIpfsRepositoryUnitTest : TestBase() {
 
     private val properties = mock<IpfsProperties>()
     private val client = mock<BlockingHttpClient>()

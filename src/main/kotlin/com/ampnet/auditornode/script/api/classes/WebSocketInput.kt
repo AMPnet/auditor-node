@@ -50,7 +50,7 @@ class WebSocketInput(private val webSocketApi: WebSocketApi) : Input {
             return null
         }
 
-        return (0 until arraySize).map { getArrayElement(it) }
+        return (0 until arraySize).mapNotNull { getArrayElement(it) }
     }
 
     fun push(value: String) {

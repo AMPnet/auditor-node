@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 
-class JavaScriptAuditingServiceTest : TestBase() {
+class JavaScriptAuditingServiceUnitTest : TestBase() {
 
     private val httpClient = HttpClient(mock())
     private val environment = Properties(mock())
