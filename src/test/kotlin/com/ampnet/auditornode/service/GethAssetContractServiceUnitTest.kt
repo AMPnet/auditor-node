@@ -81,7 +81,7 @@ class GethAssetContractServiceUnitTest : TestBase() {
     fun `must correctly return asset info IPFS hash`() {
         suppose("RPC client will return some asset info IPFS hash") {
             given(rpc.call(any(), any()))
-                .willAnswer { encodedTestHash } // for inline classes we must return value with willAnswer
+                .willAnswer { encodedTestHash } // for value classes we must return value with willAnswer
         }
 
         verify("correct asset info IPFS hash is returned") {
@@ -124,7 +124,7 @@ class GethAssetContractServiceUnitTest : TestBase() {
     fun `must correctly return asset category ID`() {
         suppose("RPC client will return some asset category ID") {
             given(rpc.call(any(), any()))
-                .willAnswer { encodedTestAssetCategoryId } // for inline classes we must return value with willAnswer
+                .willAnswer { encodedTestAssetCategoryId } // for value classes we must return value with willAnswer
         }
 
         verify("correct asset category ID is returned") {

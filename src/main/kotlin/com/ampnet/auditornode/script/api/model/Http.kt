@@ -4,7 +4,7 @@ import com.ampnet.auditornode.util.NativeReflection
 import org.graalvm.polyglot.HostAccess.Export
 
 @NativeReflection
-class HttpCookie(
+data class HttpCookie(
     @Export
     @JvmField
     val name: String,
@@ -32,7 +32,7 @@ class HttpCookie(
 )
 
 @NativeReflection
-class HttpResponse(
+data class HttpResponse(
     @Export
     @JvmField
     val body: String?,

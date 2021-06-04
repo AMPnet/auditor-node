@@ -37,7 +37,7 @@ class HttpClientIntegTest : TestBase() {
     )
 
     private val <T> Optional<T>.isEmpty
-        get() = !isPresent
+        get() = isPresent.not()
 
     @Test
     fun `must correctly perform simple get() call`() {

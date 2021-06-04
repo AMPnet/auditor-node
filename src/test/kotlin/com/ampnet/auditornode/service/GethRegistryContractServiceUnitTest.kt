@@ -78,7 +78,7 @@ class GethRegistryContractServiceUnitTest : TestBase() {
     fun `must correctly return auditing procedure directory IPFS hash`() {
         suppose("RPC client will return some auditing procedure directory IPFS hash") {
             given(rpc.call(any(), any()))
-                .willAnswer { encodedTestHash } // for inline classes we must return value with willAnswer
+                .willAnswer { encodedTestHash } // for value classes we must return value with willAnswer
         }
 
         verify("correct auditing procedure directory IPFS hash is returned") {
