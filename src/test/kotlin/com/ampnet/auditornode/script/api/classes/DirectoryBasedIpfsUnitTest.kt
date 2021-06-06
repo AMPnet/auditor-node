@@ -4,7 +4,6 @@ import arrow.core.left
 import arrow.core.right
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import com.ampnet.auditornode.TestBase
 import com.ampnet.auditornode.model.error.IpfsError.IpfsEmptyResponseError
@@ -48,14 +47,13 @@ class DirectoryBasedIpfsUnitTest : TestBase() {
         val fileName = "test.js"
         val ipfsTextFile = IpfsTextFile("test content")
 
-        suppose("IPFS will file content") {
+        suppose("IPFS will return file content") {
             given(this.ipfsRepository.fetchTextFileFromDirectory(ipfsHash, fileName))
                 .willReturn(ipfsTextFile.right())
         }
 
-        verify("null is returned") {
+        verify("file content is returned") {
             assertThat(service.getFile(fileName))
-                .isNotNull()
                 .isEqualTo(ipfsTextFile.content)
         }
     }

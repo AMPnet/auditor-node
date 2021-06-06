@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 class NoOpOutputUnitTest : TestBase() {
 
     @Test
-    fun `must return not throw exception for renderText() call`() {
+    fun `must not throw exception for renderText() call`() {
         verify("call is successful") {
             assertThat(NoOpOutput.renderText(""))
                 .isEqualTo(Unit)
@@ -16,7 +16,7 @@ class NoOpOutputUnitTest : TestBase() {
     }
 
     @Test
-    fun `must return not throw exception for renderHtml() call`() {
+    fun `must not throw exception for renderHtml() call`() {
         verify("call is successful") {
             assertThat(NoOpOutput.renderHtml(""))
                 .isEqualTo(Unit)
@@ -24,7 +24,7 @@ class NoOpOutputUnitTest : TestBase() {
     }
 
     @Test
-    fun `must return not throw exception for renderMarkdown() call`() {
+    fun `must not throw exception for renderMarkdown() call`() {
         verify("call is successful") {
             assertThat(NoOpOutput.renderMarkdown(""))
                 .isEqualTo(Unit)

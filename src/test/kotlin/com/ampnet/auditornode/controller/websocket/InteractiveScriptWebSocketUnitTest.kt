@@ -121,7 +121,7 @@ class InteractiveScriptWebSocketUnitTest : TestBase() {
     @Test
     fun `must send error message and close web socket connection when script cannot be found`() {
         val connectedMessage = "connected"
-        val notFoundJsonMessage = "notFound"
+        val notFoundMessage = "notFound"
         val sessionAttributes = mock<MutableConvertibleValues<Any>>()
         val session = mock<WebSocketSession> {
             on { attributes } doReturn sessionAttributes
@@ -131,7 +131,7 @@ class InteractiveScriptWebSocketUnitTest : TestBase() {
             given(objectMapper.writeValueAsString(ConnectedInfoMessage))
                 .willReturn(connectedMessage)
             given(objectMapper.writeValueAsString(NotFoundInfoMessage))
-                .willReturn(notFoundJsonMessage)
+                .willReturn(notFoundMessage)
         }
 
         val scriptId = ScriptId(UUID.randomUUID())
@@ -149,7 +149,7 @@ class InteractiveScriptWebSocketUnitTest : TestBase() {
                 .sendSync(connectedMessage)
             then(session)
                 .should(times(1))
-                .sendSync(notFoundJsonMessage)
+                .sendSync(notFoundMessage)
         }
 
         verify("web socket session was closed and no session variables are set") {
@@ -173,8 +173,10 @@ class InteractiveScriptWebSocketUnitTest : TestBase() {
                 .willReturn(Optional.of(InitState))
         }
 
+        val message = "test"
+
         verify("exception is not thrown for InitState") {
-            assertThat(controller.onMessage("test", session))
+            assertThat(controller.onMessage(message, session))
                 .isEqualTo(Unit)
         }
 
@@ -184,7 +186,7 @@ class InteractiveScriptWebSocketUnitTest : TestBase() {
         }
 
         verify("exception is not thrown for FinishedState") {
-            assertThat(controller.onMessage("test", session))
+            assertThat(controller.onMessage(message, session))
                 .isEqualTo(Unit)
         }
     }
@@ -541,11 +543,13 @@ class InteractiveScriptWebSocketUnitTest : TestBase() {
         }
 
         verify("message was successfully pushed") {
-            assertThat(controller.onMessage("test", session))
+            val message = "test"
+
+            assertThat(controller.onMessage(message, session))
                 .isEqualTo(Unit)
             then(mockInput)
                 .should(times(1))
-                .push("test")
+                .push(message)
         }
     }
 

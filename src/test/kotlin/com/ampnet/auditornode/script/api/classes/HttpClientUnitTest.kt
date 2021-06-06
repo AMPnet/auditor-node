@@ -98,7 +98,7 @@ class HttpClientUnitTest : TestBase() {
                         httpOnly = cookie.isHttpOnly,
                         secure = cookie.isSecure,
                         maxAge = cookie.maxAge,
-                        sameSite = cookie.sameSite.map(Any::toString).orElse("")
+                        sameSite = cookie.sameSite.get().toString()
                     )
                 )
         }
@@ -175,7 +175,7 @@ class HttpClientUnitTest : TestBase() {
                         httpOnly = cookie.isHttpOnly,
                         secure = cookie.isSecure,
                         maxAge = cookie.maxAge,
-                        sameSite = cookie.sameSite.map(Any::toString).orElse("")
+                        sameSite = cookie.sameSite.get().toString()
                     )
                 )
         }
@@ -267,7 +267,7 @@ class HttpClientUnitTest : TestBase() {
                         httpOnly = cookie.isHttpOnly,
                         secure = cookie.isSecure,
                         maxAge = cookie.maxAge,
-                        sameSite = cookie.sameSite.map(Any::toString).orElse("")
+                        sameSite = cookie.sameSite.get().toString()
                     )
                 )
         }
@@ -333,7 +333,7 @@ class HttpClientUnitTest : TestBase() {
                         httpOnly = cookie.isHttpOnly,
                         secure = cookie.isSecure,
                         maxAge = cookie.maxAge,
-                        sameSite = cookie.sameSite.map(Any::toString).orElse("")
+                        sameSite = cookie.sameSite.get().toString()
                     )
                 )
         }
@@ -416,7 +416,7 @@ class HttpClientUnitTest : TestBase() {
                         httpOnly = cookie.isHttpOnly,
                         secure = cookie.isSecure,
                         maxAge = cookie.maxAge,
-                        sameSite = cookie.sameSite.map(Any::toString).orElse("")
+                        sameSite = cookie.sameSite.get().toString()
                     )
                 )
         }
@@ -487,7 +487,7 @@ class HttpClientUnitTest : TestBase() {
         }
 
         verify("response is correctly read") {
-            val result = service.request(uri, "NON_STANDARD")
+            val result = service.request(url = uri, method = "NON_STANDARD")
 
             assertThat(result.body)
                 .isEqualTo(responseBody)
@@ -511,7 +511,7 @@ class HttpClientUnitTest : TestBase() {
                         httpOnly = cookie.isHttpOnly,
                         secure = cookie.isSecure,
                         maxAge = cookie.maxAge,
-                        sameSite = cookie.sameSite.map(Any::toString).orElse("")
+                        sameSite = cookie.sameSite.get().toString()
                     )
                 )
         }
@@ -579,7 +579,7 @@ class HttpClientUnitTest : TestBase() {
                         httpOnly = cookie.isHttpOnly,
                         secure = cookie.isSecure,
                         maxAge = cookie.maxAge,
-                        sameSite = cookie.sameSite.map(Any::toString).orElse("")
+                        sameSite = cookie.sameSite.get().toString()
                     )
                 )
         }
@@ -662,7 +662,7 @@ class HttpClientUnitTest : TestBase() {
                         httpOnly = cookie.isHttpOnly,
                         secure = cookie.isSecure,
                         maxAge = cookie.maxAge,
-                        sameSite = cookie.sameSite.map(Any::toString).orElse("")
+                        sameSite = cookie.sameSite.get().toString()
                     )
                 )
         }
