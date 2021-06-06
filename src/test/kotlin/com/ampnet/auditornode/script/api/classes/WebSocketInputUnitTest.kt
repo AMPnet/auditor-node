@@ -122,115 +122,62 @@ class WebSocketInputUnitTest : TestBase() {
             service.push(stringValue)
         }
 
-        verify("correct web socket command is sent and values are correctly read") {
-            val fieldWithNoType = mock<Value> {
-                on { hasMember(TYPE) } doReturn false
+        fun fieldMock(type: String?, name: String?, description: String?): Value {
+            val typeValue = mock<Value> {
+                on { isString } doReturn true
+                on { asString() } doReturn type
             }
 
+            val nameValue = mock<Value> {
+                on { isString } doReturn true
+                on { asString() } doReturn name
+            }
+
+            val descriptionValue = mock<Value> {
+                on { isString } doReturn true
+                on { asString() } doReturn description
+            }
+
+            return mock {
+                on { hasMember(TYPE) } doReturn (type != null)
+                on { getMember(TYPE) } doReturn typeValue
+
+                on { hasMember(NAME) } doReturn (name != null)
+                on { getMember(NAME) } doReturn nameValue
+
+                on { hasMember(DESCRIPTION) } doReturn (description != null)
+                on { getMember(DESCRIPTION) } doReturn descriptionValue
+            }
+        }
+
+        fun validFieldMock(type: InputType, name: String, description: String) =
+            fieldMock(type = type.name, name = name, description = description)
+
+        verify("correct web socket command is sent and values are correctly read") {
             val nonStringValue = mock<Value> {
                 on { isString } doReturn false
             }
-            val fieldNonStringType = mock<Value> {
+            val fieldWithNonStringType = mock<Value> {
                 on { hasMember(TYPE) } doReturn true
                 on { getMember(TYPE) } doReturn nonStringValue
             }
 
-            val unknownTypeValue = mock<Value> {
-                on { isString } doReturn true
-                on { asString() } doReturn "unknown"
-            }
-            val fieldWithUnknownType = mock<Value> {
-                on { hasMember(TYPE) } doReturn true
-                on { getMember(TYPE) } doReturn unknownTypeValue
-            }
+            val fieldWithUnknownType = fieldMock(type = "unknown", name = null, description = null)
 
-            val booleanTypeValue = mock<Value> {
-                on { isString } doReturn true
-                on { asString() } doReturn InputType.BOOLEAN.name
-            }
-            val fieldWithNoName = mock<Value> {
-                on { hasMember(TYPE) } doReturn true
-                on { getMember(TYPE) } doReturn booleanTypeValue
-                on { hasMember(NAME) } doReturn false
-            }
+            val fieldWithNoType = fieldMock(type = null, name = null, description = null)
+            val fieldWithNoName = fieldMock(type = InputType.STRING.name, name = null, description = null)
+            val fieldWithNoDescription = fieldMock(type = InputType.STRING.name, name = "unused", description = null)
 
-            val unusedNameValue = mock<Value> {
-                on { isString } doReturn true
-                on { asString() } doReturn "unusedName"
-            }
-            val fieldWithNoDescription = mock<Value> {
-                on { hasMember(TYPE) } doReturn true
-                on { getMember(TYPE) } doReturn booleanTypeValue
-                on { hasMember(NAME) } doReturn true
-                on { getMember(NAME) } doReturn unusedNameValue
-                on { hasMember(DESCRIPTION) } doReturn false
-            }
-
-            val name1Value = mock<Value> {
-                on { isString } doReturn true
-                on { asString() } doReturn "name1"
-            }
-            val description1Value = mock<Value> {
-                on { isString } doReturn true
-                on { asString() } doReturn "description1"
-            }
-            val booleanField = mock<Value> {
-                on { hasMember(TYPE) } doReturn true
-                on { getMember(TYPE) } doReturn booleanTypeValue
-                on { hasMember(NAME) } doReturn true
-                on { getMember(NAME) } doReturn name1Value
-                on { hasMember(DESCRIPTION) } doReturn true
-                on { getMember(DESCRIPTION) } doReturn description1Value
-            }
-
-            val numberTypeValue = mock<Value> {
-                on { isString } doReturn true
-                on { asString() } doReturn InputType.NUMBER.name
-            }
-            val name2Value = mock<Value> {
-                on { isString } doReturn true
-                on { asString() } doReturn "name2"
-            }
-            val description2Value = mock<Value> {
-                on { isString } doReturn true
-                on { asString() } doReturn "description2"
-            }
-            val numberField = mock<Value> {
-                on { hasMember(TYPE) } doReturn true
-                on { getMember(TYPE) } doReturn numberTypeValue
-                on { hasMember(NAME) } doReturn true
-                on { getMember(NAME) } doReturn name2Value
-                on { hasMember(DESCRIPTION) } doReturn true
-                on { getMember(DESCRIPTION) } doReturn description2Value
-            }
-
-            val stringTypeValue = mock<Value> {
-                on { isString } doReturn true
-                on { asString() } doReturn InputType.STRING.name
-            }
-            val name3Value = mock<Value> {
-                on { isString } doReturn true
-                on { asString() } doReturn "name3"
-            }
-            val description3Value = mock<Value> {
-                on { isString } doReturn true
-                on { asString() } doReturn "description3"
-            }
-            val stringField = mock<Value> {
-                on { hasMember(TYPE) } doReturn true
-                on { getMember(TYPE) } doReturn stringTypeValue
-                on { hasMember(NAME) } doReturn true
-                on { getMember(NAME) } doReturn name3Value
-                on { hasMember(DESCRIPTION) } doReturn true
-                on { getMember(DESCRIPTION) } doReturn description3Value
-            }
+            val booleanField = validFieldMock(type = InputType.BOOLEAN, name = "name1", description = "description1")
+            val numberField = validFieldMock(type = InputType.NUMBER, name = "name2", description = "description2")
+            val stringField = validFieldMock(type = InputType.STRING, name = "name3", description = "description3")
 
             val arrayMock = mock<Value> {
                 on { hasArrayElements() } doReturn true
                 on { arraySize } doReturn 9
-                on { getArrayElement(0) } doReturn fieldWithNoType
-                on { getArrayElement(1) } doReturn fieldNonStringType
+                on { getArrayElement(1) } doReturn fieldWithNonStringType
                 on { getArrayElement(2) } doReturn fieldWithUnknownType
+                on { getArrayElement(0) } doReturn fieldWithNoType
                 on { getArrayElement(3) } doReturn fieldWithNoName
                 on { getArrayElement(4) } doReturn fieldWithNoDescription
                 on { getArrayElement(5) } doReturn booleanField
