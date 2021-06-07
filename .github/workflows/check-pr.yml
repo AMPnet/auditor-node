@@ -27,7 +27,9 @@ jobs:
       - name: Set up Gradle cache
         uses: actions/cache@v1
         with:
-          path: ~/.gradle/caches
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
@@ -52,7 +54,9 @@ jobs:
       - name: Set up Gradle cache
         uses: actions/cache@v1
         with:
-          path: ~/.gradle/caches
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
@@ -87,12 +91,16 @@ jobs:
           java: ${{ env.JAVA_VERSION }}
       - name: Check Java version
         run: java -version
+      - name: Install native-image component
+        run: gu install native-image
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Set up Gradle cache
         uses: actions/cache@v1
         with:
-          path: ~/.gradle/caches
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
