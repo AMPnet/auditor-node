@@ -35,7 +35,7 @@ enum class InputType {
     BOOLEAN, NUMBER, STRING;
 
     companion object {
-        fun parse(value: String): InputType? = values().find { it.name == value.toUpperCase() }
+        fun parse(value: String): InputType? = values().find { it.name == value.uppercase() }
     }
 }
 

@@ -4,7 +4,7 @@ import com.ampnet.auditornode.util.NativeReflection
 import org.graalvm.polyglot.HostAccess.Export
 
 @NativeReflection
-class ListApi<out E>(private val underlying: List<E>) {
+data class ListApi<out E>(private val underlying: List<E>) {
 
     @Export
     operator fun get(index: Int): E? = underlying.getOrNull(index)
@@ -15,7 +15,7 @@ class ListApi<out E>(private val underlying: List<E>) {
 }
 
 @NativeReflection
-class MapApi<K, out V>(private val underlying: Map<K, V>) {
+data class MapApi<K, out V>(private val underlying: Map<K, V>) {
 
     @Export
     operator fun get(key: K): V? = underlying[key]

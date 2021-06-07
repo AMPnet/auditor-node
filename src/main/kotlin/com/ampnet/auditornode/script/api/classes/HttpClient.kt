@@ -18,7 +18,7 @@ import javax.inject.Singleton
 
 @Singleton
 @NativeReflection
-class HttpClient(private val blockingHttpClient: BlockingHttpClient) { // TODO add support for promises
+class HttpClient(private val blockingHttpClient: BlockingHttpClient) {
 
     @Export
     @JvmOverloads
@@ -49,7 +49,7 @@ class HttpClient(private val blockingHttpClient: BlockingHttpClient) { // TODO a
     @Export
     @JvmOverloads
     fun request(url: String, method: String, body: String = "", headers: Value? = null): HttpResponse {
-        val upperCaseMethod = method.toUpperCase()
+        val upperCaseMethod = method.uppercase()
         val httpMethod = HttpMethod.parse(upperCaseMethod)
         return httpRequest(
             headers = headers,

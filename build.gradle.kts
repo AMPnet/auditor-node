@@ -11,37 +11,36 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.github.komputing:kethabi:0.2.0")
+        classpath("com.github.komputing:kethabi:${Versions.Plugins.kethabi}")
     }
 }
 
 apply(plugin = "kethabi")
 
 plugins {
-    val kotlinVersion = "1.5.0"
-    kotlin("jvm").version(kotlinVersion)
-    kotlin("kapt").version(kotlinVersion)
+    kotlin("jvm").version(Versions.Compile.kotlin)
+    kotlin("kapt").version(Versions.Compile.kotlin)
 
-    id("org.jetbrains.kotlin.plugin.allopen").version(kotlinVersion)
-    id("org.jlleitschuh.gradle.ktlint").version("10.0.0")
-    id("io.gitlab.arturbosch.detekt").version("1.17.1")
-    id("org.unbroken-dome.test-sets").version("4.0.0")
-    id("com.adarshr.test-logger").version("3.0.0")
-    id("io.micronaut.application").version("1.5.0")
-    id("com.github.johnrengelman.shadow").version("6.1.0")
+    id("org.jetbrains.kotlin.plugin.allopen").version(Versions.Plugins.allOpen)
+    id("org.jlleitschuh.gradle.ktlint").version(Versions.Plugins.ktlint)
+    id("io.gitlab.arturbosch.detekt").version(Versions.Plugins.detekt)
+    id("org.unbroken-dome.test-sets").version(Versions.Plugins.testSets)
+    id("com.adarshr.test-logger").version(Versions.Plugins.testLogger)
+    id("io.micronaut.application").version(Versions.Plugins.micronaut)
+    id("com.github.johnrengelman.shadow").version(Versions.Plugins.shadowJar)
     id("application")
     idea
     jacoco
 }
 
 extensions.configure(KtlintExtension::class.java) {
-    version.set("0.41.0")
+    version.set(Versions.Tools.ktlint)
 }
 
 group = "com.ampnet"
-version = "0.0.1"
-java.sourceCompatibility = JavaVersion.VERSION_1_8
-java.targetCompatibility = JavaVersion.VERSION_1_8
+version = Versions.project
+java.sourceCompatibility = Versions.Compile.sourceCompatibility
+java.targetCompatibility = Versions.Compile.targetCompatibility
 
 repositories {
     mavenCentral()
@@ -50,15 +49,17 @@ repositories {
 }
 
 micronaut {
-    version("2.5.4")
+    version(Versions.Tools.micronaut)
     runtime(MicronautRuntime.NETTY)
     testRuntime(MicronautTestRuntime.JUNIT_5)
 }
 
 testSets {
-    create("integTest")
-    create("apiTest")
+    Configurations.Tests.testSets.forEach { create(it) }
 }
+
+fun DependencyHandler.integTestImplementation(dependencyNotation: Any): Dependency? =
+    add("integTestImplementation", dependencyNotation)
 
 fun DependencyHandler.apiTestImplementation(dependencyNotation: Any): Dependency? =
     add("apiTestImplementation", dependencyNotation)
@@ -82,25 +83,28 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("com.squareup.okhttp3:okhttp:4.9.1")
-    implementation("org.graalvm.sdk:graal-sdk:21.0.0.2")
-    implementation("org.web3j:core:5.0.0")
-    implementation("io.arrow-kt:arrow-core:0.13.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
-    implementation("io.github.microutils:kotlin-logging-jvm:2.0.6")
+    implementation("com.squareup.okhttp3:okhttp:${Versions.Dependencies.okHttp}")
+    implementation("org.graalvm.sdk:graal-sdk:${Versions.Dependencies.graalSdk}")
+    implementation("org.web3j:core:${Versions.Dependencies.web3jCore}")
+    implementation("io.arrow-kt:arrow-core:${Versions.Dependencies.arrowCore}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.Dependencies.kotlinCoroutines}")
+    implementation("io.github.microutils:kotlin-logging-jvm:${Versions.Dependencies.kotlinLogging}")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
-    testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.24")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:${Versions.Dependencies.mockitoKotlin}")
+    testImplementation("com.willowtreeapps.assertk:assertk-jvm:${Versions.Dependencies.assertk}")
     testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+
+    integTestImplementation("com.github.tomakehurst:wiremock:${Versions.Dependencies.wireMock}")
+    integTestImplementation(sourceSets.test.get().output)
 
     kaptApiTest(platform("io.micronaut:micronaut-bom:${micronaut.version}"))
     kaptApiTest("io.micronaut:micronaut-inject-java")
     apiTestImplementation(platform("io.micronaut:micronaut-bom:${micronaut.version}"))
     apiTestImplementation("io.micronaut.test:micronaut-test-junit5")
-    apiTestImplementation("io.micronaut.test:micronaut-test-core:2.3.6")
-    apiTestImplementation("com.github.tomakehurst:wiremock-jre8:2.27.2")
+    apiTestImplementation("io.micronaut.test:micronaut-test-core:${Versions.Dependencies.micronautTestCore}")
+    apiTestImplementation("com.github.tomakehurst:wiremock:${Versions.Dependencies.wireMock}")
     apiTestImplementation(sourceSets.test.get().output)
 }
 
@@ -110,8 +114,8 @@ application {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "1.8"
+        freeCompilerArgs = Configurations.Compile.compilerArgs
+        jvmTarget = Versions.Compile.jvmTarget
     }
 }
 
@@ -137,9 +141,9 @@ tasks.withType<ShadowJar> {
 }
 
 tasks {
-    val graalBaseImage = "ghcr.io/graalvm/graalvm-ce"
-    val graalTag = "ol8-java8-21.0.0.2"
-    val graalDigest = "sha256:2754d08ca9ca494d6947f214d66e02ab7bd02192ee13ed9e2f5c802d588040e0"
+    val graalBaseImage = Configurations.Docker.graalBaseImage
+    val graalTag = Configurations.Docker.graalTag
+    val graalDigest = Configurations.Docker.graalDigest
 
     dockerfile {
         baseImage("$graalBaseImage:$graalTag@$graalDigest")
@@ -167,15 +171,12 @@ tasks {
     }
 
     nativeImage {
-        args(
-            "--initialize-at-build-time",
-            "--language:js"
-        )
+        args(Configurations.NativeImage.args)
         imageName.set("auditor")
     }
 
-    val nativeBaseImage = "gcr.io/distroless/cc-debian10"
-    val nativeDigest = "sha256:4cad7484b00d98ecb300916b1ab71d6c71babd6860c6c5dd6313be41a8c55adb"
+    val nativeBaseImage = Configurations.Docker.nativeBaseImage
+    val nativeDigest = Configurations.Docker.nativeDigest
 
     dockerfileNative {
         baseImage("$nativeBaseImage@$nativeDigest")
@@ -207,8 +208,17 @@ tasks {
     }
 }
 
-jacoco.toolVersion = "0.8.6"
+task("fullTest") {
+    val allTests = listOf(tasks.test) + Configurations.Tests.testSets.map { tasks[it] }
+    dependsOn(*allTests.toTypedArray())
+}
+
+jacoco.toolVersion = Versions.Tools.jacoco
 tasks.withType<JacocoReport> {
+    val allTestExecFiles = (listOf("test") + Configurations.Tests.testSets)
+        .map { "$buildDir/jacoco/$it.exec" }
+    executionData(*allTestExecFiles.toTypedArray())
+
     reports {
         xml.isEnabled = true
         xml.destination = file("$buildDir/reports/jacoco/report.xml")
@@ -221,14 +231,14 @@ tasks.withType<JacocoReport> {
             exclude("com/ampnet/auditornode/contract/**")
         }
     )
-    dependsOn(tasks.test)
+    dependsOn(tasks["fullTest"])
 }
 
 tasks.withType<JacocoCoverageVerification> {
     violationRules {
         rule {
             limit {
-                minimum = "0.7".toBigDecimal()
+                minimum = Configurations.Tests.minimumCoverage
             }
         }
     }
