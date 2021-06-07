@@ -5,6 +5,10 @@ name: Check pull request
 
 on: [ pull_request ]
 
+env:
+  GRAAVM_VERSION: '21.0.0.2'
+  JAVA_VERSION: 'java8'
+
 jobs:
   code-control:
     runs-on: ubuntu-latest
@@ -14,8 +18,8 @@ jobs:
       - name: Set up GraalVM
         uses: DeLaGuardo/setup-graalvm@4.0
         with:
-          graalvm: '21.0.0.2'
-          java: 'java8'
+          graalvm: ${{ env.GRAALVM_VERSION }}
+          java: ${{ env.JAVA_VERSION }}
       - name: Check Java version
         run: java -version
       - name: Grant execute permission for gradlew
@@ -39,8 +43,8 @@ jobs:
       - name: Set up GraalVM
         uses: DeLaGuardo/setup-graalvm@4.0
         with:
-          graalvm: '21.0.0.2'
-          java: 'java8'
+          graalvm: ${{ env.GRAALVM_VERSION }}
+          java: ${{ env.JAVA_VERSION }}
       - name: Check java version
         run: java -version
       - name: Grant execute permission for gradlew
