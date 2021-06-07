@@ -217,13 +217,24 @@ class WebSocketInputUnitTest : TestBase() {
 
     @Test
     fun `must correctly send web socket command for button() call and take value from queue`() {
-        suppose("there is some string value in the queue") {
-            service.push("test value")
+        suppose("there are some string values in the queue") {
+            service.push("value1")
+            service.push("value2")
+            service.push("value3")
         }
 
         verify("correct web socket command is sent") {
             val message = "test message"
-            service.button(message)
+            val queueValue1 = service.readString("")
+            val queueValue2 = service.button(message)
+            val queueValue3 = service.readString("")
+
+            assertThat(queueValue1)
+                .isEqualTo("value1")
+            assertThat(queueValue2)
+                .isEqualTo(Unit)
+            assertThat(queueValue3)
+                .isEqualTo("value3")
 
             then(webSocketApi)
                 .should(times(1))
