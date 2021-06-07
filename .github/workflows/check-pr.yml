@@ -93,20 +93,20 @@ jobs:
         run: java -version
       - name: Install native-image component
         run: gu install native-image
-#      - name: Rebuild polyglot images
-#        run: gu rebuild-images polyglot
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      - name: Set up Gradle cache
-        uses: actions/cache@v1
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-      - name: Build native image
-        run: ./gradlew clean build -x test -x integTest -x apiTest nativeImage
-      - name: Native image API tests
-        run: ./gradlew apiTestNativeImage
+      - name: Rebuild polyglot images
+        run: gu rebuild-images polyglot
+#      - name: Grant execute permission for gradlew
+#        run: chmod +x gradlew
+#      - name: Set up Gradle cache
+#        uses: actions/cache@v1
+#        with:
+#          path: |
+#            ~/.gradle/caches
+#            ~/.gradle/wrapper
+#          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+#          restore-keys: |
+#            ${{ runner.os }}-gradle-
+#      - name: Build native image
+#        run: ./gradlew clean build -x test -x integTest -x apiTest nativeImage
+#      - name: Native image API tests
+#        run: ./gradlew apiTestNativeImage
