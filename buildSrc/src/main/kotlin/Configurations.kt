@@ -23,6 +23,6 @@ object Configurations {
 
     object Tests {
         val testSets = listOf("integTest", "apiTest")
-        val minimumCoverage = BigDecimal("0.7")
+        val minimumCoverage = BigDecimal("0.90")
     }
 }

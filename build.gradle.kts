@@ -235,6 +235,17 @@ tasks.withType<JacocoReport> {
 }
 
 tasks.withType<JacocoCoverageVerification> {
+    val allTestExecFiles = (listOf("test") + Configurations.Tests.testSets)
+        .map { "$buildDir/jacoco/$it.exec" }
+    executionData(*allTestExecFiles.toTypedArray())
+
+    sourceDirectories.setFrom(listOf(file("${project.projectDir}/src/main/kotlin")))
+    classDirectories.setFrom(
+        fileTree("$buildDir/classes/kotlin/main").apply {
+            exclude("com/ampnet/auditornode/contract/**")
+        }
+    )
+
     violationRules {
         rule {
             limit {
