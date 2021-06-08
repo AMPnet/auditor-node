@@ -147,7 +147,8 @@ should send a message via web socket only when a command which requires some web
 These commands require some input from the user, which means that web socket client must send a response when it becomes
 available.
 
-#### ReadInputJsonBoolean command
+<details>
+<summary><b>ReadInputJsonBoolean command</b></summary>
 
 Requests the script input JSON from the user. This message is sent only once when the script is being executed
 interactively - before the script is executed. Web socket message:
@@ -163,7 +164,10 @@ interactively - before the script is executed. Web socket message:
 Response: web socket client should send a valid JSON value. This can be a JSON array, object, string, number, boolean or
 null.
 
-#### ReadBoolean command
+</details>
+
+<details>
+<summary><b>ReadBoolean command</b></summary>
 
 Requests boolean input from the user. Web socket message:
 
@@ -178,7 +182,10 @@ Requests boolean input from the user. Web socket message:
 Response: web socket client should send a raw (non-quoted) string containing either `true` or `false`, depending on the
 user input.
 
-#### ReadNumber command
+</details>
+
+<details>
+<summary><b>ReadNumber command</b></summary>
 
 Requests number input from the user. Web socket message:
 
@@ -192,7 +199,10 @@ Requests number input from the user. Web socket message:
 
 Response: web socket client should send a number which was provided by the user.
 
-#### ReadString command
+</details>
+
+<details>
+<summary><b>ReadString command</b></summary>
 
 Requests string input from the user. Web socket message:
 
@@ -206,7 +216,10 @@ Requests string input from the user. Web socket message:
 
 Response: web socket client should send a raw (non-quoted) string which was provided by the user.
 
-#### ReadFields command
+</details>
+
+<details>
+<summary><b>ReadFields command</b></summary>
 
 Requests multiple inputs from the user. Web socket message:
 
@@ -244,7 +257,10 @@ should not be important to the web socket client, and it can be ignored. Each fi
 be displayed to the user. The `message` top-level field acts as a general message the user should see when being
 prompted to input the specified fields.
 
-#### Button command
+</details>
+
+<details>
+<summary><b>Button command</b></summary>
 
 Requests button click from the user. Web socket message:
 
@@ -258,12 +274,15 @@ Requests button click from the user. Web socket message:
 
 Response: web socket client should send any value when the user clicks on the button.
 
+</details>
+
 ### Output commands
 
 These commands inform the web socket client that something needs to be rendered and displayed to the user. The client
 should not respond to such commands.
 
-#### RenderText command
+<details>
+<summary><b>RenderText command</b></summary>
 
 Requests rendering of the provided text. Web socket message:
 
@@ -277,7 +296,10 @@ Requests rendering of the provided text. Web socket message:
 
 No response should be sent by the web socket client.
 
-#### RenderHtml command
+</details>
+
+<details>
+<summary><b>RenderHtml command</b></summary>
 
 Requests rendering of the provided HTML. Web socket message:
 
@@ -291,7 +313,10 @@ Requests rendering of the provided HTML. Web socket message:
 
 No response should be sent by the web socket client.
 
-#### RenderText command
+</details>
+
+<details>
+<summary><b>RenderText command</b></summary>
 
 Requests rendering of the provided Markdown. Web socket message:
 
@@ -304,3 +329,5 @@ Requests rendering of the provided Markdown. Web socket message:
 ```
 
 No response should be sent by the web socket client.
+
+</details>

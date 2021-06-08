@@ -32,7 +32,8 @@ endpoint expects the script payload as `text/plain` content type.
 
 Models are objects which are used primarily for the data transfer between the auditing script and its runtime.
 
-#### AuditResult
+<details>
+<summary><b>AuditResult</b></summary>
 
 Model of the result that should be returned from the `audit()` function.  
 Static object name: `AuditResult`
@@ -49,7 +50,10 @@ There are no readable fields.
 | `failure(message: String): AuditResult` | Used to create a failed `AuditResult` object with provided message. | `AuditResult.failure("Owner mismatch");` |
 | `aborted(message: String): AuditResult` | Used to create an aborted `AuditResult` object with provided message. | `AuditResult.aborted("Will be audited later");` |
 
-#### List&lt;E&gt;
+</details>
+
+<details>
+<summary><b>List&lt;E&gt;</b></summary>
 
 Model of the lists returned from the API objects. Contains elements of type `E`.  
 There is no static object available in the scripts.
@@ -66,7 +70,10 @@ There is no static object available in the scripts.
 | --------- | ----------- | ------------ |
 | <code>get(index: Int): E &#124; null</code> | Fetch an item at the specified index from the list. | `someList.get(0);` |
 
-#### Map&lt;K, V&gt;
+</details>
+
+<details>
+<summary><b>Map&lt;K, V&gt;</b></summary>
 
 Model of the maps returned from the API objects. Contains elements of type `V` stored under keys of type `K`.  
 There is no static object available in the scripts.
@@ -84,7 +91,10 @@ There is no static object available in the scripts.
 | <code>get(key: K): V &#124; null</code> | Fetch an item for the specified key from the map. | `someMap.get("exampleKey");` |
 | `keys(): List<K>` | Returns a list of all the keys contained in the map. | `someMap.keys();` |
 
-#### HttpCookie
+</details>
+
+<details>
+<summary><b>HttpCookie</b></summary>
 
 Model of HTTP cookie objects.  
 There is no static object available in the scripts.
@@ -106,7 +116,10 @@ There is no static object available in the scripts.
 
 There are no methods available.
 
-#### HttpResponse
+</details>
+
+<details>
+<summary><b>HttpResponse</b></summary>
 
 Model of HTTP response objects.  
 There is no static object available in the scripts.
@@ -124,11 +137,14 @@ There is no static object available in the scripts.
 
 There are no methods available.
 
+</details>
+
 ### Utilities
 
 Utility objects provide ease of access between JavaScript and the scripting runtime environment.
 
-#### Converters
+<details>
+<summary><b>Converters</b></summary>
 
 Contains utility functions to convert values between JavaScript native objects and script models.  
 Static object name: `Converters`
@@ -146,7 +162,10 @@ There are no readable fields.
 | `listToArray(list: List<?>): Array<?>` | Converts List model into a JavaScript array. If the provided argument is not a List model, this method will either return an empty array or throw an exception. | `Converters.listToArray(someList);` |
 | `mapToObject(map: Map<?, ?>): Object` | Converts Map model into a JavaScript object. If the provided argument is not a Map mode, this method will either return an empty object or throw an exception. | `Converters.mapToObject(someMap);` |
 
-#### Properties
+</details>
+
+<details>
+<summary><b>Properties</b></summary>
 
 Properties object contains all the application properties with `script.properties` prefix which were defined as
 `-script.properties.<propertyName>=<propertyValue>` program arguments or otherwise. An important note here is that all
@@ -173,11 +192,14 @@ be of the `String` type.
 
 There are no methods available.
 
+</details>
+
 ### API
 
 Objects which provide various APIs (e.g. HTTP requests).
 
-#### HttpClient
+<details>
+<summary><b>HttpClient</b></summary>
 
 Provides support for making blocking HTTP calls from the auditing scripts. Request and response bodies are always of
 `String` type, and the default request content type is `application/json` if request body is provided. This content type
@@ -201,7 +223,10 @@ There are no readable fields.
 | `request(url: String, method: String, body: String): HttpResponse` | Sends a request with specified HTTP method and request body to the specified URL and returns the response. | `HttpClient.request("http://example.com/", "CUSTOM_METHOD", "exampleRequestBody");` |
 | `request(url: String, method: String, body: String, headers: Object): HttpResponse` | Sends a request with specified HTTP method, request body and headers to the specified URL and returns the response. The headers object should consist of key-value pairs which are of `String` type. | `HttpClient.request("http://example.com/", "CUSTOM_METHOD", "exampleRequestBody", { "Accept": "application/json" });` |
 
-#### Input
+</details>
+
+<details>
+<summary><b>Input</b></summary>
 
 Provides support for user input when script is running interactively via web socket. When script is not running
 interactively, all methods of this object will always return `null`. See web socket documentation for more info on
@@ -265,7 +290,10 @@ console.log(userInput.get("numberField"));
 console.log(userInput.get("stringField"));
 ```
 
-#### Output
+</details>
+
+<details>
+<summary><b>Output</b></summary>
 
 Provides support for rendering text, HTML and Markdown when the script is running interactively via web socket. When the
 script is not running interactively, the methods will do nothing. See web socket documentation for more info on running
@@ -284,7 +312,10 @@ There are no readable fields.
 | `renderHtml(html: String): Void` | Requests rendering of provided HTML. | `Output.renderHtml("<p>example<p/>");` |
 | `renderMarkdown(markdown: String): Void` | Requests rendering of provided Markdown. | `Output.renderMarkdown("# Example");` |
 
-#### Ipfs
+</details>
+
+<details>
+<summary><b>Ipfs</b></summary>
 
 Provides support for fetching files located in the same IPFS directory which contains the auditing script. If the loaded
 script was provided locally instead of via IPFS and no IPFS directory was specified, then `null` will always be
@@ -300,3 +331,5 @@ There are no readable fields.
 | Signature | Description | Example call |
 | --------- | ----------- | ------------ |
 | <code>getFile(fileName: String): String &#124; null</code> | Reads content of the IPFS file with provided name. The file must be located in the IPFS directory associated with the script. If the file cannot be found, `null` is returned. | `Ipfs.getFile("example.html");` |
+
+</details>
