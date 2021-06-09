@@ -4,3 +4,8 @@ micronaut:
       enabled: true
   application:
     name: auditor-node
+  router:
+    static-resources:
+      webui:
+        paths: classpath:webui
+        mapping: /webui/**

@@ -1,0 +1,105 @@
+#auditing-div {
+    display: flex;
+    height: 100%;
+}
+
+#auditing-content {
+    width: 60%;
+    height: 100%;
+    border-right: var(--border) solid var(--border-color);
+}
+
+#auditing-assets {
+    width: 40%;
+    height: 100%;
+    background: var(--main-color-2);
+}
+
+.available-assets-div {
+    color: var(--main-color-1);
+    line-height: var(--font-size);
+    font-size: var(--font-size);
+    text-align: center;
+    padding: var(--padding);
+}
+
+#assets-available-for-audit {
+    border: var(--border) solid var(--border-color);
+    width: 80%;
+    padding: 0;
+    margin: 0;
+    margin-left: 10%;
+    height: 70%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    background: var(--main-color-2);
+}
+
+#assets-available-for-audit > li {
+    display: flex;
+    text-align: left;
+    padding: var(--list-padding);
+    font-size: var(--list-font-size);
+    height: var(--list-font-size);
+    overflow: hidden;
+    background: var(--main-color-2);
+    color: var(--main-color-4);
+    cursor: pointer;
+}
+
+#assets-available-for-audit > li:hover {
+    background: var(--main-color-4);
+    color: var(--main-color-2);
+}
+
+#assets-available-for-audit > li.selected-asset {
+    background: var(--main-color-1);
+    color: var(--main-color-2);
+
+}
+
+#assets-available-for-audit > li[disabled] {
+    background: var(--main-color-2);
+    color: var(--main-color-4);
+    cursor: not-allowed;
+}
+
+#assets-available-for-audit > li[disabled].selected-asset {
+    background: var(--main-color-4);
+    color: var(--main-color-2);
+}
+
+#auditing-start-stop-button {
+    width: 75%;
+    border: none;
+    margin-top: 5%;
+    margin-left: 12.5%;
+    height: 7.5%;
+    padding: 0;
+    font-size: var(--action-button-font-size);
+    cursor: pointer;
+}
+
+#auditing-start-stop-button.start-auditing {
+    background: var(--main-color-1);
+    color: var(--main-color-2);
+}
+
+#auditing-start-stop-button.abort-auditing {
+    background: var(--main-color-5);
+    color: var(--main-color-2);
+}
+
+#auditing-start-stop-button:disabled {
+    cursor: not-allowed;
+}
+
+#auditing-start-stop-button.start-auditing:disabled {
+    background: var(--main-color-4);
+    color: var(--main-color-2);
+}
+
+#auditing-start-stop-button.abort-auditing:disabled {
+    background: var(--main-color-6);
+    color: var(--main-color-2);
+}

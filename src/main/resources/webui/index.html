@@ -1,0 +1,39 @@
+<html lang="en">
+    <head>
+        <title>Auditor Node</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="css/main.css"><!-- TODO change path -->
+        <link rel="stylesheet" href="css/navigation.css"><!-- TODO change path -->
+        <link rel="stylesheet" href="css/auditing.css"><!-- TODO change path -->
+        <script type="text/javascript" src="js/navigation.js" defer></script><!-- TODO change path -->
+        <script type="text/javascript" src="js/auditing.js" defer></script><!-- TODO change path -->
+    </head>
+    <body>
+        <div class="navbar">
+            <button id="auditing-nav" class="navbar-button-selected" onclick="selectAuditing();">Auditing</button>
+            <button id="script-development-nav" class="navbar-button"
+                    onclick="selectScriptDevelopment();">Script Development
+            </button>
+            <button class="navbar-metamask-button">?</button>
+        </div>
+        <div class="content-div">
+            <div id="auditing-div">
+                <div id="auditing-content"></div>
+                <div id="auditing-assets">
+                    <div class="available-assets-div">
+                        <label for="assets-available-for-audit">Assets available for audit</label>
+                    </div>
+                    <div>
+                        <ul id="assets-available-for-audit"></ul>
+                    </div>
+                    <div>
+                        <button id="auditing-start-stop-button" class="start-auditing" onclick="startOrAbortAuditing();"
+                                disabled>Start Audit
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="script-development-div" class="hidden-div">Script Development</div>
+        </div>
+    </body>
+</html>

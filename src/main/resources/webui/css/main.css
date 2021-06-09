@@ -1,0 +1,36 @@
+:root {
+    --navbar-font-size: 36pt;
+    --navbar-button-padding: 5pt;
+    --navbar-button-border: 2pt;
+    --list-font-size: 18pt;
+    --list-padding: 2.5pt;
+    --action-button-font-size: 18pt;
+    --font-size: 24pt;
+    --padding: 10pt;
+    --border: 2pt;
+    --border-color: #002E2C;
+    --main-color-1: #526CB7;
+    --main-color-2: #FCFCFC;
+    --main-color-3: #F0544F;
+    --main-color-4: #8C9DCF;
+    --main-color-5: #D81E5B;
+    --main-color-6: #E95D8C;
+}
+
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    background: var(--main-color-2);
+}
+
+.content-div {
+    width: 100%;
+    height: calc(100% - var(--navbar-button-border) - 2 * var(--navbar-button-padding) - var(--navbar-font-size));
+    margin: 0;
+    padding: 0;
+}
+
+.hidden-div {
+    display: none !important;
+}
