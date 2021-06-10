@@ -1,9 +1,13 @@
 const availableAssetsForAudit = document.getElementById("assets-available-for-audit");
 const auditingStartStopButton = document.getElementById("auditing-start-stop-button");
+const auditingOutputDiv = document.getElementById("auditing-output-div");
 const selectedAsset = "selected-asset";
 const startAuditingButtonClass = "success-button";
 const abortAuditingButtonClass = "error-button";
-let auditRunning = false; // TODO use context instead
+const auditingContext = {
+    auditRunning: false,
+    webSocket: null
+};
 
 function selectAsset(index) {
     let assetSelected = false;
@@ -38,33 +42,43 @@ function addAsset(assetValue, assetName) {
 }
 
 function startOrAbortAuditing() {
-    if (!auditRunning) { // TODO ordering
-        auditRunning = true;
-        auditingStartStopButton.classList.remove(startAuditingButtonClass);
-        auditingStartStopButton.classList.add(abortAuditingButtonClass);
-        auditingStartStopButton.innerText = "Abort Audit";
+    if (!auditingContext.auditRunning) {
+        auditingStartStopButton.disabled = true;
 
         for (const child of availableAssetsForAudit.children) {
             child.disabled = true;
             child.setAttribute("disabled", "disabled");
         }
 
-        // TODO start audit
-    } else { // TODO ordering
-        auditRunning = false;
-        auditingStartStopButton.classList.remove(abortAuditingButtonClass);
-        auditingStartStopButton.classList.add(startAuditingButtonClass);
-        auditingStartStopButton.innerText = "Start Audit";
+        auditingOutputDiv.innerHTML = "";
 
-        for (const child of availableAssetsForAudit.children) {
-            child.disabled = false;
-            child.removeAttribute("disabled");
-        }
-        // TODO abort audit
+        // TODO use relative path, use selected asset
+        const webSocketUrl = "ws://localhost:8080/audit";
+
+        auditingContext.webSocket = connectToWebSocket(webSocketUrl, auditingOutputDiv, "{}");
+        auditingContext.webSocket.addEventListener("open", function () {
+            auditingContext.auditRunning = true;
+            auditingStartStopButton.classList.remove(startAuditingButtonClass);
+            auditingStartStopButton.classList.add(abortAuditingButtonClass);
+            auditingStartStopButton.innerText = "Abort Audit";
+            auditingStartStopButton.disabled = false;
+        });
+        auditingContext.webSocket.addEventListener("close", function () {
+            auditingContext.auditRunning = false;
+            auditingStartStopButton.classList.remove(abortAuditingButtonClass);
+            auditingStartStopButton.classList.add(startAuditingButtonClass);
+            auditingStartStopButton.innerText = "Start Audit";
+            auditingStartStopButton.disabled = false;
+
+            for (const child of availableAssetsForAudit.children) {
+                child.disabled = false;
+                child.removeAttribute("disabled");
+            }
+        });
+    } else {
+        auditingContext.webSocket.close();
     }
 }
-
-// TODO connect to web socket & handle messages
 
 // TODO remove this later and fetch assets from backend
 addAsset("asset1", "Asset1");

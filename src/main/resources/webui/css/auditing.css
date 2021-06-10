@@ -3,7 +3,7 @@
     height: 100%;
 }
 
-#auditing-content {
+#auditing-output-div {
     width: 60%;
     height: 100%;
     border-right: var(--border) solid var(--border-color);
