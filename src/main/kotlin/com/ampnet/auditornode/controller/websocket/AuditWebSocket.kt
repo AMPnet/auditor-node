@@ -145,7 +145,7 @@ class AuditWebSocket @Inject constructor(
             is RpcError -> webSocketApi.sendInfoMessage(RpcErrorInfoMessage)
         }
 
-        session.close(CloseReason.ABNORMAL_CLOSURE)
+        session.close(CloseReason.NORMAL)
     }
 
     private fun handleOnOpenSuccess(

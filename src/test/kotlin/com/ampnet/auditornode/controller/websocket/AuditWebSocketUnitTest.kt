@@ -129,7 +129,7 @@ class AuditWebSocketUnitTest : TestBase() {
         verify("web socket session was closed") {
             then(session)
                 .should(times(1))
-                .close(CloseReason.ABNORMAL_CLOSURE)
+                .close(CloseReason.NORMAL)
         }
     }
 
@@ -176,7 +176,7 @@ class AuditWebSocketUnitTest : TestBase() {
         verify("web socket session was closed") {
             then(session)
                 .should(times(1))
-                .close(CloseReason.ABNORMAL_CLOSURE)
+                .close(CloseReason.NORMAL)
         }
     }
 
@@ -228,7 +228,7 @@ class AuditWebSocketUnitTest : TestBase() {
         verify("web socket session was closed") {
             then(session)
                 .should(times(1))
-                .close(CloseReason.ABNORMAL_CLOSURE)
+                .close(CloseReason.NORMAL)
         }
     }
 
@@ -285,7 +285,7 @@ class AuditWebSocketUnitTest : TestBase() {
         verify("web socket session was closed") {
             then(session)
                 .should(times(1))
-                .close(CloseReason.ABNORMAL_CLOSURE)
+                .close(CloseReason.NORMAL)
         }
     }
 
@@ -349,7 +349,7 @@ class AuditWebSocketUnitTest : TestBase() {
         verify("web socket session was closed") {
             then(session)
                 .should(times(1))
-                .close(CloseReason.ABNORMAL_CLOSURE)
+                .close(CloseReason.NORMAL)
         }
     }
 
@@ -418,7 +418,7 @@ class AuditWebSocketUnitTest : TestBase() {
         verify("web socket session was closed") {
             then(session)
                 .should(times(1))
-                .close(CloseReason.ABNORMAL_CLOSURE)
+                .close(CloseReason.NORMAL)
         }
     }
 
