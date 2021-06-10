@@ -14,4 +14,12 @@ class NoOpIpfsUnitTest : TestBase() {
                 .isNull()
         }
     }
+
+    @Test
+    fun `must return null for linkToFile() call`() {
+        verify("null is returned") {
+            assertThat(NoOpIpfs.linkToFile(""))
+                .isNull()
+        }
+    }
 }

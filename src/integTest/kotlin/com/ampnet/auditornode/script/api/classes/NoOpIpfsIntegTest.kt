@@ -31,4 +31,18 @@ class NoOpIpfsIntegTest : TestBase() {
             assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
+
+    @Test
+    fun `must return null when linkToFile() is called`() {
+        verify("call is successful") {
+            @Language("JavaScript") val scriptSource = jsAssertions + """
+                function audit(auditData) {
+                    assertNull("Ipfs.linkToFile()", Ipfs.linkToFile("test"));
+                    return AuditResult.success();
+                }
+            """.trimIndent()
+            val result = service.evaluate(scriptSource, ExecutionContext.noOp)
+            assertThat(result).isRightContaining(SuccessfulAudit)
+        }
+    }
 }

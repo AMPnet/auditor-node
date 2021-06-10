@@ -16,4 +16,8 @@ class DirectoryBasedIpfs(private val directoryHash: IpfsHash, private val ipfsRe
                 ifRight = { it.content }
             )
     }
+
+    @Export
+    override fun linkToFile(fileName: String): String =
+        "/ipfs/${directoryHash.value}/$fileName"
 }

@@ -66,7 +66,6 @@ class LocalIpfsRepository @Inject constructor(
     override fun fetchTextFileFromDirectory(directoryHash: IpfsHash, fileName: String): Try<IpfsTextFile> =
         fetchFileFromDirectory(directoryHash, fileName, String::class.java, ::IpfsTextFile)
 
-
     override fun fetchBinaryFileFromDirectory(directoryHash: IpfsHash, fileName: String): Try<IpfsBinaryFile> =
         fetchFileFromDirectory(directoryHash, fileName, ByteArray::class.java, ::IpfsBinaryFile)
 }

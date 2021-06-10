@@ -34,4 +34,24 @@ class NoOpIpfsApiTest : ApiTestBase() {
             assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
         }
     }
+
+    @Test
+    fun `must execute script which uses linkToFile() call`() {
+        verify("null is returned") {
+            @Language("JavaScript") val scriptSource = jsAssertions + """
+                function audit(auditData) {
+                    assertNull("Ipfs.linkToFile()", Ipfs.linkToFile("example.js"));
+                    return AuditResult.success();
+                }
+            """.trimIndent()
+
+            val result = client.toBlocking().retrieve(
+                HttpRequest.POST("/script/execute", scriptSource).apply {
+                    contentType(MediaType.TEXT_PLAIN_TYPE)
+                }
+            )
+
+            assertThat(result).isJsonEqualTo(ExecuteScriptOkResponse(SuccessfulAudit))
+        }
+    }
 }

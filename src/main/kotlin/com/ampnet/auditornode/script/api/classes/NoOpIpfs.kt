@@ -8,4 +8,7 @@ object NoOpIpfs : Ipfs {
 
     @Export
     override fun getFile(fileName: String): String? = null
+
+    @Export
+    override fun linkToFile(fileName: String): String? = null
 }

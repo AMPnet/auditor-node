@@ -114,4 +114,47 @@ class DirectoryBasedIpfsApiTest : ApiTestWithPropertiesBase("ipfs-test-propertie
             client.close()
         }
     }
+
+    @Test
+    fun `must execute script which uses linkToFile() call`() {
+        val ipfsDirectoryHash = "testHash"
+        var storedScriptId: UUID? = null
+
+        suppose("script is stored for interactive execution") {
+            @Language("JavaScript") val scriptSource = jsAssertions + """
+                 function audit(auditData) {
+                     const fileName = "example.js";
+                     assertEquals(
+                         "Ipfs.linkToFile()",
+                         "/ipfs/$ipfsDirectoryHash/" + fileName,
+                         Ipfs.linkToFile(fileName)
+                     );
+                     return AuditResult.success();
+                }
+            """.trimIndent()
+
+            val result = client.toBlocking().retrieve(
+                HttpRequest.POST("${serverPath()}/script/store", scriptSource).apply {
+                    contentType(MediaType.TEXT_PLAIN_TYPE)
+                }
+            )
+
+            storedScriptId = result.parseScriptId()
+            assertThat(storedScriptId).isNotNull()
+        }
+
+        verify("correct files are returned") {
+            val client = webSocketClient.connect(
+                WebSocketTestClient::class.java,
+                "${webSocketPath()}/script/interactive/$storedScriptId?ipfs-directory=$ipfsDirectoryHash"
+            )
+                .blockingFirst()
+            client.assertNextMessage(ConnectedInfoMessage)
+            client.assertNextMessage(ReadInputJsonCommand())
+            client.send("{}")
+            client.assertNextMessage(ExecutingInfoMessage)
+            client.assertNextMessage(AuditResultResponse(SuccessfulAudit, null))
+            client.close()
+        }
+    }
 }
