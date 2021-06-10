@@ -9,6 +9,7 @@ import com.ampnet.auditornode.configuration.properties.ProgramArgumentPropertyNa
 import com.ampnet.auditornode.model.error.IpfsError.IpfsEmptyResponseError
 import com.ampnet.auditornode.model.error.IpfsError.IpfsHttpError
 import com.ampnet.auditornode.model.error.Try
+import com.ampnet.auditornode.persistence.model.IpfsBinaryFile
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.persistence.model.IpfsTextFile
 import com.ampnet.auditornode.persistence.repository.IpfsRepository
@@ -28,26 +29,43 @@ class GatewayIpfsRepository @Inject constructor(
     private val blockingHttpClient: BlockingHttpClient
 ) : IpfsRepository {
 
-    override fun fetchTextFile(hash: IpfsHash): Try<IpfsTextFile> =
+    private fun <R, F> fetchFile(hash: IpfsHash, bodyType: Class<R>, wrapper: (R) -> F): Try<F> =
         Either.catch {
             val fileUrl = ipfsProperties.gatewayUrl.replace("{ipfsHash}", hash.value)
             logger.info { "Fetching file from IPFS: GET $fileUrl" }
-            val request = HttpRequest.GET<String>(fileUrl)
-            blockingHttpClient.retrieve(request)
+            val request = HttpRequest.GET<R>(fileUrl)
+            blockingHttpClient.retrieve(request, bodyType)
         }
             .mapLeft { IpfsHttpError(it) }
             .flatMap { it?.right() ?: IpfsEmptyResponseError(hash).left() }
-            .map { IpfsTextFile(it) }
+            .map { wrapper(it) }
 
-    override fun fetchTextFileFromDirectory(directoryHash: IpfsHash, fileName: String): Try<IpfsTextFile> =
+    override fun fetchTextFile(hash: IpfsHash): Try<IpfsTextFile> =
+        fetchFile(hash, String::class.java, ::IpfsTextFile)
+
+    override fun fetchBinaryFile(hash: IpfsHash): Try<IpfsBinaryFile> =
+        fetchFile(hash, ByteArray::class.java, ::IpfsBinaryFile)
+
+    fun <R, F> fetchFromDirectory(
+        directoryHash: IpfsHash,
+        fileName: String,
+        bodyType: Class<R>,
+        wrapper: (R) -> F
+    ): Try<F> =
         Either.catch {
             val fileUrl = "${ipfsProperties.gatewayUrl.removeSuffix("/")}/$fileName"
                 .replace("{ipfsHash}", directoryHash.value)
             logger.info { "Fetching file from IPFS folder: GET $fileUrl" }
-            val request = HttpRequest.GET<String>(fileUrl)
-            blockingHttpClient.retrieve(request)
+            val request = HttpRequest.GET<R>(fileUrl)
+            blockingHttpClient.retrieve(request, bodyType)
         }
             .mapLeft { IpfsHttpError(it) }
             .flatMap { it?.right() ?: IpfsEmptyResponseError(directoryHash, fileName).left() }
-            .map { IpfsTextFile(it) }
+            .map { wrapper(it) }
+
+    override fun fetchTextFileFromDirectory(directoryHash: IpfsHash, fileName: String): Try<IpfsTextFile> =
+        fetchFromDirectory(directoryHash, fileName, String::class.java, ::IpfsTextFile)
+
+    override fun fetchBinaryFileFromDirectory(directoryHash: IpfsHash, fileName: String): Try<IpfsBinaryFile> =
+        fetchFromDirectory(directoryHash, fileName, ByteArray::class.java, ::IpfsBinaryFile)
 }

@@ -5,3 +5,6 @@ value class IpfsHash(val value: String)
 
 @JvmInline
 value class IpfsTextFile(val content: String)
+
+@JvmInline
+value class IpfsBinaryFile(val content: ByteArray)
