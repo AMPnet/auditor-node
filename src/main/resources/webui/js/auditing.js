@@ -1,8 +1,8 @@
 const availableAssetsForAudit = document.getElementById("assets-available-for-audit");
 const auditingStartStopButton = document.getElementById("auditing-start-stop-button");
 const selectedAsset = "selected-asset";
-const startAuditing = "start-auditing";
-const abortAuditing = "abort-auditing";
+const startAuditingButtonClass = "success-button";
+const abortAuditingButtonClass = "error-button";
 let auditRunning = false;
 
 function selectAsset(index) {
@@ -40,8 +40,8 @@ function addAsset(assetValue, assetName) {
 function startOrAbortAuditing() {
     if (!auditRunning) {
         auditRunning = true;
-        auditingStartStopButton.classList.remove(startAuditing);
-        auditingStartStopButton.classList.add(abortAuditing);
+        auditingStartStopButton.classList.remove(startAuditingButtonClass);
+        auditingStartStopButton.classList.add(abortAuditingButtonClass);
         auditingStartStopButton.innerText = "Abort Audit";
 
         for (const child of availableAssetsForAudit.children) {
@@ -52,8 +52,8 @@ function startOrAbortAuditing() {
         // TODO start audit
     } else {
         auditRunning = false;
-        auditingStartStopButton.classList.remove(abortAuditing);
-        auditingStartStopButton.classList.add(startAuditing);
+        auditingStartStopButton.classList.remove(abortAuditingButtonClass);
+        auditingStartStopButton.classList.add(startAuditingButtonClass);
         auditingStartStopButton.innerText = "Start Audit";
 
         for (const child of availableAssetsForAudit.children) {

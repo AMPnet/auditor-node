@@ -6,6 +6,8 @@
     --list-padding: 2.5pt;
     --action-button-font-size: 18pt;
     --font-size: 24pt;
+    --medium-font-size: 16pt;
+    --small-font-size: 10pt;
     --padding: 10pt;
     --border: 2pt;
     --border-color: #002E2C;
@@ -15,6 +17,7 @@
     --main-color-4: #8C9DCF;
     --main-color-5: #D81E5B;
     --main-color-6: #E95D8C;
+    --code-font-family: monospace;
 }
 
 body {
@@ -33,4 +36,39 @@ body {
 
 .hidden-div {
     display: none !important;
+}
+
+.large-button {
+    width: 75%;
+    border: none;
+    margin-top: 5%;
+    margin-left: 12.5%;
+    height: 7.5%;
+    padding: 0;
+    font-size: var(--action-button-font-size);
+    cursor: pointer;
+}
+
+.large-button:disabled {
+    cursor: not-allowed;
+}
+
+.success-button {
+    background: var(--main-color-1);
+    color: var(--main-color-2);
+}
+
+.success-button:disabled {
+    background: var(--main-color-4);
+    color: var(--main-color-2);
+}
+
+.error-button {
+    background: var(--main-color-5);
+    color: var(--main-color-2);
+}
+
+.error-button:disabled {
+    background: var(--main-color-6);
+    color: var(--main-color-2);
 }

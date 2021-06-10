@@ -5,8 +5,10 @@
         <link rel="stylesheet" href="css/main.css"><!-- TODO change path -->
         <link rel="stylesheet" href="css/navigation.css"><!-- TODO change path -->
         <link rel="stylesheet" href="css/auditing.css"><!-- TODO change path -->
+        <link rel="stylesheet" href="css/script-development.css"><!-- TODO change path -->
         <script type="text/javascript" src="js/navigation.js" defer></script><!-- TODO change path -->
         <script type="text/javascript" src="js/auditing.js" defer></script><!-- TODO change path -->
+        <script type="text/javascript" src="js/script-development.js" defer></script><!-- TODO change path -->
     </head>
     <body>
         <div class="navbar">
@@ -17,7 +19,7 @@
             <button class="navbar-metamask-button">?</button>
         </div>
         <div class="content-div">
-            <div id="auditing-div">
+            <div id="auditing-div" class="hidden-div">
                 <div id="auditing-content"></div>
                 <div id="auditing-assets">
                     <div class="available-assets-div">
@@ -27,13 +29,40 @@
                         <ul id="assets-available-for-audit"></ul>
                     </div>
                     <div>
-                        <button id="auditing-start-stop-button" class="start-auditing" onclick="startOrAbortAuditing();"
-                                disabled>Start Audit
+                        <button id="auditing-start-stop-button" class="large-button success-button"
+                                onclick="startOrAbortAuditing();" disabled>Start Audit
                         </button>
                     </div>
                 </div>
             </div>
-            <div id="script-development-div" class="hidden-div">Script Development</div>
+            <div id="script-development-div">
+                <div id="script-content"></div>
+                <div id="script-controls">
+                    <div>
+                        <button id="store-script-button" class="large-button success-button"
+                                onclick="storeAuditingScript();" disabled>Store Script
+                        </button><!-- TODO -->
+                    </div>
+                    <div class="script-ipfs-directory-div">
+                        <label for="script-ipfs-directory">IPFS Directory:</label>
+                    </div>
+                    <div>
+                        <input id="script-ipfs-directory" type="text" class="ipfs-hash-input"
+                               value="QmXXFKbcs8n2brZrs9rnbt8FUeow5NKJbHfqbzEWm28vnW">
+                    </div>
+                    <div class="script-input-json-div">
+                        <label for="script-input-json">Input JSON:</label>
+                    </div>
+                    <div>
+                        <textarea id="script-input-json" class="script-input-json-text-area">{}</textarea>
+                    </div>
+                    <div>
+                        <button id="script-start-stop-button" class="large-button success-button"
+                                onclick="startOrStopScript();" disabled>Start Script
+                        </button><!-- TODO -->
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 </html>
