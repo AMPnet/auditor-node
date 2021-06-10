@@ -3,9 +3,11 @@
         <title>Auditor Node</title>
         <meta charset="UTF-8">
         <link rel="stylesheet" href="css/main.css"><!-- TODO change path -->
+        <link rel="stylesheet" href="css/metamask.css"><!-- TODO change path -->
         <link rel="stylesheet" href="css/navigation.css"><!-- TODO change path -->
         <link rel="stylesheet" href="css/auditing.css"><!-- TODO change path -->
         <link rel="stylesheet" href="css/script-development.css"><!-- TODO change path -->
+        <script type="text/javascript" src="js/metamask.js" defer></script><!-- TODO change path -->
         <script type="text/javascript" src="js/navigation.js" defer></script><!-- TODO change path -->
         <script type="text/javascript" src="js/web-socket.js" defer></script><!-- TODO change path -->
         <script type="text/javascript" src="js/auditing.js" defer></script><!-- TODO change path -->
@@ -17,7 +19,11 @@
             <button id="script-development-nav" class="navbar-button"
                     onclick="selectScriptDevelopment();">Script Development
             </button>
-            <button class="navbar-metamask-button">?</button>
+            <button id="metamask-nav" class="navbar-metamask-button metamask-error" onclick="toggleMetamaskPanel();">?
+            </button>
+        </div>
+        <div id="metamask-div" hidden>
+            <p>MetaMask status unknown</p>
         </div>
         <div class="content-div">
             <div id="auditing-div">

@@ -39,13 +39,4 @@
 .navbar-metamask-button {
     width: 10%;
     border-right: none !important;
-    background: var(--main-color-2);
-    color: var(--main-color-3);
-}
-
-.navbar-metamask-button:hover {
-    background: var(--main-color-3);
-    color: var(--main-color-2);
-    border-top: none;
-    border-left: none;
 }
