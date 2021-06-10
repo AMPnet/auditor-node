@@ -2,16 +2,16 @@
     <head>
         <title>Auditor Node</title>
         <meta charset="UTF-8">
-        <link rel="stylesheet" href="css/main.css"><!-- TODO change path -->
-        <link rel="stylesheet" href="css/metamask.css"><!-- TODO change path -->
-        <link rel="stylesheet" href="css/navigation.css"><!-- TODO change path -->
-        <link rel="stylesheet" href="css/auditing.css"><!-- TODO change path -->
-        <link rel="stylesheet" href="css/script-development.css"><!-- TODO change path -->
-        <script type="text/javascript" src="js/metamask.js" defer></script><!-- TODO change path -->
-        <script type="text/javascript" src="js/navigation.js" defer></script><!-- TODO change path -->
-        <script type="text/javascript" src="js/web-socket.js" defer></script><!-- TODO change path -->
-        <script type="text/javascript" src="js/auditing.js" defer></script><!-- TODO change path -->
-        <script type="text/javascript" src="js/script-development.js" defer></script><!-- TODO change path -->
+        <link rel="stylesheet" href="/webui/css/main.css">
+        <link rel="stylesheet" href="/webui/css/metamask.css">
+        <link rel="stylesheet" href="/webui/css/navigation.css">
+        <link rel="stylesheet" href="/webui/css/auditing.css">
+        <link rel="stylesheet" href="/webui/css/script-development.css">
+        <script type="text/javascript" src="/webui/js/metamask.js" defer></script>
+        <script type="text/javascript" src="/webui/js/navigation.js" defer></script>
+        <script type="text/javascript" src="/webui/js/web-socket.js" defer></script>
+        <script type="text/javascript" src="/webui/js/auditing.js" defer></script>
+        <script type="text/javascript" src="/webui/js/script-development.js" defer></script>
     </head>
     <body>
         <div class="navbar">
@@ -27,7 +27,7 @@
         </div>
         <div class="content-div">
             <div id="auditing-div">
-                <div id="auditing-output-div"></div>
+                <div id="auditing-output-div" class="output-div"></div>
                 <div id="auditing-assets">
                     <div class="available-assets-div">
                         <label for="assets-available-for-audit">Assets available for audit</label>
@@ -68,7 +68,7 @@
                             <circle cx="150" cy="256" r="80" fill="currentColor"/>
                         </svg>
                     </div>
-                    <div id="script-output-div" class="hidden-script-content-div"></div>
+                    <div id="script-output-div" class="hidden-script-content-div output-div"></div>
                 </div>
                 <div id="script-controls">
                     <div>

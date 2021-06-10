@@ -204,7 +204,61 @@ function processResponseMessage(message, outputDiv) {
         const codeElement = document.createElement("code");
         codeElement.innerText = JSON.stringify(message.payload);
         outputDiv.appendChild(codeElement);
-        // TODO handle transaction sending
+
+        if ((message.payload.status === "SUCCESS" || message.payload.status === "FAILURE") && message.transaction &&
+            metamaskContext.status === metamaskReadyStatus) {
+
+            const transactionElement = document.createElement("p");
+            transactionElement.innerText = "Transaction:";
+            outputDiv.appendChild(transactionElement);
+
+            const transactionJson = document.createElement("code");
+            transactionJson.innerText = JSON.stringify(message.transaction);
+            outputDiv.appendChild(transactionJson);
+
+            const sendTransactionMessage = document.createElement("p");
+
+            if (message.payload.status === "SUCCESS") {
+                sendTransactionMessage.innerText = "Send successful audit transaction?";
+            } else {
+                sendTransactionMessage.innerText = "Send failed audit transaction?";
+            }
+
+            outputDiv.appendChild(sendTransactionMessage);
+
+            const sendTransactionButton = document.createElement("button");
+            const ignoreTransactionButton = document.createElement("button");
+
+            sendTransactionButton.onclick = async function () {
+                sendTransactionButton.disabled = true;
+                ignoreTransactionButton.disabled = true;
+
+                const transactionParameters = {
+                    to: message.transaction.to,
+                    from: ethereum.selectedAddress,
+                    value: '0x00',
+                    data: message.transaction.data
+                };
+
+                const txHash = await ethereum.request({
+                    method: 'eth_sendTransaction',
+                    params: [transactionParameters]
+                });
+
+                const txHashElement = document.createElement("p");
+                txHashElement.innerText = "Transaction hash: " + txHash;
+                outputDiv.appendChild(txHashElement);
+            }
+            sendTransactionButton.innerText = "Yes";
+            outputDiv.appendChild(sendTransactionButton);
+
+            ignoreTransactionButton.onclick = function () {
+                sendTransactionButton.disabled = true;
+                ignoreTransactionButton.disabled = true;
+            }
+            ignoreTransactionButton.innerText = "No";
+            outputDiv.appendChild(ignoreTransactionButton);
+        }
     } else {
         textElement.innerText += "Error: " + JSON.stringify(message.payload);
         outputDiv.appendChild(textElement);

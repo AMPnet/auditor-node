@@ -36,7 +36,7 @@ function storeAuditingScript() {
 
     const request = new XMLHttpRequest();
 
-    request.open("POST", "http://localhost:8080/script/store", true); // TODO use relative path
+    request.open("POST", "/script/store", true);
     request.setRequestHeader("Content-Type", "text/plain");
     request.onreadystatechange = function () {
         if (this.readyState === XMLHttpRequest.DONE) {
@@ -73,8 +73,7 @@ function startOrStopScript() {
         scriptOutputDiv.innerHTML = "";
 
         const ipfsDirectoryHash = (scriptIpfsDirectory.value ?? "").trim();
-        // TODO use relative path
-        let webSocketUrl = "ws://localhost:8080/script/interactive/" + scriptDevelopmentContext.scriptId;
+        let webSocketUrl = "ws://" + window.location.host + "/script/interactive/" + scriptDevelopmentContext.scriptId;
 
         if (ipfsDirectoryHash.length !== 0) {
             webSocketUrl += "?ipfs-directory=" + ipfsDirectoryHash.trim();

@@ -79,3 +79,29 @@ body {
     background: var(--main-color-6);
     color: var(--main-color-2);
 }
+
+.output-div {
+    color: var(--main-color-1);
+}
+
+.output-div button {
+    border: none;
+    margin: 1%;
+    padding: 1%;
+    font-size: var(--small-font-size);
+    cursor: pointer;
+    background: var(--main-color-1);
+    color: var(--main-color-2);
+}
+
+.output-div button:disabled {
+    background: var(--main-color-4);
+    color: var(--main-color-2);
+    cursor: not-allowed;
+}
+
+.output-div img {
+    margin-left: 10%;
+    width: 80%;
+    border: var(--border) solid var(--border-color);
+}

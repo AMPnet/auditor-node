@@ -54,8 +54,7 @@ function startOrAbortAuditing() {
 
         auditingOutputDiv.innerHTML = "";
 
-        // TODO use relative path
-        const webSocketUrl = "ws://localhost:8080/audit/" + auditingContext.assetContractAddress;
+        const webSocketUrl = "ws://" + window.location.host + "/audit/" + auditingContext.assetContractAddress;
 
         auditingContext.webSocket = connectToWebSocket(webSocketUrl, auditingOutputDiv, "{}");
         auditingContext.webSocket.addEventListener("open", function () {
@@ -85,7 +84,7 @@ function startOrAbortAuditing() {
 function fetchAssets() {
     const request = new XMLHttpRequest();
 
-    request.open("GET", "http://localhost:8080/assets/list", true); // TODO use relative path
+    request.open("GET", "/assets/list", true);
     request.onreadystatechange = function () {
         if (this.readyState === XMLHttpRequest.DONE) {
             if (this.status === 200) {
