@@ -8,7 +8,7 @@
     height: 100%;
     border-right: var(--border) solid var(--border-color);
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: hidden;
 }
 
 #script-controls {
@@ -17,6 +17,66 @@
     background: var(--main-color-2);
     overflow-x: hidden;
     overflow-y: auto;
+}
+
+#script-source-div {
+    height: 96%;
+    background: var(--main-color-2);
+    transition: height 0.5s ease-out;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#script-output-div {
+    height: 96%;
+    background: blue;
+    background: var(--main-color-2);
+    transition: height 0.5s ease-out;
+}
+
+.hidden-script-content-div {
+    height: 0 !important;
+    overflow: hidden;
+    transition: height 0.5s ease-out;
+}
+
+.script-screen-switcher {
+    width: 99%;
+    height: 2.5%;
+    background: var(--main-color-1);
+    color: var(--main-color-2);
+    margin: 0.5%;
+    font-size: 0.25rem;
+    text-align: center;
+    cursor: pointer;
+}
+
+.script-source-label-div {
+    color: var(--main-color-1);
+    line-height: var(--medium-font-size);
+    font-size: var(--medium-font-size);
+    text-align: center;
+    padding: var(--padding);
+}
+
+.script-source-text-area {
+    width: 75%;
+    min-width: 75%;
+    max-width: 75%;
+    margin-left: 12.5%;
+    height: 80%;
+    padding: var(--padding);
+    font-family: var(--code-font-family);
+    font-size: var(--small-font-size);
+    border: var(--border) solid var(--main-color-1);
+    background: var(--main-color-2);
+    color: var(--main-color-1);
+}
+
+.script-source-text-area:disabled {
+    cursor: not-allowed;
+    border: var(--border) solid var(--main-color-4);
+    color: var(--main-color-4);
 }
 
 .script-ipfs-directory-div {
@@ -66,4 +126,10 @@
     border: var(--border) solid var(--main-color-1);
     background: var(--main-color-2);
     color: var(--main-color-1);
+}
+
+.script-input-json-text-area:disabled {
+    cursor: not-allowed;
+    border: var(--border) solid var(--main-color-4);
+    color: var(--main-color-4);
 }

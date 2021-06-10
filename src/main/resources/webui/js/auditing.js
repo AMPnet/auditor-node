@@ -3,7 +3,7 @@ const auditingStartStopButton = document.getElementById("auditing-start-stop-but
 const selectedAsset = "selected-asset";
 const startAuditingButtonClass = "success-button";
 const abortAuditingButtonClass = "error-button";
-let auditRunning = false;
+let auditRunning = false; // TODO use context instead
 
 function selectAsset(index) {
     let assetSelected = false;
@@ -38,7 +38,7 @@ function addAsset(assetValue, assetName) {
 }
 
 function startOrAbortAuditing() {
-    if (!auditRunning) {
+    if (!auditRunning) { // TODO ordering
         auditRunning = true;
         auditingStartStopButton.classList.remove(startAuditingButtonClass);
         auditingStartStopButton.classList.add(abortAuditingButtonClass);
@@ -50,7 +50,7 @@ function startOrAbortAuditing() {
         }
 
         // TODO start audit
-    } else {
+    } else { // TODO ordering
         auditRunning = false;
         auditingStartStopButton.classList.remove(abortAuditingButtonClass);
         auditingStartStopButton.classList.add(startAuditingButtonClass);

@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="css/auditing.css"><!-- TODO change path -->
         <link rel="stylesheet" href="css/script-development.css"><!-- TODO change path -->
         <script type="text/javascript" src="js/navigation.js" defer></script><!-- TODO change path -->
+        <script type="text/javascript" src="js/web-socket.js" defer></script><!-- TODO change path -->
         <script type="text/javascript" src="js/auditing.js" defer></script><!-- TODO change path -->
         <script type="text/javascript" src="js/script-development.js" defer></script><!-- TODO change path -->
     </head>
@@ -36,19 +37,44 @@
                 </div>
             </div>
             <div id="script-development-div">
-                <div id="script-content"></div>
+                <div id="script-content">
+                    <div id="script-source-div">
+                        <div class="script-source-label-div">
+                            <label for="script-source">Script source:</label>
+                        </div>
+                        <div>
+                            <textarea id="script-source" class="script-source-text-area">function audit(auditData) {
+    return AuditResult.success();
+}</textarea>
+                        </div>
+                    </div>
+                    <div class="script-screen-switcher" onclick="toggleScriptSourceAndScriptOutput();">
+                        <svg aria-hidden="true" focusable="false" class="small-icon" xmlns="http://www.w3.org/2000/svg"
+                             viewBox="0 0 300 512">
+                            <circle cx="150" cy="256" r="80" fill="currentColor"/>
+                        </svg>
+                        <svg aria-hidden="true" focusable="false" class="small-icon" xmlns="http://www.w3.org/2000/svg"
+                             viewBox="0 0 300 512">
+                            <circle cx="150" cy="256" r="80" fill="currentColor"/>
+                        </svg>
+                        <svg aria-hidden="true" focusable="false" class="small-icon" xmlns="http://www.w3.org/2000/svg"
+                             viewBox="0 0 300 512">
+                            <circle cx="150" cy="256" r="80" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <div id="script-output-div" class="hidden-script-content-div"></div>
+                </div>
                 <div id="script-controls">
                     <div>
                         <button id="store-script-button" class="large-button success-button"
-                                onclick="storeAuditingScript();" disabled>Store Script
-                        </button><!-- TODO -->
+                                onclick="storeAuditingScript();">Store Script
+                        </button>
                     </div>
                     <div class="script-ipfs-directory-div">
                         <label for="script-ipfs-directory">IPFS Directory:</label>
                     </div>
                     <div>
-                        <input id="script-ipfs-directory" type="text" class="ipfs-hash-input"
-                               value="QmXXFKbcs8n2brZrs9rnbt8FUeow5NKJbHfqbzEWm28vnW">
+                        <input id="script-ipfs-directory" type="text" class="ipfs-hash-input">
                     </div>
                     <div class="script-input-json-div">
                         <label for="script-input-json">Input JSON:</label>
@@ -59,7 +85,7 @@
                     <div>
                         <button id="script-start-stop-button" class="large-button success-button"
                                 onclick="startOrStopScript();" disabled>Start Script
-                        </button><!-- TODO -->
+                        </button>
                     </div>
                 </div>
             </div>

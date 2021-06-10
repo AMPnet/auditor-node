@@ -53,6 +53,11 @@ body {
     cursor: not-allowed;
 }
 
+.small-icon {
+    width: 2.5vh;
+    height: 2.5vh;
+}
+
 .success-button {
     background: var(--main-color-1);
     color: var(--main-color-2);
