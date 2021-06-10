@@ -115,7 +115,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen(session)
+                controller.onOpen("", session) // TODO re-write test for dynamic assets
             }
 
             then(session)
@@ -162,7 +162,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen(session)
+                controller.onOpen("", session) // TODO re-write test for dynamic assets
             }
 
             then(session)
@@ -214,7 +214,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen(session)
+                controller.onOpen("", session) // TODO re-write test for dynamic assets
             }
 
             then(session)
@@ -271,7 +271,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen(session)
+                controller.onOpen("", session) // TODO re-write test for dynamic assets
             }
 
             then(session)
@@ -335,7 +335,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen(session)
+                controller.onOpen("", session) // TODO re-write test for dynamic assets
             }
 
             then(session)
@@ -404,7 +404,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen(session)
+                controller.onOpen("", session) // TODO re-write test for dynamic assets
             }
 
             then(session)
@@ -473,7 +473,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen(session)
+                controller.onOpen("", session) // TODO re-write test for dynamic assets
             }
 
             then(session)
@@ -580,7 +580,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen(session)
+                controller.onOpen("", session) // TODO re-write test for dynamic assets
             }
 
             then(session)
@@ -681,7 +681,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen(session)
+                controller.onOpen("", session) // TODO re-write test for dynamic assets
             }
 
             then(session)
