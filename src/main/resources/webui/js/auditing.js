@@ -6,6 +6,7 @@ const startAuditingButtonClass = "success-button";
 const abortAuditingButtonClass = "error-button";
 const auditingContext = {
     auditRunning: false,
+    assetContractAddress: null,
     webSocket: null
 };
 
@@ -18,6 +19,7 @@ function selectAsset(index) {
         if (i === index && !childElement.classList.contains(selectedAsset)) {
             childElement.classList.add(selectedAsset);
             assetSelected = true;
+            auditingContext.assetContractAddress = childElement.getAttribute("value");
         } else {
             childElement.classList.remove(selectedAsset);
         }
@@ -52,8 +54,8 @@ function startOrAbortAuditing() {
 
         auditingOutputDiv.innerHTML = "";
 
-        // TODO use relative path, use selected asset
-        const webSocketUrl = "ws://localhost:8080/audit";
+        // TODO use relative path
+        const webSocketUrl = "ws://localhost:8080/audit/" + auditingContext.assetContractAddress;
 
         auditingContext.webSocket = connectToWebSocket(webSocketUrl, auditingOutputDiv, "{}");
         auditingContext.webSocket.addEventListener("open", function () {
@@ -80,25 +82,22 @@ function startOrAbortAuditing() {
     }
 }
 
-// TODO remove this later and fetch assets from backend
-addAsset("asset1", "Asset1");
-addAsset("asset2", "Asset2");
-addAsset("asset3", "Asset3");
-addAsset("asset4", "Asset4");
-addAsset("asset5", "Asset5");
-addAsset("asset6", "Asset6");
-addAsset("asset7", "Asset7");
-addAsset("asset8", "Asset8");
-addAsset("asset9", "Asset9");
-addAsset("asset10", "Asset10");
-addAsset("asset11", "Asset11");
-addAsset("asset12", "Asset12");
-addAsset("asset13", "Asset13");
-addAsset("asset14", "Asset14");
-addAsset("asset15", "Asset15");
-addAsset("asset16", "Asset16");
-addAsset("asset17", "Asset17");
-addAsset("asset18", "Asset18");
-addAsset("asset19", "Asset19");
-addAsset("asset20", "Asset20");
-addAsset("asset21", "Asset21");
+function fetchAssets() {
+    const request = new XMLHttpRequest();
+
+    request.open("GET", "http://localhost:8080/assets/list", true); // TODO use relative path
+    request.onreadystatechange = function () {
+        if (this.readyState === XMLHttpRequest.DONE) {
+            if (this.status === 200) {
+                const responseJson = JSON.parse(this.responseText);
+
+                for (asset of responseJson.assets) {
+                    addAsset(asset.contractAddress, asset.name);
+                }
+            }
+        }
+    }
+    request.send();
+}
+
+fetchAssets();

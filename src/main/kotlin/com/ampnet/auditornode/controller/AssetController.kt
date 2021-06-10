@@ -18,7 +18,7 @@ class AssetController @Inject constructor(
         return AssetListResponse(
             listOf(
                 AssetResponse(
-                    name = "Example asset",
+                    name = "Example Asset",
                     contractAddress = auditorProperties.assetContractAddress
                 )
             )
