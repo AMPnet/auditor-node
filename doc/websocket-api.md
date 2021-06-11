@@ -42,8 +42,9 @@ socket client:
 
 ```json
 {
-    "messageType": "INFO",
-    "message": "notFound"
+    "messageType": "ERROR",
+    "error": "notFound",
+    "message": "Error details"
 }
 ```
 
@@ -64,8 +65,9 @@ start:
 
 ```json
 {
-    "messageType": "INFO",
-    "message": "invalidInputJson"
+    "messageType": "ERROR",
+    "error": "invalidInputJson",
+    "message": "Error details"
 }
 ```
 
@@ -114,8 +116,9 @@ before the script execution starts:
 
 ```json
 {
-    "messageType": "INFO",
-    "message": "invalidInputJson"
+    "messageType": "ERROR",
+    "error": "invalidInputJson",
+    "message": "Error details"
 }
 ```
 
@@ -123,8 +126,9 @@ before the script execution starts:
 
 ```json
 {
-    "messageType": "INFO",
-    "message": "rpcError"
+    "messageType": "ERROR",
+    "error": "rpcError",
+    "message": "Error details"
 }
 ```
 
@@ -132,8 +136,9 @@ before the script execution starts:
 
 ```json
 {
-    "messageType": "INFO",
-    "message": "ipfsReadError"
+    "messageType": "ERROR",
+    "error": "ipfsReadError",
+    "message": "Error details"
 }
 ```
 
@@ -148,7 +153,7 @@ These commands require some input from the user, which means that web socket cli
 available.
 
 <details>
-<summary><b>ReadInputJsonBoolean command</b></summary>
+<summary><b>ReadInputJson command</b></summary>
 
 Requests the script input JSON from the user. This message is sent only once when the script is being executed
 interactively - before the script is executed. Web socket message:
@@ -325,6 +330,115 @@ Requests rendering of the provided Markdown. Web socket message:
     "messageType": "COMMAND",
     "command": "renderMarkdown",
     "text": "## Markdown to render"
+}
+```
+
+No response should be sent by the web socket client.
+
+</details>
+
+## Web socket info messages
+
+Web socket messages which are purely informational. Web socket client should not respond to these messages.
+
+<details>
+<summary><b>Connected info message</b></summary>
+
+Sent after successfully opening the web socket connection. Web socket message:
+
+```json
+{
+    "messageType": "INFO",
+    "message": "connected"
+}
+```
+
+No response should be sent by the web socket client.
+
+</details>
+
+<details>
+<summary><b>Executing info message</b></summary>
+
+Send to indicate that the script execution has started. Web socket message:
+
+```json
+{
+    "messageType": "INFO",
+    "message": "executing"
+}
+```
+
+No response should be sent by the web socket client.
+
+</details>
+
+## Web socket error messages
+
+Web socket messages which indicate an error before the script execution has started. Web socket client should not
+respond to these messages.
+
+<details>
+<summary><b>NotFound error message</b></summary>
+
+Indicates that the requested script cannot be found. Web socket message:
+
+```json
+{
+    "messageType": "ERROR",
+    "error": "notFound",
+    "message": "Error details"
+}
+```
+
+No response should be sent by the web socket client.
+
+</details>
+
+<details>
+<summary><b>InvalidInputJson error message</b></summary>
+
+Indicates that the provided script input JSON is invalid. Web socket message:
+
+```json
+{
+    "messageType": "ERROR",
+    "error": "invalidInputJson",
+    "message": "Error details"
+}
+```
+
+No response should be sent by the web socket client.
+
+</details>
+
+<details>
+<summary><b>IpfsRead error message</b></summary>
+
+Indicates that IPFS is not reachable, or that a file cannot be found on IPFS. Web socket message:
+
+```json
+{
+    "messageType": "ERROR",
+    "error": "ipfsReadError",
+    "message": "Error details"
+}
+```
+
+No response should be sent by the web socket client.
+
+</details>
+
+<details>
+<summary><b>Rpc error message</b></summary>
+
+Indicates that RPC is not reachable, or that contract cannot be read. Web socket message:
+
+```json
+{
+    "messageType": "ERROR",
+    "error": "rpcError",
+    "message": "Error details"
 }
 ```
 
