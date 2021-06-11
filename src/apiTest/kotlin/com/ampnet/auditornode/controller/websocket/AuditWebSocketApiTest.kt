@@ -6,9 +6,9 @@ import com.ampnet.auditornode.model.websocket.AuditResultResponse
 import com.ampnet.auditornode.model.websocket.ConnectedInfoMessage
 import com.ampnet.auditornode.model.websocket.ErrorResponse
 import com.ampnet.auditornode.model.websocket.ExecutingInfoMessage
-import com.ampnet.auditornode.model.websocket.InvalidInputJsonInfoMessage
-import com.ampnet.auditornode.model.websocket.IpfsReadErrorInfoMessage
-import com.ampnet.auditornode.model.websocket.RpcErrorInfoMessage
+import com.ampnet.auditornode.model.websocket.InvalidInputJsonErrorMessage
+import com.ampnet.auditornode.model.websocket.IpfsReadErrorMessage
+import com.ampnet.auditornode.model.websocket.RpcErrorMessage
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.persistence.model.UnsignedTransaction
 import com.ampnet.auditornode.script.api.model.SuccessfulAudit
@@ -81,7 +81,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
-            client.assertNextMessage(RpcErrorInfoMessage)
+            client.assertNextMessage(RpcErrorMessage("Cannot connect to RPC: http://localhost:8090/rpc"))
             client.close()
         }
     }
@@ -126,7 +126,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
-            client.assertNextMessage(IpfsReadErrorInfoMessage)
+            client.assertNextMessage(IpfsReadErrorMessage("HTTP error while fetching file via IPFS"))
             client.close()
         }
     }
@@ -173,7 +173,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
-            client.assertNextMessage(InvalidInputJsonInfoMessage)
+            client.assertNextMessage(InvalidInputJsonErrorMessage("Error parsing JSON value: invalid json body"))
             client.close()
         }
     }
@@ -231,7 +231,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
-            client.assertNextMessage(RpcErrorInfoMessage)
+            client.assertNextMessage(RpcErrorMessage("Cannot connect to RPC: http://localhost:8090/rpc"))
             client.close()
         }
     }
@@ -310,7 +310,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
-            client.assertNextMessage(RpcErrorInfoMessage)
+            client.assertNextMessage(RpcErrorMessage("Cannot connect to RPC: http://localhost:8090/rpc"))
             client.close()
         }
     }
@@ -409,7 +409,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
-            client.assertNextMessage(IpfsReadErrorInfoMessage)
+            client.assertNextMessage(IpfsReadErrorMessage("HTTP error while fetching file via IPFS"))
             client.close()
         }
     }

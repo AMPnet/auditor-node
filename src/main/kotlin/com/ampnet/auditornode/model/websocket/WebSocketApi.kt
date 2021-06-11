@@ -17,6 +17,8 @@ class WebSocketApi(
 
     fun sendResponse(response: WebSocketResponse) = send(response)
 
+    fun sendErrorMessage(error: WebSocketErrorMessage) = send(error)
+
     private fun send(message: WebSocketMessage) {
         logger.debug { "Sending web socket message: $message" }
         session.sendSync(objectMapper.writeValueAsString(message))

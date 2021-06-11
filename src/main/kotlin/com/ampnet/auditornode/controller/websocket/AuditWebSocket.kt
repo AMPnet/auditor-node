@@ -21,10 +21,10 @@ import com.ampnet.auditornode.model.websocket.ExecutingInfoMessage
 import com.ampnet.auditornode.model.websocket.ExecutingState
 import com.ampnet.auditornode.model.websocket.FinishedState
 import com.ampnet.auditornode.model.websocket.InitState
-import com.ampnet.auditornode.model.websocket.InvalidInputJsonInfoMessage
-import com.ampnet.auditornode.model.websocket.IpfsReadErrorInfoMessage
+import com.ampnet.auditornode.model.websocket.InvalidInputJsonErrorMessage
+import com.ampnet.auditornode.model.websocket.IpfsReadErrorMessage
 import com.ampnet.auditornode.model.websocket.ReadyState
-import com.ampnet.auditornode.model.websocket.RpcErrorInfoMessage
+import com.ampnet.auditornode.model.websocket.RpcErrorMessage
 import com.ampnet.auditornode.model.websocket.WebSocketApi
 import com.ampnet.auditornode.persistence.model.AssetContractAddress
 import com.ampnet.auditornode.persistence.model.IpfsTextFile
@@ -140,9 +140,9 @@ class AuditWebSocket @Inject constructor(
 
     private fun handleOnOpenError(error: ApplicationError, session: WebSocketSession, webSocketApi: WebSocketApi) {
         when (error) {
-            is IpfsError -> webSocketApi.sendInfoMessage(IpfsReadErrorInfoMessage)
-            is ParseError -> webSocketApi.sendInfoMessage(InvalidInputJsonInfoMessage)
-            is RpcError -> webSocketApi.sendInfoMessage(RpcErrorInfoMessage)
+            is IpfsError -> webSocketApi.sendErrorMessage(IpfsReadErrorMessage(error.message))
+            is ParseError -> webSocketApi.sendErrorMessage(InvalidInputJsonErrorMessage(error.message))
+            is RpcError -> webSocketApi.sendErrorMessage(RpcErrorMessage(error.message))
         }
 
         session.close(CloseReason.NORMAL)

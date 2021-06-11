@@ -9,8 +9,8 @@ import com.ampnet.auditornode.model.websocket.AuditResultResponse
 import com.ampnet.auditornode.model.websocket.ConnectedInfoMessage
 import com.ampnet.auditornode.model.websocket.ErrorResponse
 import com.ampnet.auditornode.model.websocket.ExecutingInfoMessage
-import com.ampnet.auditornode.model.websocket.InvalidInputJsonInfoMessage
-import com.ampnet.auditornode.model.websocket.NotFoundInfoMessage
+import com.ampnet.auditornode.model.websocket.InvalidInputJsonErrorMessage
+import com.ampnet.auditornode.model.websocket.NotFoundErrorMessage
 import com.ampnet.auditornode.model.websocket.ReadInputJsonCommand
 import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import io.micronaut.http.HttpRequest
@@ -33,11 +33,12 @@ class InteractiveScriptWebSocketApiTest : ApiTestBase() {
     @Test
     fun `must return not found message for non-existent script`() {
         verify("correct web socket message is received") {
+            val scriptId = UUID.randomUUID()
             val client = webSocketClient
-                .connect(WebSocketTestClient::class.java, "/script/interactive/${UUID.randomUUID()}")
+                .connect(WebSocketTestClient::class.java, "/script/interactive/$scriptId")
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
-            client.assertNextMessage(NotFoundInfoMessage)
+            client.assertNextMessage(NotFoundErrorMessage("Script not found for ID: $scriptId"))
             client.close()
         }
     }
@@ -172,8 +173,8 @@ class InteractiveScriptWebSocketApiTest : ApiTestBase() {
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
             client.assertNextMessage(ReadInputJsonCommand())
-            client.send("invalid json")
-            client.assertNextMessage(InvalidInputJsonInfoMessage)
+            client.send("invalid json body")
+            client.assertNextMessage(InvalidInputJsonErrorMessage("Error parsing JSON value: invalid json body"))
             client.close()
         }
     }
