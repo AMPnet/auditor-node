@@ -14,7 +14,7 @@ class AssetController @Inject constructor(
 ) {
 
     @Get(value = "/list", produces = [MediaType.APPLICATION_JSON])
-    fun loadScript(): AssetListResponse { // TODO write actual implementation
+    fun listAssets(): AssetListResponse { // TODO write actual implementation
         return AssetListResponse(
             listOf(
                 AssetResponse(
