@@ -287,6 +287,15 @@ function processWebSocketMessage(rawMessage, outputDiv, webSocket, inputJson) {
     }
 }
 
+function scrollToLastChildElement(parent) {
+    setTimeout(
+        function () {
+            parent.children[parent.children.length - 1].scrollIntoView({behavior: "smooth", block: "end"});
+        },
+        100
+    );
+}
+
 function connectToWebSocket(webSocketUrl, outputDiv, inputJson) {
     const webSocket = new WebSocket(webSocketUrl);
 
@@ -294,16 +303,19 @@ function connectToWebSocket(webSocketUrl, outputDiv, inputJson) {
         const textElement = document.createElement("p");
         textElement.innerText = "Connection opened";
         outputDiv.appendChild(textElement);
+        scrollToLastChildElement(outputDiv);
     }
 
     webSocket.onmessage = function (event) {
         processWebSocketMessage(event.data, outputDiv, webSocket, inputJson);
+        scrollToLastChildElement(outputDiv);
     }
 
     webSocket.onclose = function () {
         const textElement = document.createElement("p");
         textElement.innerText = "Connection closed";
         outputDiv.appendChild(textElement);
+        scrollToLastChildElement(outputDiv);
     }
 
     return webSocket;
