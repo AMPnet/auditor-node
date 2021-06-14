@@ -23,18 +23,18 @@
             <button id="metamask-nav" class="navbar-metamask-button metamask-error" onclick="toggleMetamaskPanel();">?
             </button>
         </div>
-        <div id="metamask-div" hidden>
+        <div id="metamask-div" class="metamask" hidden>
             <p>MetaMask status unknown</p>
         </div>
-        <div class="content-div">
-            <div id="auditing-div">
-                <div id="auditing-output-div" class="output-div"></div>
-                <div id="auditing-assets">
-                    <div class="available-assets-div">
+        <div class="content">
+            <div id="auditing-div" class="auditing">
+                <div id="auditing-output-div" class="auditing-output output"></div>
+                <div id="auditing-assets" class="auditing-assets">
+                    <div class="available-assets">
                         <label for="assets-available-for-audit">Assets available for audit</label>
                     </div>
                     <div>
-                        <ul id="assets-available-for-audit"></ul>
+                        <ul id="assets-available-for-audit" class="assets-available-for-audit"></ul>
                     </div>
                     <div>
                         <button id="auditing-start-stop-button" class="large-button success-button"
@@ -43,10 +43,10 @@
                     </div>
                 </div>
             </div>
-            <div id="script-development-div" class="hidden-div">
-                <div id="script-content">
-                    <div id="script-source-div">
-                        <div class="script-source-label-div">
+            <div id="script-development-div" class="script-development hidden">
+                <div id="script-content" class="script-content">
+                    <div id="script-source-div" class="script-source">
+                        <div class="script-source-label">
                             <label for="script-source">Script source:</label>
                         </div>
                         <div>
@@ -69,21 +69,21 @@
                             <circle cx="150" cy="256" r="80" fill="currentColor"/>
                         </svg>
                     </div>
-                    <div id="script-output-div" class="hidden-script-content-div output-div"></div>
+                    <div id="script-output-div" class="script-output hidden-script-content output"></div>
                 </div>
-                <div id="script-controls">
+                <div id="script-controls" class="script-controls">
                     <div>
                         <button id="store-script-button" class="large-button success-button"
                                 onclick="storeAuditingScript();">Store Script
                         </button>
                     </div>
-                    <div class="script-ipfs-directory-div">
+                    <div class="script-ipfs-directory">
                         <label for="script-ipfs-directory">IPFS Directory:</label>
                     </div>
                     <div>
                         <input id="script-ipfs-directory" type="text" class="ipfs-hash-input">
                     </div>
-                    <div class="script-input-json-div">
+                    <div class="script-input-json">
                         <label for="script-input-json">Input JSON:</label>
                     </div>
                     <div>

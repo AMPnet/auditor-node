@@ -5,7 +5,7 @@ const scriptSource = document.getElementById("script-source");
 const scriptInputJson = document.getElementById("script-input-json");
 const scriptIpfsDirectory = document.getElementById("script-ipfs-directory");
 const scriptStartStopButton = document.getElementById("script-start-stop-button");
-const hiddenScriptContentDiv = "hidden-script-content-div";
+const hiddenScriptContentClass = "hidden-script-content";
 const startScriptButtonClass = "success-button";
 const stopScriptButtonClass = "error-button";
 const scriptDevelopmentContext = {
@@ -15,8 +15,8 @@ const scriptDevelopmentContext = {
 };
 
 function toggleScriptSourceAndScriptOutput() {
-    scriptSourceDiv.classList.toggle(hiddenScriptContentDiv);
-    scriptOutputDiv.classList.toggle(hiddenScriptContentDiv);
+    scriptSourceDiv.classList.toggle(hiddenScriptContentClass);
+    scriptOutputDiv.classList.toggle(hiddenScriptContentClass);
 }
 
 function checkInputJson(event) {
@@ -65,9 +65,9 @@ function startOrStopScript() {
         scriptIpfsDirectory.disabled = true;
         scriptStartStopButton.disabled = true;
 
-        if (scriptOutputDiv.classList.contains(hiddenScriptContentDiv)) {
-            scriptSourceDiv.classList.add(hiddenScriptContentDiv);
-            scriptOutputDiv.classList.remove(hiddenScriptContentDiv);
+        if (scriptOutputDiv.classList.contains(hiddenScriptContentClass)) {
+            scriptSourceDiv.classList.add(hiddenScriptContentClass);
+            scriptOutputDiv.classList.remove(hiddenScriptContentClass);
         }
 
         scriptOutputDiv.innerHTML = "";

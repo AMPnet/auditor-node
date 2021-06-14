@@ -1,4 +1,4 @@
-#metamask-div {
+.metamask {
     position: absolute;
     right: 0;
     width: 30%;
@@ -11,11 +11,11 @@
     border-top: none;
 }
 
-#metamask-div > p {
+.metamask > p {
     text-align: center;
 }
 
-#metamask-div > button {
+.metamask > button {
     margin-top: 0;
     margin-bottom: 5%;
 }

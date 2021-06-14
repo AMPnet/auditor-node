@@ -1,9 +1,9 @@
-#auditing-div {
+.auditing {
     display: flex;
     height: 100%;
 }
 
-#auditing-output-div {
+.auditing-output {
     width: 60%;
     height: 100%;
     border-right: var(--border) solid var(--border-color);
@@ -11,7 +11,7 @@
     overflow-y: auto;
 }
 
-#auditing-assets {
+.auditing-assets {
     width: 40%;
     height: 100%;
     background: var(--main-color-2);
@@ -19,7 +19,7 @@
     overflow-y: auto;
 }
 
-.available-assets-div {
+.available-assets {
     color: var(--main-color-1);
     line-height: var(--font-size);
     font-size: var(--font-size);
@@ -27,7 +27,7 @@
     padding: var(--padding);
 }
 
-#assets-available-for-audit {
+.assets-available-for-audit {
     border: var(--border) solid var(--border-color);
     width: 80%;
     padding: 0;
@@ -39,7 +39,7 @@
     background: var(--main-color-2);
 }
 
-#assets-available-for-audit > li {
+.assets-available-for-audit > li {
     display: flex;
     text-align: left;
     padding: var(--list-padding);
@@ -51,24 +51,24 @@
     cursor: pointer;
 }
 
-#assets-available-for-audit > li:hover {
+.assets-available-for-audit > li:hover {
     background: var(--main-color-4);
     color: var(--main-color-2);
 }
 
-#assets-available-for-audit > li.selected-asset {
+.assets-available-for-audit > li.selected-asset {
     background: var(--main-color-1);
     color: var(--main-color-2);
 
 }
 
-#assets-available-for-audit > li[disabled] {
+.assets-available-for-audit > li[disabled] {
     background: var(--main-color-2);
     color: var(--main-color-4);
     cursor: not-allowed;
 }
 
-#assets-available-for-audit > li[disabled].selected-asset {
+.assets-available-for-audit > li[disabled].selected-asset {
     background: var(--main-color-4);
     color: var(--main-color-2);
 }

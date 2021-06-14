@@ -29,6 +29,18 @@ class GatewayIpfsRepository @Inject constructor(
     private val blockingHttpClient: BlockingHttpClient
 ) : IpfsRepository {
 
+    override fun fetchTextFile(hash: IpfsHash): Try<IpfsTextFile> =
+        fetchFile(hash, String::class.java, ::IpfsTextFile)
+
+    override fun fetchBinaryFile(hash: IpfsHash): Try<IpfsBinaryFile> =
+        fetchFile(hash, ByteArray::class.java, ::IpfsBinaryFile)
+
+    override fun fetchTextFileFromDirectory(directoryHash: IpfsHash, fileName: String): Try<IpfsTextFile> =
+        fetchFromDirectory(directoryHash, fileName, String::class.java, ::IpfsTextFile)
+
+    override fun fetchBinaryFileFromDirectory(directoryHash: IpfsHash, fileName: String): Try<IpfsBinaryFile> =
+        fetchFromDirectory(directoryHash, fileName, ByteArray::class.java, ::IpfsBinaryFile)
+
     private fun <R, F> fetchFile(hash: IpfsHash, bodyType: Class<R>, wrapper: (R) -> F): Try<F> =
         Either.catch {
             val fileUrl = ipfsProperties.gatewayUrl.replace("{ipfsHash}", hash.value)
@@ -40,13 +52,7 @@ class GatewayIpfsRepository @Inject constructor(
             .flatMap { it?.right() ?: IpfsEmptyResponseError(hash).left() }
             .map { wrapper(it) }
 
-    override fun fetchTextFile(hash: IpfsHash): Try<IpfsTextFile> =
-        fetchFile(hash, String::class.java, ::IpfsTextFile)
-
-    override fun fetchBinaryFile(hash: IpfsHash): Try<IpfsBinaryFile> =
-        fetchFile(hash, ByteArray::class.java, ::IpfsBinaryFile)
-
-    fun <R, F> fetchFromDirectory(
+    private fun <R, F> fetchFromDirectory(
         directoryHash: IpfsHash,
         fileName: String,
         bodyType: Class<R>,
@@ -62,10 +68,4 @@ class GatewayIpfsRepository @Inject constructor(
             .mapLeft { IpfsHttpError(it) }
             .flatMap { it?.right() ?: IpfsEmptyResponseError(directoryHash, fileName).left() }
             .map { wrapper(it) }
-
-    override fun fetchTextFileFromDirectory(directoryHash: IpfsHash, fileName: String): Try<IpfsTextFile> =
-        fetchFromDirectory(directoryHash, fileName, String::class.java, ::IpfsTextFile)
-
-    override fun fetchBinaryFileFromDirectory(directoryHash: IpfsHash, fileName: String): Try<IpfsBinaryFile> =
-        fetchFromDirectory(directoryHash, fileName, ByteArray::class.java, ::IpfsBinaryFile)
 }

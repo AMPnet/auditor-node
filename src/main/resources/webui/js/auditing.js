@@ -1,7 +1,7 @@
 const availableAssetsForAudit = document.getElementById("assets-available-for-audit");
 const auditingStartStopButton = document.getElementById("auditing-start-stop-button");
 const auditingOutputDiv = document.getElementById("auditing-output-div");
-const selectedAsset = "selected-asset";
+const selectedAssetClass = "selected-asset";
 const startAuditingButtonClass = "success-button";
 const abortAuditingButtonClass = "error-button";
 const auditingContext = {
@@ -16,12 +16,12 @@ function selectAsset(index) {
     for (let i = 0; i < availableAssetsForAudit.children.length; i++) {
         const childElement = availableAssetsForAudit.children[i];
 
-        if (i === index && !childElement.classList.contains(selectedAsset)) {
-            childElement.classList.add(selectedAsset);
+        if (i === index && !childElement.classList.contains(selectedAssetClass)) {
+            childElement.classList.add(selectedAssetClass);
             assetSelected = true;
             auditingContext.assetContractAddress = childElement.getAttribute("value");
         } else {
-            childElement.classList.remove(selectedAsset);
+            childElement.classList.remove(selectedAssetClass);
         }
     }
 

@@ -185,7 +185,7 @@ function processCommandMessage(message, outputDiv, webSocket, inputJson) {
             render(message.html, "innerHTML", "div", outputDiv);
             break;
         case "renderMarkdown":
-            render(message.html, "innerText", "pre", outputDiv);
+            render(message.markdown, "innerText", "pre", outputDiv);
             break;
         default:
             const textElement = document.createElement("p");
@@ -263,7 +263,6 @@ function processResponseMessage(message, outputDiv) {
         textElement.innerText += "Error: " + JSON.stringify(message.payload);
         outputDiv.appendChild(textElement);
     }
-
 }
 
 function processWebSocketMessage(rawMessage, outputDiv, webSocket, inputJson) {

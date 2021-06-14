@@ -1,8 +1,8 @@
 const metamaskNav = document.getElementById("metamask-nav");
 const metamaskDiv = document.getElementById("metamask-div");
-const metamaskError = "metamask-error";
-const metamaskWarning = "metamask-warning";
-const metamaskOk = "metamask-ok";
+const metamaskErrorClass = "metamask-error";
+const metamaskWarningClass = "metamask-warning";
+const metamaskOkClass = "metamask-ok";
 const metamaskNotInstalledStatus = "NOT_INSTALLED";
 const metamaskNotConnectedStatus = "NOT_CONNECTED";
 const metamaskReadyStatus = "READY";
@@ -27,8 +27,8 @@ function checkMetamask() {
         metamaskDiv.appendChild(messageElement);
     } else if (ethereum.selectedAddress === null) {
         metamaskContext.status = metamaskNotConnectedStatus;
-        metamaskNav.classList.remove(metamaskError);
-        metamaskNav.classList.add(metamaskWarning);
+        metamaskNav.classList.remove(metamaskErrorClass);
+        metamaskNav.classList.add(metamaskWarningClass);
         metamaskNav.innerText = "●";
 
         metamaskDiv.innerHTML = "";
@@ -50,8 +50,8 @@ function checkMetamask() {
         metamaskDiv.appendChild(connectButton);
     } else {
         metamaskContext.status = metamaskReadyStatus;
-        metamaskNav.classList.remove(metamaskError);
-        metamaskNav.classList.add(metamaskOk);
+        metamaskNav.classList.remove(metamaskErrorClass);
+        metamaskNav.classList.add(metamaskOkClass);
         metamaskNav.innerText = "✓";
 
         metamaskDiv.innerHTML = "";

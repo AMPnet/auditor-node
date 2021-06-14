@@ -1,9 +1,9 @@
-#script-development-div {
+.script-development {
     display: flex;
     height: 100%;
 }
 
-#script-content {
+.script-content {
     width: 60%;
     height: 100%;
     border-right: var(--border) solid var(--border-color);
@@ -11,7 +11,7 @@
     overflow-y: hidden;
 }
 
-#script-controls {
+.script-controls {
     width: 40%;
     height: 100%;
     background: var(--main-color-2);
@@ -19,7 +19,7 @@
     overflow-y: auto;
 }
 
-#script-source-div {
+.script-source {
     height: 96%;
     background: var(--main-color-2);
     transition: height 0.5s ease-out;
@@ -27,14 +27,14 @@
     overflow-y: auto;
 }
 
-#script-output-div {
+.script-output {
     height: 96%;
     background: blue;
     background: var(--main-color-2);
     transition: height 0.5s ease-out;
 }
 
-.hidden-script-content-div {
+.hidden-script-content {
     height: 0 !important;
     overflow: hidden;
     transition: height 0.5s ease-out;
@@ -51,7 +51,7 @@
     cursor: pointer;
 }
 
-.script-source-label-div {
+.script-source-label {
     color: var(--main-color-1);
     line-height: var(--medium-font-size);
     font-size: var(--medium-font-size);
@@ -79,7 +79,7 @@
     color: var(--main-color-4);
 }
 
-.script-ipfs-directory-div {
+.script-ipfs-directory {
     color: var(--main-color-1);
     line-height: var(--medium-font-size);
     font-size: var(--medium-font-size);
@@ -87,7 +87,7 @@
     padding: var(--padding);
 }
 
-.script-input-json-div {
+.script-input-json {
     color: var(--main-color-1);
     line-height: var(--medium-font-size);
     font-size: var(--medium-font-size);
