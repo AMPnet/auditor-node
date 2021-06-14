@@ -107,3 +107,12 @@ body {
     display: block;
     border: var(--border) solid var(--border-color);
 }
+
+.output table, .output th, .output tr, .output td {
+    border: 1px solid var(--border-color);
+    border-collapse: collapse;
+}
+
+.output th, .output tr, .output td {
+    padding: var(--padding);
+}
