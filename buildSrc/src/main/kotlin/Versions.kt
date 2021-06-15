@@ -39,5 +39,6 @@ object Versions {
         const val assertk = "0.24"
         const val micronautTestCore = "2.3.6"
         const val wireMock = "2.27.2"
+        const val testContainers = "1.15.3"
     }
 }
