@@ -15,13 +15,20 @@ function abortOrInvalidateAudit(message) {
 function audit(auditData) {
     Output.renderHtml(Ipfs.getFile("step-1.html"));
     Input.button("Continue");
-    Output.renderHtml(Ipfs.getFile("step-2.html"));
+    Output.renderHtml(
+        Ipfs.getFile("step-2.html")
+            .replace(/{image1}/g, Ipfs.linkToFile("step-2.png"))
+    );
 
     if (!Input.readBoolean("Is everything as described above?")) {
         return abortAudit("Audit aborted before validation");
     }
 
-    Output.renderHtml(Ipfs.getFile("step-3.html"));
+    Output.renderHtml(
+        Ipfs.getFile("step-3.html")
+            .replace(/{image1}/g, Ipfs.linkToFile("step-3-1.png"))
+            .replace(/{image2}/g, Ipfs.linkToFile("step-3-2.png"))
+    );
 
     if (!Input.readBoolean("Does the search prompt look like described above?")) {
         return abortAudit("Audit aborted before cadastral office was found");
@@ -30,13 +37,20 @@ function audit(auditData) {
     Output.renderHtml(
         Ipfs.getFile("step-4.html")
             .replace(/{cadastralOffice}/g, auditData.assetInfo.cadastralOffice)
+            .replace(/{image1}/g, Ipfs.linkToFile("step-4-1.png"))
+            .replace(/{image2}/g, Ipfs.linkToFile("step-4-2.png"))
+            .replace(/{image3}/g, Ipfs.linkToFile("step-4-3.png"))
     );
 
     if (!Input.readBoolean("Did you manage to find the requested value?")) {
         return abortOrInvalidateAudit("Cadastral office not found");
     }
 
-    Output.renderHtml(Ipfs.getFile("step-5.html"));
+    Output.renderHtml(
+        Ipfs.getFile("step-5.html")
+            .replace(/{image1}/g, Ipfs.linkToFile("step-5-1.png"))
+            .replace(/{image2}/g, Ipfs.linkToFile("step-5-2.png"))
+    );
 
     if (!Input.readBoolean("Does the search prompt look like described above?")) {
         return abortAudit("Audit aborted before municipality was found");
@@ -46,6 +60,9 @@ function audit(auditData) {
         Ipfs.getFile("step-6.html")
             .replace(/{cadastralMunicipalityName}/g, auditData.assetInfo.cadastralMunicipalityName)
             .replace(/{cadastralMunicipalityNumber}/g, auditData.assetInfo.cadastralMunicipalityNumber)
+            .replace(/{image1}/g, Ipfs.linkToFile("step-6-1.png"))
+            .replace(/{image2}/g, Ipfs.linkToFile("step-6-2.png"))
+            .replace(/{image3}/g, Ipfs.linkToFile("step-6-3.png"))
     );
 
     if (!Input.readBoolean("Did you manage to find the requested value?")) {
@@ -56,13 +73,19 @@ function audit(auditData) {
         Ipfs.getFile("step-7.html")
             .replace(/{parcelNumber}/g, auditData.assetInfo.parcelNumber)
             .replace(/{parcelSubNumber}/g, auditData.assetInfo.parcelSubNumber)
+            .replace(/{image1}/g, Ipfs.linkToFile("step-7-1.png"))
+            .replace(/{image2}/g, Ipfs.linkToFile("step-7-2.png"))
+            .replace(/{image3}/g, Ipfs.linkToFile("step-7-3.png"))
     );
 
     if (!Input.readBoolean("Does the first table below the input fields show any values after passing the captcha?")) {
         return abortOrInvalidateAudit("Asset info not found");
     }
 
-    Output.renderHtml(Ipfs.getFile("step-8.html"));
+    Output.renderHtml(
+        Ipfs.getFile("step-8.html")
+            .replace(/{image1}/g, Ipfs.linkToFile("step-8.png"))
+    );
 
     if (!Input.readBoolean("Do you see the document after clicking on the button?")) {
         return abortOrInvalidateAudit("Ownership document not found");
@@ -85,7 +108,7 @@ function audit(auditData) {
             .replace(/{tableRows}/g, tableRows)
     );
 
-    if (!Input.readBoolean("Do the document contain the required data?")) {
+    if (!Input.readBoolean("Does the document contain the required data?")) {
         return abortOrInvalidateAudit("Ownership not confirmed");
     }
 

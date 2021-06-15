@@ -102,6 +102,11 @@ content, and the auditor will execute it. To run scripts interactively, web sock
 documentation located in `doc/websocket-api.md` for more info. There is also an example HTML page for running scripts
 interactively located in `examples/interactive-script.html`.
 
+## Web UI
+
+Auditor node offers basic web UI for purposes of running auditing scripts and script development. The UI is available
+at the `/webui` endpoint when the application is running.
+
 ## Program arguments
 
 | Argument | Description | Default value |

@@ -1,0 +1,118 @@
+:root {
+    --navbar-font-size: 36pt;
+    --navbar-button-padding: 5pt;
+    --navbar-button-border: 2pt;
+    --list-font-size: 18pt;
+    --list-padding: 2.5pt;
+    --action-button-font-size: 18pt;
+    --font-size: 24pt;
+    --medium-font-size: 16pt;
+    --small-font-size: 10pt;
+    --padding: 10pt;
+    --border: 2pt;
+    --border-color: #002E2C;
+    --main-color-1: #526CB7;
+    --main-color-2: #FCFCFC;
+    --main-color-3: #F0544F;
+    --main-color-4: #8C9DCF;
+    --main-color-5: #D81E5B;
+    --main-color-6: #E95D8C;
+    --main-color-7: #FDDD0D;
+    --main-color-8: #3ECC76;
+    --code-font-family: monospace;
+}
+
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    background: var(--main-color-2);
+}
+
+.content {
+    width: 100%;
+    height: calc(100% - var(--navbar-button-border) - 2 * var(--navbar-button-padding) - var(--navbar-font-size));
+    margin: 0;
+    padding: 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.large-button {
+    width: 75%;
+    border: none;
+    margin-top: 5%;
+    margin-left: 12.5%;
+    height: 7.5%;
+    padding: 0;
+    font-size: var(--action-button-font-size);
+    cursor: pointer;
+}
+
+.large-button:disabled {
+    cursor: not-allowed;
+}
+
+.small-icon {
+    width: 2.5vh;
+    height: 2.5vh;
+}
+
+.success-button {
+    background: var(--main-color-1);
+    color: var(--main-color-2);
+}
+
+.success-button:disabled {
+    background: var(--main-color-4);
+    color: var(--main-color-2);
+}
+
+.error-button {
+    background: var(--main-color-5);
+    color: var(--main-color-2);
+}
+
+.error-button:disabled {
+    background: var(--main-color-6);
+    color: var(--main-color-2);
+}
+
+.output {
+    color: var(--main-color-1);
+}
+
+.output button {
+    border: none;
+    margin: 1%;
+    padding: 1%;
+    font-size: var(--small-font-size);
+    cursor: pointer;
+    background: var(--main-color-1);
+    color: var(--main-color-2);
+}
+
+.output button:disabled {
+    background: var(--main-color-4);
+    color: var(--main-color-2);
+    cursor: not-allowed;
+}
+
+.output img {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 80%;
+    display: block;
+    border: var(--border) solid var(--border-color);
+}
+
+.output table, .output th, .output tr, .output td {
+    border: 1px solid var(--border-color);
+    border-collapse: collapse;
+}
+
+.output th, .output tr, .output td {
+    padding: var(--padding);
+}

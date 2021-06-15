@@ -155,7 +155,7 @@ class InteractiveScriptWebSocketUnitTest : TestBase() {
         verify("web socket session was closed and no session variables are set") {
             then(session)
                 .should(times(1))
-                .close(CloseReason.ABNORMAL_CLOSURE)
+                .close(CloseReason.NORMAL)
             then(sessionAttributes)
                 .shouldHaveNoInteractions()
         }
@@ -360,7 +360,7 @@ class InteractiveScriptWebSocketUnitTest : TestBase() {
         verify("web socket session was closed") {
             then(session)
                 .should(times(1))
-                .close(CloseReason.ABNORMAL_CLOSURE)
+                .close(CloseReason.NORMAL)
         }
     }
 

@@ -1,0 +1,76 @@
+.auditing {
+    display: flex;
+    height: 100%;
+}
+
+.auditing-output {
+    width: 58%;
+    height: 100%;
+    padding-left: 1%;
+    padding-right: 1%;
+    border-right: var(--border) solid var(--border-color);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.auditing-assets {
+    width: 40%;
+    height: 100%;
+    background: var(--main-color-2);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.available-assets {
+    color: var(--main-color-1);
+    line-height: var(--font-size);
+    font-size: var(--font-size);
+    text-align: center;
+    padding: var(--padding);
+}
+
+.assets-available-for-audit {
+    border: var(--border) solid var(--border-color);
+    width: 80%;
+    padding: 0;
+    margin: 0;
+    margin-left: 10%;
+    height: 70%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: var(--main-color-2);
+}
+
+.assets-available-for-audit > li {
+    display: flex;
+    text-align: left;
+    padding: var(--list-padding);
+    font-size: var(--list-font-size);
+    height: var(--list-font-size);
+    overflow: hidden;
+    background: var(--main-color-2);
+    color: var(--main-color-4);
+    cursor: pointer;
+}
+
+.assets-available-for-audit > li:hover {
+    background: var(--main-color-4);
+    color: var(--main-color-2);
+}
+
+.assets-available-for-audit > li.selected-asset {
+    background: var(--main-color-1);
+    color: var(--main-color-2);
+
+}
+
+.assets-available-for-audit > li[disabled] {
+    background: var(--main-color-2);
+    color: var(--main-color-4);
+    cursor: not-allowed;
+}
+
+.assets-available-for-audit > li[disabled].selected-asset {
+    background: var(--main-color-4);
+    color: var(--main-color-2);
+}

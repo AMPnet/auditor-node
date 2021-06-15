@@ -1,0 +1,51 @@
+.metamask {
+    position: absolute;
+    right: 0;
+    width: 30%;
+    padding-right: var(--padding);
+    padding-left: var(--padding);
+    font-size: var(--medium-font-size);
+    background: var(--main-color-2);
+    border: var(--border) solid var(--border-color);
+    border-right: none;
+    border-top: none;
+}
+
+.metamask > p {
+    text-align: center;
+}
+
+.metamask > button {
+    margin-top: 0;
+    margin-bottom: 5%;
+}
+
+.metamask-error {
+    background: var(--main-color-3);
+    color: var(--main-color-2);
+}
+
+.metamask-error:hover {
+    background: var(--main-color-2);
+    color: var(--main-color-3);
+}
+
+.metamask-warning {
+    background: var(--main-color-7);
+    color: var(--main-color-2);
+}
+
+.metamask-warning:hover {
+    background: var(--main-color-2);
+    color: var(--main-color-7);
+}
+
+.metamask-ok {
+    background: var(--main-color-8);
+    color: var(--main-color-2);
+}
+
+.metamask-ok:hover {
+    background: var(--main-color-2);
+    color: var(--main-color-8);
+}

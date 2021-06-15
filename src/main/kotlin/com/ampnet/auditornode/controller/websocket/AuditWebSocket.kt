@@ -41,6 +41,7 @@ import com.ampnet.auditornode.service.RegistryContractService
 import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.micronaut.http.annotation.PathVariable
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.websocket.CloseReason
 import io.micronaut.websocket.WebSocketSession
@@ -57,7 +58,7 @@ import javax.inject.Named
 
 private val logger = KotlinLogging.logger {}
 
-@ServerWebSocket("/audit")
+@ServerWebSocket("/audit/{assetContractAddress}")
 class AuditWebSocket @Inject constructor(
     private val assetContractService: AssetContractService,
     private val registryContractService: RegistryContractService,
@@ -76,8 +77,14 @@ class AuditWebSocket @Inject constructor(
     private val scheduler: Scheduler = Schedulers.from(executorService)
 
     @OnOpen
-    suspend fun onOpen(session: WebSocketSession) {
-        logger.info { "WebSocket connection opened, fetching auditing info from blockchain" }
+    suspend fun onOpen(
+        @PathVariable("assetContractAddress") assetContractAddress: String, // TODO currently hard-coded
+        session: WebSocketSession
+    ) {
+        logger.info {
+            "WebSocket connection opened, fetching auditing info from blockchain for asset with contract address: " +
+                assetContractAddress
+        }
         val webSocketApi = WebSocketApi(session, objectMapper)
 
         webSocketApi.sendInfoMessage(ConnectedInfoMessage)
@@ -138,7 +145,7 @@ class AuditWebSocket @Inject constructor(
             is RpcError -> webSocketApi.sendInfoMessage(RpcErrorInfoMessage)
         }
 
-        session.close(CloseReason.ABNORMAL_CLOSURE)
+        session.close(CloseReason.NORMAL)
     }
 
     private fun handleOnOpenSuccess(

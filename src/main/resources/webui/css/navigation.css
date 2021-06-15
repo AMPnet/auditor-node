@@ -1,0 +1,42 @@
+.navbar {
+    display: flex;
+    width: 100%;
+}
+
+.navbar > button {
+    line-height: var(--navbar-font-size);
+    font-size: var(--navbar-font-size);
+    font-family: inherit;
+    display: table;
+    padding: var(--navbar-button-padding);
+    border: var(--navbar-button-border) solid var(--border-color);
+    border-top: none;
+    border-left: none;
+    cursor: pointer;
+}
+
+.navbar-button {
+    width: 45%;
+    background: var(--main-color-2);
+    color: var(--main-color-1);
+}
+
+.navbar-button:hover {
+    background: var(--main-color-1);
+    color: var(--main-color-2);
+    border-top: none;
+    border-left: none;
+}
+
+.navbar-button-selected {
+    width: 45%;
+    background: var(--main-color-1);
+    color: var(--main-color-2);
+    border-top: none !important;
+    border-left: none !important;
+}
+
+.navbar-metamask-button {
+    width: 10%;
+    border-right: none !important;
+}

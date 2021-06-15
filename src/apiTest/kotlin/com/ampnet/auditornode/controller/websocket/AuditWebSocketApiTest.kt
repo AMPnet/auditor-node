@@ -77,7 +77,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
         verify("RPC error is returned") {
             val client = webSocketClient.connect(
                 WebSocketTestClient::class.java,
-                "${webSocketPath()}/audit"
+                "${webSocketPath()}/audit/a" // TODO re-write test for dynamic assets
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
@@ -122,7 +122,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
         verify("IPFS error is returned") {
             val client = webSocketClient.connect(
                 WebSocketTestClient::class.java,
-                "${webSocketPath()}/audit"
+                "${webSocketPath()}/audit/a" // TODO re-write test for dynamic assets
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
@@ -169,7 +169,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
         verify("invalid input JSON error is returned") {
             val client = webSocketClient.connect(
                 WebSocketTestClient::class.java,
-                "${webSocketPath()}/audit"
+                "${webSocketPath()}/audit/a" // TODO re-write test for dynamic assets
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
@@ -227,7 +227,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
         verify("RPC error is returned") {
             val client = webSocketClient.connect(
                 WebSocketTestClient::class.java,
-                "${webSocketPath()}/audit"
+                "${webSocketPath()}/audit/a" // TODO re-write test for dynamic assets
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
@@ -306,7 +306,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
         verify("RPC error is returned") {
             val client = webSocketClient.connect(
                 WebSocketTestClient::class.java,
-                "${webSocketPath()}/audit"
+                "${webSocketPath()}/audit/a" // TODO re-write test for dynamic assets
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
@@ -405,7 +405,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
         verify("IPFS error is returned") {
             val client = webSocketClient.connect(
                 WebSocketTestClient::class.java,
-                "${webSocketPath()}/audit"
+                "${webSocketPath()}/audit/a" // TODO re-write test for dynamic assets
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
@@ -513,7 +513,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
         verify("script is executed successfully") {
             val client = webSocketClient.connect(
                 WebSocketTestClient::class.java,
-                "${webSocketPath()}/audit"
+                "${webSocketPath()}/audit/a" // TODO re-write test for dynamic assets
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
@@ -629,7 +629,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
         verify("script is executed with failure") {
             val client = webSocketClient.connect(
                 WebSocketTestClient::class.java,
-                "${webSocketPath()}/audit"
+                "${webSocketPath()}/audit/a" // TODO re-write test for dynamic assets
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)

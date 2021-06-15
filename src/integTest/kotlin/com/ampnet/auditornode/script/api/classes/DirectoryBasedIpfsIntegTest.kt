@@ -47,4 +47,26 @@ class DirectoryBasedIpfsIntegTest : TestBase() {
             assertThat(result).isRightContaining(SuccessfulAudit)
         }
     }
+
+    @Test
+    fun `must correctly create link to IPFS file`() {
+        val directoryHash = IpfsHash("directoryHash")
+        val ipfs = DirectoryBasedIpfs(directoryHash, ipfsRepository)
+
+        verify("IPFS file link is correctly returned") {
+            @Language("JavaScript") val scriptSource = jsAssertions + """
+                function audit(auditData) {
+                    const fileName = "example.js";
+                    assertEquals(
+                        "Ipfs.linkToFile()",
+                        "/ipfs/${directoryHash.value}/" + fileName,
+                        Ipfs.linkToFile(fileName)
+                    );
+                    return AuditResult.success();
+                }
+            """.trimIndent()
+            val result = service.evaluate(scriptSource, ExecutionContext.noOp.copy(ipfs = ipfs))
+            assertThat(result).isRightContaining(SuccessfulAudit)
+        }
+    }
 }

@@ -57,4 +57,14 @@ class DirectoryBasedIpfsUnitTest : TestBase() {
                 .isEqualTo(ipfsTextFile.content)
         }
     }
+
+    @Test
+    fun `must return correct link to the file`() {
+        val fileName = "test.js"
+
+        verify("correct file link is returned") {
+            assertThat(service.linkToFile(fileName))
+                .isEqualTo("/ipfs/${ipfsHash.value}/$fileName")
+        }
+    }
 }
