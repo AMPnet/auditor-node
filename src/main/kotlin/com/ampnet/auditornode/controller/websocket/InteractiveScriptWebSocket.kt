@@ -5,6 +5,7 @@ import com.ampnet.auditornode.controller.websocket.WebSocketSessionHelper.script
 import com.ampnet.auditornode.controller.websocket.WebSocketSessionHelper.scriptIpfsDirectoryHash
 import com.ampnet.auditornode.controller.websocket.WebSocketSessionHelper.scriptState
 import com.ampnet.auditornode.controller.websocket.WebSocketSessionHelper.scriptTask
+import com.ampnet.auditornode.model.error.ParseError.JsonParseError
 import com.ampnet.auditornode.model.websocket.AuditResultResponse
 import com.ampnet.auditornode.model.websocket.ConnectedInfoMessage
 import com.ampnet.auditornode.model.websocket.ErrorResponse
@@ -12,8 +13,8 @@ import com.ampnet.auditornode.model.websocket.ExecutingInfoMessage
 import com.ampnet.auditornode.model.websocket.ExecutingState
 import com.ampnet.auditornode.model.websocket.FinishedState
 import com.ampnet.auditornode.model.websocket.InitState
-import com.ampnet.auditornode.model.websocket.InvalidInputJsonInfoMessage
-import com.ampnet.auditornode.model.websocket.NotFoundInfoMessage
+import com.ampnet.auditornode.model.websocket.InvalidInputJsonErrorMessage
+import com.ampnet.auditornode.model.websocket.NotFoundErrorMessage
 import com.ampnet.auditornode.model.websocket.ReadInputJsonCommand
 import com.ampnet.auditornode.model.websocket.ReadyState
 import com.ampnet.auditornode.model.websocket.WebSocketApi
@@ -73,8 +74,9 @@ class InteractiveScriptWebSocket @Inject constructor(
         val script = scriptRepository.load(ScriptId(scriptId))
 
         if (script == null) {
-            logger.error { "Script not found for ID: $scriptId" }
-            webSocketApi.sendInfoMessage(NotFoundInfoMessage)
+            val errorMessage = "Script not found for ID: $scriptId"
+            logger.error { errorMessage }
+            webSocketApi.sendErrorMessage(NotFoundErrorMessage(errorMessage))
             session.close(CloseReason.NORMAL)
             return
         }
@@ -113,7 +115,7 @@ class InteractiveScriptWebSocket @Inject constructor(
             objectMapper.readTree(message)
         } catch (e: JacksonException) {
             logger.error(e) { "Error parsing input JSON" }
-            webSocketApi.sendInfoMessage(InvalidInputJsonInfoMessage)
+            webSocketApi.sendErrorMessage(InvalidInputJsonErrorMessage(JsonParseError(message, e).message))
             session.close(CloseReason.NORMAL)
             return
         }

@@ -8,6 +8,7 @@ import com.ampnet.auditornode.TestBase
 import com.ampnet.auditornode.configuration.properties.AuditorProperties
 import com.ampnet.auditornode.model.error.EvaluationError.ScriptExecutionError
 import com.ampnet.auditornode.model.error.IpfsError.IpfsEmptyResponseError
+import com.ampnet.auditornode.model.error.ParseError.JsonParseError
 import com.ampnet.auditornode.model.error.RpcError.ContractReadError
 import com.ampnet.auditornode.model.websocket.AuditResultResponse
 import com.ampnet.auditornode.model.websocket.ConnectedInfoMessage
@@ -16,10 +17,10 @@ import com.ampnet.auditornode.model.websocket.ExecutingInfoMessage
 import com.ampnet.auditornode.model.websocket.ExecutingState
 import com.ampnet.auditornode.model.websocket.FinishedState
 import com.ampnet.auditornode.model.websocket.InitState
-import com.ampnet.auditornode.model.websocket.InvalidInputJsonInfoMessage
-import com.ampnet.auditornode.model.websocket.IpfsReadErrorInfoMessage
+import com.ampnet.auditornode.model.websocket.InvalidInputJsonErrorMessage
+import com.ampnet.auditornode.model.websocket.IpfsReadErrorMessage
 import com.ampnet.auditornode.model.websocket.ReadyState
-import com.ampnet.auditornode.model.websocket.RpcErrorInfoMessage
+import com.ampnet.auditornode.model.websocket.RpcErrorMessage
 import com.ampnet.auditornode.model.websocket.WebSocketScriptState
 import com.ampnet.auditornode.persistence.model.AssetCategoryId
 import com.ampnet.auditornode.persistence.model.AssetContractAddress
@@ -100,17 +101,18 @@ class AuditWebSocketUnitTest : TestBase() {
 
         val connectedMessage = "connected"
         val responseMessage = "error"
+        val exception = ContractReadError("test")
 
         suppose("web socket messages will be serialized") {
             given(objectMapper.writeValueAsString(ConnectedInfoMessage))
                 .willReturn(connectedMessage)
-            given(objectMapper.writeValueAsString(RpcErrorInfoMessage))
+            given(objectMapper.writeValueAsString(RpcErrorMessage(exception.message)))
                 .willReturn(responseMessage)
         }
 
         suppose("asset info IPFS hash will not be fetched") {
             given(assetContractService.getAssetInfoIpfsHash())
-                .willReturn(ContractReadError("test").left())
+                .willReturn(exception.left())
         }
 
         verify("correct web socket messages are sent") {
@@ -142,11 +144,12 @@ class AuditWebSocketUnitTest : TestBase() {
 
         val connectedMessage = "connected"
         val responseMessage = "error"
+        val exception = IpfsEmptyResponseError(IpfsHash("testHash"), "fileName")
 
         suppose("web socket messages will be serialized") {
             given(objectMapper.writeValueAsString(ConnectedInfoMessage))
                 .willReturn(connectedMessage)
-            given(objectMapper.writeValueAsString(IpfsReadErrorInfoMessage))
+            given(objectMapper.writeValueAsString(IpfsReadErrorMessage(exception.message)))
                 .willReturn(responseMessage)
         }
 
@@ -157,7 +160,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         suppose("asset info file will not be fetched") {
             given(ipfsRepository.fetchTextFile(IpfsHash("testHash")))
-                .willReturn(IpfsEmptyResponseError(IpfsHash("testHash"), "fileName").left())
+                .willReturn(exception.left())
         }
 
         verify("correct web socket messages are sent") {
@@ -189,11 +192,14 @@ class AuditWebSocketUnitTest : TestBase() {
 
         val connectedMessage = "connected"
         val responseMessage = "error"
+        val exception = JsonParseException(null, "test")
+        val json = "{invalidJson}"
+        val wrappedException = JsonParseError(json, exception)
 
         suppose("web socket messages will be serialized") {
             given(objectMapper.writeValueAsString(ConnectedInfoMessage))
                 .willReturn(connectedMessage)
-            given(objectMapper.writeValueAsString(InvalidInputJsonInfoMessage))
+            given(objectMapper.writeValueAsString(InvalidInputJsonErrorMessage(wrappedException.message)))
                 .willReturn(responseMessage)
         }
 
@@ -204,12 +210,12 @@ class AuditWebSocketUnitTest : TestBase() {
 
         suppose("asset info file will be fetched") {
             given(ipfsRepository.fetchTextFile(IpfsHash("testHash")))
-                .willReturn(IpfsTextFile("{invalidJson}").right())
+                .willReturn(IpfsTextFile(json).right())
         }
 
         suppose("asset info JSON is invalid") {
-            given(objectMapper.readTree("{invalidJson}"))
-                .willThrow(JsonParseException::class.java)
+            given(objectMapper.readTree(json))
+                .willThrow(exception)
         }
 
         verify("correct web socket messages are sent") {
@@ -241,11 +247,12 @@ class AuditWebSocketUnitTest : TestBase() {
 
         val connectedMessage = "connected"
         val responseMessage = "error"
+        val exception = ContractReadError("test")
 
         suppose("web socket messages will be serialized") {
             given(objectMapper.writeValueAsString(ConnectedInfoMessage))
                 .willReturn(connectedMessage)
-            given(objectMapper.writeValueAsString(RpcErrorInfoMessage))
+            given(objectMapper.writeValueAsString(RpcErrorMessage(exception.message)))
                 .willReturn(responseMessage)
         }
 
@@ -266,7 +273,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         suppose("asset category ID will not be fetched") {
             given(assetContractService.getAssetCategoryId())
-                .willReturn(ContractReadError("test").left())
+                .willReturn(exception.left())
         }
 
         verify("correct web socket messages are sent") {
@@ -298,11 +305,12 @@ class AuditWebSocketUnitTest : TestBase() {
 
         val connectedMessage = "connected"
         val responseMessage = "error"
+        val exception = ContractReadError("test")
 
         suppose("web socket messages will be serialized") {
             given(objectMapper.writeValueAsString(ConnectedInfoMessage))
                 .willReturn(connectedMessage)
-            given(objectMapper.writeValueAsString(RpcErrorInfoMessage))
+            given(objectMapper.writeValueAsString(RpcErrorMessage(exception.message)))
                 .willReturn(responseMessage)
         }
 
@@ -330,7 +338,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         suppose("auditing procedure IPFS hash will not be fetched") {
             given(registryContractService.getAuditingProcedureDirectoryIpfsHash(assetCategoryId))
-                .willReturn(ContractReadError("test").left())
+                .willReturn(exception.left())
         }
 
         verify("correct web socket messages are sent") {
@@ -362,11 +370,12 @@ class AuditWebSocketUnitTest : TestBase() {
 
         val connectedMessage = "connected"
         val responseMessage = "error"
+        val exception = IpfsEmptyResponseError(IpfsHash("procedureHash"), "audit.js")
 
         suppose("web socket messages will be serialized") {
             given(objectMapper.writeValueAsString(ConnectedInfoMessage))
                 .willReturn(connectedMessage)
-            given(objectMapper.writeValueAsString(IpfsReadErrorInfoMessage))
+            given(objectMapper.writeValueAsString(IpfsReadErrorMessage(exception.message)))
                 .willReturn(responseMessage)
         }
 
@@ -399,7 +408,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         suppose("auditing procedure will not be fetched") {
             given(ipfsRepository.fetchTextFileFromDirectory(IpfsHash("procedureHash"), "audit.js"))
-                .willReturn(IpfsEmptyResponseError(IpfsHash("procedureHash"), "audit.js").left())
+                .willReturn(exception.left())
         }
 
         verify("correct web socket messages are sent") {

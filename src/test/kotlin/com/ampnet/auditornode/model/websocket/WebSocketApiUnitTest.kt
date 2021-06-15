@@ -78,4 +78,23 @@ class WebSocketApiUnitTest : TestBase() {
                 .sendSync(serializedResponse)
         }
     }
+
+    @Test
+    fun `must correctly send web socket error message`() {
+        val error = NotFoundErrorMessage("example")
+        val serializedErrorMessage = "{\"value\":\"test\"}"
+
+        suppose("error message object will be serialized into JSON") {
+            given(objectMapper.writeValueAsString(error))
+                .willReturn(serializedErrorMessage)
+        }
+
+        verify("error message is correctly sent") {
+            service.sendErrorMessage(error)
+
+            then(session)
+                .should(times(1))
+                .sendSync(serializedErrorMessage)
+        }
+    }
 }

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 
 @NativeReflection
 enum class MessageType {
-    COMMAND, INFO, RESPONSE
+    COMMAND, INFO, RESPONSE, ERROR
 }
 
 @NativeReflection
@@ -69,19 +69,7 @@ sealed class WebSocketInfoMessage(val message: String) : WebSocketMessage(Messag
 object ConnectedInfoMessage : WebSocketInfoMessage("connected")
 
 @NativeReflection
-object NotFoundInfoMessage : WebSocketInfoMessage("notFound")
-
-@NativeReflection
-object InvalidInputJsonInfoMessage : WebSocketInfoMessage("invalidInputJson")
-
-@NativeReflection
 object ExecutingInfoMessage : WebSocketInfoMessage("executing")
-
-@NativeReflection
-object IpfsReadErrorInfoMessage : WebSocketInfoMessage("ipfsReadError")
-
-@NativeReflection
-object RpcErrorInfoMessage : WebSocketInfoMessage("rpcError")
 
 /* Response messages */
 @NativeReflection
@@ -94,3 +82,19 @@ data class AuditResultResponse(val payload: AuditResult, val transaction: Unsign
 
 @NativeReflection
 data class ErrorResponse(val payload: String) : WebSocketResponse(success = false)
+
+/* Error messages */
+@NativeReflection
+sealed class WebSocketErrorMessage(val error: String) : WebSocketMessage(MessageType.ERROR)
+
+@NativeReflection
+data class NotFoundErrorMessage(val message: String? = null) : WebSocketErrorMessage(error = "notFound")
+
+@NativeReflection
+data class InvalidInputJsonErrorMessage(val message: String? = null) : WebSocketErrorMessage(error = "invalidInputJson")
+
+@NativeReflection
+data class IpfsReadErrorMessage(val message: String? = null) : WebSocketErrorMessage(error = "ipfsReadError")
+
+@NativeReflection
+data class RpcErrorMessage(val message: String? = null) : WebSocketErrorMessage(error = "rpcError")

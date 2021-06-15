@@ -6,6 +6,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.ampnet.auditornode.TestBase
 import com.ampnet.auditornode.model.error.EvaluationError.ScriptExecutionError
+import com.ampnet.auditornode.model.error.ParseError.JsonParseError
 import com.ampnet.auditornode.model.websocket.AuditResultResponse
 import com.ampnet.auditornode.model.websocket.ConnectedInfoMessage
 import com.ampnet.auditornode.model.websocket.ErrorResponse
@@ -13,8 +14,8 @@ import com.ampnet.auditornode.model.websocket.ExecutingInfoMessage
 import com.ampnet.auditornode.model.websocket.ExecutingState
 import com.ampnet.auditornode.model.websocket.FinishedState
 import com.ampnet.auditornode.model.websocket.InitState
-import com.ampnet.auditornode.model.websocket.InvalidInputJsonInfoMessage
-import com.ampnet.auditornode.model.websocket.NotFoundInfoMessage
+import com.ampnet.auditornode.model.websocket.InvalidInputJsonErrorMessage
+import com.ampnet.auditornode.model.websocket.NotFoundErrorMessage
 import com.ampnet.auditornode.model.websocket.ReadInputJsonCommand
 import com.ampnet.auditornode.model.websocket.ReadyState
 import com.ampnet.auditornode.model.websocket.WebSocketScriptState
@@ -126,15 +127,14 @@ class InteractiveScriptWebSocketUnitTest : TestBase() {
         val session = mock<WebSocketSession> {
             on { attributes } doReturn sessionAttributes
         }
+        val scriptId = ScriptId(UUID.randomUUID())
 
         suppose("web socket messages will be serialized") {
             given(objectMapper.writeValueAsString(ConnectedInfoMessage))
                 .willReturn(connectedMessage)
-            given(objectMapper.writeValueAsString(NotFoundInfoMessage))
+            given(objectMapper.writeValueAsString(NotFoundErrorMessage("Script not found for ID: ${scriptId.value}")))
                 .willReturn(notFoundMessage)
         }
-
-        val scriptId = ScriptId(UUID.randomUUID())
 
         suppose("script will not be returned from the repository") {
             given(scriptRepository.load(scriptId))
@@ -327,16 +327,18 @@ class InteractiveScriptWebSocketUnitTest : TestBase() {
         }
 
         val message = "{invalidJson}"
+        val exception = JsonParseException(null, "test")
+        val wrappedException = JsonParseError(message, exception)
 
         suppose("input JSON is invalid") {
             given(objectMapper.readTree(message))
-                .willThrow(JsonParseException::class.java)
+                .willThrow(exception)
         }
 
         val invalidJsonMessage = "invalidJson"
 
         suppose("web socket messages will be serialized") {
-            given(objectMapper.writeValueAsString(InvalidInputJsonInfoMessage))
+            given(objectMapper.writeValueAsString(InvalidInputJsonErrorMessage(wrappedException.message)))
                 .willReturn(invalidJsonMessage)
         }
 

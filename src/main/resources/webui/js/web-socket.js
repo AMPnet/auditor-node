@@ -9,17 +9,35 @@ function processInfoMessage(message, outputDiv) {
         case "connected":
             textElement.innerText = "Connection established";
             break;
-        case "notFound":
-            textElement.innerText = "Script with not found";
-            break;
         case "executing":
             textElement.innerText = "Script execution has started";
             break;
-        case "invalidInputJson":
-            textElement.innerText = "Invalid input JSON was provided";
-            break;
         default:
             textElement.innerText = "Unknown web socket INFO message: " + JSON.stringify(message);
+            break;
+    }
+
+    outputDiv.appendChild(textElement);
+}
+
+function processErrorMessage(message, outputDiv) {
+    const textElement = document.createElement("p");
+
+    switch (message.error) {
+        case "notFound":
+            textElement.innerText = "Not found error: " + message.message;
+            break;
+        case "invalidInputJson":
+            textElement.innerText = "Input JSON error: " + message.message
+            break;
+        case "ipfsReadError":
+            textElement.innerText = "IPFS error: " + message.message
+            break;
+        case "rpcError":
+            textElement.innerText = "RPC error: " + message.message
+            break;
+        default:
+            textElement.innerText = "Unknown web socket ERROR message: " + JSON.stringify(message);
             break;
     }
 
@@ -278,6 +296,9 @@ function processWebSocketMessage(rawMessage, outputDiv, webSocket, inputJson) {
             break;
         case "RESPONSE":
             processResponseMessage(message, outputDiv);
+            break;
+        case "ERROR":
+            processErrorMessage(message, outputDiv);
             break;
         default:
             const textElement = document.createElement("p");

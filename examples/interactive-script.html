@@ -217,14 +217,31 @@ function audit(auditData) {
 
             if (message.message === "connected") {
                 newElement.innerText = "Connection established";
-            } else if (message.message === "notFound") {
-                newElement.innerText = "Script with ID " + scriptId + " not found";
             } else if (message.message === "executing") {
                 newElement.innerText = "Script execution has started";
-            } else if (message.message === "invalidInputJson") {
-                newElement.innerText = "Invalid input JSON was provided";
             } else {
                 const unknownMessage = "Unknown WS INFO message: " + JSON.stringify(message)
+                window.alert(unknownMessage);
+                newElement.innerText = unknownMessage;
+            }
+
+            scriptLog.appendChild(newElement);
+        }
+
+        function processErrorMessage(message) {
+            const scriptLog = document.getElementById("script-log");
+            const newElement = document.createElement("p");
+
+            if (message.error === "notFound") {
+                newElement.innerText = "Not found error: " + message.message;
+            } else if (message.error === "invalidInputJson") {
+                newElement.innerText = "Input JSON error: " + message.message;
+            } else if (message.error === "ipfsReadError") {
+                newElement.innerText = "IPFS error: " + message.message;
+            } else if (message.error === "rpcError") {
+                newElement.innerText = "RPC error: " + message.message;
+            } else {
+                const unknownMessage = "Unknown WS ERROR message: " + JSON.stringify(message)
                 window.alert(unknownMessage);
                 newElement.innerText = unknownMessage;
             }
@@ -302,6 +319,8 @@ function audit(auditData) {
                 processCommandMessage(message);
             } else if (message.messageType === "RESPONSE") {
                 processResponseMessage(message);
+            } else if (message.messageType === "ERROR") {
+                processErrorMessage(message);
             } else {
                 window.alert("Unknown WS message: " + rawMessage);
             }
