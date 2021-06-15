@@ -43,11 +43,7 @@ function storeAuditingScript() {
             if (this.status === 200) {
                 const responseJson = JSON.parse(this.responseText);
                 scriptDevelopmentContext.scriptId = responseJson.id;
-                checkInputJson(
-                    {
-                        target: scriptInputJson
-                    }
-                );
+                checkInputJson({target: scriptInputJson});
             } else {
                 storeScriptButton.disabled = false;
                 scriptDevelopmentContext.scriptId = null;
