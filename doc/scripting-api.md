@@ -331,5 +331,6 @@ There are no readable fields.
 | Signature | Description | Example call |
 | --------- | ----------- | ------------ |
 | <code>getFile(fileName: String): String &#124; null</code> | Reads content of the IPFS file with provided name. The file must be located in the IPFS directory associated with the script. If the file cannot be found, `null` is returned. | `Ipfs.getFile("example.html");` |
+| <code>linkToFile(fileName: String): String &#124; null</code> | Creates a link relative to the application which can be used to fetch the specified file from the IPFS directory associated with the script. If the IPFS directory is not set, `null` is returned. | `Ipfs.linkToFile("example.html");` |
 
 </details>
