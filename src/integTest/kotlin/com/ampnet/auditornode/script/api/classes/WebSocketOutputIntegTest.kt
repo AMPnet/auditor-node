@@ -2,8 +2,8 @@ package com.ampnet.auditornode.script.api.classes
 
 import assertk.assertThat
 import com.ampnet.auditornode.TestBase
-import com.ampnet.auditornode.TestUtils
-import com.ampnet.auditornode.TestUtils.toJson
+import com.ampnet.auditornode.UnitTestUtils
+import com.ampnet.auditornode.UnitTestUtils.toJson
 import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.jsAssertions
 import com.ampnet.auditornode.model.websocket.RenderHtmlCommand
@@ -26,7 +26,7 @@ import org.mockito.kotlin.times
 class WebSocketOutputIntegTest : TestBase() {
 
     private val session = mock<WebSocketSession>()
-    private val webSocketApi = WebSocketApi(session, TestUtils.objectMapper)
+    private val webSocketApi = WebSocketApi(session, UnitTestUtils.objectMapper)
     private val httpClient = HttpClient(mock())
     private val environment = Properties(mock())
     private val service = JavaScriptAuditingService(httpClient, environment)

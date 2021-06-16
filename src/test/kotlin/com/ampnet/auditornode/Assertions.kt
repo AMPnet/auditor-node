@@ -31,8 +31,8 @@ fun <A, B> Assert<Either<A, B>>.isRightContaining(expected: B) =
     isRightSatisfying { assertThat(it).isEqualTo(expected) }
 
 fun Assert<String>.isJsonEqualTo(expected: Any) = given { actual ->
-    val actualJson = TestUtils.objectMapper.readTree(actual)
-    val expectedJson = TestUtils.objectMapper.valueToTree<JsonNode>(expected)
+    val actualJson = UnitTestUtils.objectMapper.readTree(actual)
+    val expectedJson = UnitTestUtils.objectMapper.valueToTree<JsonNode>(expected)
 
     if (actualJson != expectedJson) {
         fail(expectedJson, actualJson)

@@ -3,7 +3,7 @@ package com.ampnet.auditornode.service
 import assertk.assertThat
 import assertk.assertions.isInstanceOf
 import com.ampnet.auditornode.TestBase
-import com.ampnet.auditornode.TestUtils
+import com.ampnet.auditornode.UnitTestUtils
 import com.ampnet.auditornode.isLeftContaining
 import com.ampnet.auditornode.isLeftSatisfying
 import com.ampnet.auditornode.isRightContaining
@@ -126,7 +126,7 @@ class JavaScriptAuditingServiceUnitTest : TestBase() {
                     return AuditResult.success();
                 }
             """.trimIndent()
-            val inputJson = TestUtils.objectMapper.nodeFactory.textNode("input string")
+            val inputJson = UnitTestUtils.objectMapper.nodeFactory.textNode("input string")
             val result = service.evaluate(scriptSource, ExecutionContext.noOp.copy(auditDataJson = inputJson))
             assertThat(result).isRightContaining(SuccessfulAudit)
         }
@@ -138,7 +138,7 @@ class JavaScriptAuditingServiceUnitTest : TestBase() {
                     return AuditResult.success();
                 }
             """.trimIndent()
-            val inputJson = TestUtils.objectMapper.nodeFactory.numberNode(123)
+            val inputJson = UnitTestUtils.objectMapper.nodeFactory.numberNode(123)
             val result = service.evaluate(scriptSource, ExecutionContext.noOp.copy(auditDataJson = inputJson))
             assertThat(result).isRightContaining(SuccessfulAudit)
         }
@@ -150,7 +150,7 @@ class JavaScriptAuditingServiceUnitTest : TestBase() {
                     return AuditResult.success();
                 }
             """.trimIndent()
-            val inputJson = TestUtils.objectMapper.nodeFactory.booleanNode(true)
+            val inputJson = UnitTestUtils.objectMapper.nodeFactory.booleanNode(true)
             val result = service.evaluate(scriptSource, ExecutionContext.noOp.copy(auditDataJson = inputJson))
             assertThat(result).isRightContaining(SuccessfulAudit)
         }
@@ -165,7 +165,7 @@ class JavaScriptAuditingServiceUnitTest : TestBase() {
                     return AuditResult.success();
                 }
             """.trimIndent()
-            val inputJson = TestUtils.objectMapper.nodeFactory.arrayNode(3)
+            val inputJson = UnitTestUtils.objectMapper.nodeFactory.arrayNode(3)
             inputJson.add(1)
             inputJson.add(2)
             inputJson.add(3)
@@ -182,7 +182,7 @@ class JavaScriptAuditingServiceUnitTest : TestBase() {
                     return AuditResult.success();
                 }
             """.trimIndent()
-            val inputJson = TestUtils.objectMapper.nodeFactory.objectNode()
+            val inputJson = UnitTestUtils.objectMapper.nodeFactory.objectNode()
             inputJson.put("testField1", "testValue")
             inputJson.put("testField2", true)
             inputJson.put("testField3", 123)

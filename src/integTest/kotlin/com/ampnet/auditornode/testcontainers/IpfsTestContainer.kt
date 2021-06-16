@@ -1,6 +1,6 @@
 package com.ampnet.auditornode.testcontainers
 
-import com.ampnet.auditornode.TestUtils
+import com.ampnet.auditornode.UnitTestUtils
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.MediaType
@@ -62,7 +62,7 @@ object IpfsTestContainer : GenericContainer<IpfsTestContainer>("ipfs/go-ipfs:v0.
         }
 
         val response = toBlocking().retrieve(request) ?: ""
-        val jsonResponse = TestUtils.objectMapper.readTree(response)
+        val jsonResponse = UnitTestUtils.objectMapper.readTree(response)
 
         return IpfsHash(jsonResponse["Hash"].asText())
     }
@@ -83,7 +83,7 @@ object IpfsTestContainer : GenericContainer<IpfsTestContainer>("ipfs/go-ipfs:v0.
         val responseParts = String(response).split("\n")
             .map(String::trim)
             .filter(String::isNotEmpty)
-        val directoryJsonResponse = TestUtils.objectMapper.readTree(responseParts.last())
+        val directoryJsonResponse = UnitTestUtils.objectMapper.readTree(responseParts.last())
 
         return IpfsHash(directoryJsonResponse["Hash"].asText())
     }

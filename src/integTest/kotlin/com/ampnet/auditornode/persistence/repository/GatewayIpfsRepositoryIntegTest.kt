@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import com.ampnet.auditornode.IntegTestBase
+import com.ampnet.auditornode.IntegTestUtils
 import com.ampnet.auditornode.isLeftSatisfying
 import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.isRightSatisfying
@@ -23,10 +24,6 @@ import javax.inject.Inject
 @MicronautTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GatewayIpfsRepositoryIntegTest : IntegTestBase(), TestPropertyProvider {
-
-    companion object {
-        private val NON_EXISTENT_IPFS_HASH = IpfsHash("QmXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-    }
 
     @Inject
     private lateinit var repository: IpfsRepository
@@ -66,7 +63,7 @@ class GatewayIpfsRepositoryIntegTest : IntegTestBase(), TestPropertyProvider {
         }
 
         verify("error is returned for non-existent IPFS file") {
-            val result = repository.fetchTextFile(NON_EXISTENT_IPFS_HASH)
+            val result = repository.fetchTextFile(IntegTestUtils.NON_EXISTENT_IPFS_HASH)
 
             assertThat(result)
                 .isLeftSatisfying {
@@ -109,7 +106,7 @@ class GatewayIpfsRepositoryIntegTest : IntegTestBase(), TestPropertyProvider {
         }
 
         verify("error is returned for non-existent IPFS file") {
-            val result = repository.fetchBinaryFile(NON_EXISTENT_IPFS_HASH)
+            val result = repository.fetchBinaryFile(IntegTestUtils.NON_EXISTENT_IPFS_HASH)
 
             assertThat(result)
                 .isLeftSatisfying {
@@ -152,7 +149,7 @@ class GatewayIpfsRepositoryIntegTest : IntegTestBase(), TestPropertyProvider {
         verify("error is returned for non-existent IPFS file") {
             val fileName = "test"
             val result = repository.fetchTextFileFromDirectory(
-                directoryHash = NON_EXISTENT_IPFS_HASH,
+                directoryHash = IntegTestUtils.NON_EXISTENT_IPFS_HASH,
                 fileName = fileName
             )
 
@@ -200,7 +197,7 @@ class GatewayIpfsRepositoryIntegTest : IntegTestBase(), TestPropertyProvider {
         verify("error is returned for non-existent IPFS file") {
             val fileName = "test"
             val result = repository.fetchBinaryFileFromDirectory(
-                directoryHash = NON_EXISTENT_IPFS_HASH,
+                directoryHash = IntegTestUtils.NON_EXISTENT_IPFS_HASH,
                 fileName = fileName
             )
 

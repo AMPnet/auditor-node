@@ -3,7 +3,7 @@ package com.ampnet.auditornode.controller.websocket
 import assertk.assertThat
 import assertk.assertions.isNotNull
 import com.ampnet.auditornode.ApiTestBase
-import com.ampnet.auditornode.TestUtils.parseScriptId
+import com.ampnet.auditornode.UnitTestUtils.parseScriptId
 import com.ampnet.auditornode.jsAssertions
 import com.ampnet.auditornode.model.websocket.AuditResultResponse
 import com.ampnet.auditornode.model.websocket.ConnectedInfoMessage
