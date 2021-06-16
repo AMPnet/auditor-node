@@ -1,10 +1,12 @@
-package com.ampnet.auditornode
+package com.ampnet.auditornode.testcontainers
 
+import com.ampnet.auditornode.TestUtils
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.MediaType
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.multipart.MultipartBody
+import org.testcontainers.containers.BindMode
 import org.testcontainers.containers.GenericContainer
 
 object IpfsTestContainer : GenericContainer<IpfsTestContainer>("ipfs/go-ipfs:v0.8.0") {
@@ -13,9 +15,36 @@ object IpfsTestContainer : GenericContainer<IpfsTestContainer>("ipfs/go-ipfs:v0.
     private const val IPFS_GATEWAY_PORT = 8080
 
     init {
-        env = listOf("IPFS_PROFILE=test")
+        withClasspathResourceMapping(
+            "com/ampnet/auditornode/testcontainers/ipfs-test-entrypoint.sh",
+            "/entrypoint.sh",
+            BindMode.READ_ONLY
+        )
+        withClasspathResourceMapping(
+            "com/ampnet/auditornode/testcontainers/ipfs-test-config.json",
+            "/data/ipfs/config",
+            BindMode.READ_ONLY
+        )
+        withClasspathResourceMapping(
+            "com/ampnet/auditornode/testcontainers/ipfs-test-datastore-spec.json",
+            "/data/ipfs/raw_datastore_spec",
+            BindMode.READ_ONLY
+        )
+        withClasspathResourceMapping(
+            "com/ampnet/auditornode/testcontainers/ipfs-test-version",
+            "/data/ipfs/version",
+            BindMode.READ_ONLY
+        )
+
         addExposedPort(5001)
         addExposedPort(8080)
+
+        withCreateContainerCmdModifier {
+            it.withEntrypoint("/bin/sh", "/entrypoint.sh")
+        }
+
+        env = listOf("IPFS_PROFILE=test")
+
         start()
     }
 
