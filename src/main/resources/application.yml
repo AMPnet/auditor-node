@@ -11,4 +11,7 @@ micronaut:
         mapping: /webui/**
       swagger:
         paths: classpath:META-INF/swagger
-        mapping: /swagger/**
+        mapping: /swagger/*
+      http-api-docs:
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /documentation/http-api/**
