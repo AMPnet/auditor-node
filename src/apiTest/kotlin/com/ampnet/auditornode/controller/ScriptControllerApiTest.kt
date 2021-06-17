@@ -7,7 +7,7 @@ import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import com.ampnet.auditornode.ApiTestBase
-import com.ampnet.auditornode.TestUtils.parseScriptId
+import com.ampnet.auditornode.UnitTestUtils.parseScriptId
 import com.ampnet.auditornode.isJsonEqualTo
 import com.ampnet.auditornode.model.response.ExecuteScriptOkResponse
 import com.ampnet.auditornode.script.api.model.SuccessfulAudit

@@ -8,7 +8,7 @@ import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.fail
 import java.util.UUID
 
-object TestUtils {
+object UnitTestUtils {
 
     @Language("RegExp")
     const val UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"

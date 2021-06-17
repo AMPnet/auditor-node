@@ -61,6 +61,9 @@ testSets {
 fun DependencyHandler.integTestImplementation(dependencyNotation: Any): Dependency? =
     add("integTestImplementation", dependencyNotation)
 
+fun DependencyHandler.kaptIntegTest(dependencyNotation: Any): Dependency? =
+    add("kaptIntegTest", dependencyNotation)
+
 fun DependencyHandler.apiTestImplementation(dependencyNotation: Any): Dependency? =
     add("apiTestImplementation", dependencyNotation)
 
@@ -96,6 +99,12 @@ dependencies {
     testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 
+    kaptIntegTest(platform("io.micronaut:micronaut-bom:${micronaut.version}"))
+    kaptIntegTest("io.micronaut:micronaut-inject-java")
+    integTestImplementation(platform("io.micronaut:micronaut-bom:${micronaut.version}"))
+    integTestImplementation("io.micronaut.test:micronaut-test-junit5")
+    integTestImplementation("io.micronaut.test:micronaut-test-core:${Versions.Dependencies.micronautTestCore}")
+    integTestImplementation("org.testcontainers:testcontainers:${Versions.Dependencies.testContainers}")
     integTestImplementation("com.github.tomakehurst:wiremock:${Versions.Dependencies.wireMock}")
     integTestImplementation(sourceSets.test.get().output)
 
