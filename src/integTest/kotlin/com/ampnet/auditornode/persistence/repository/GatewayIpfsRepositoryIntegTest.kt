@@ -17,6 +17,7 @@ import com.ampnet.auditornode.testcontainers.IpfsTestContainer.uploadFileToIpfs
 import com.ampnet.auditornode.testcontainers.IpfsTestContainer.uploadFileToIpfsDirectory
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import io.micronaut.test.support.TestPropertyProvider
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import javax.inject.Inject
@@ -33,6 +34,12 @@ class GatewayIpfsRepositoryIntegTest : IntegTestBase(), TestPropertyProvider {
             "ipfs.gateway-url" to "http://localhost:${IpfsTestContainer.gatewayPort()}/ipfs/{ipfsHash}"
         )
 
+    @BeforeEach
+    fun `verify that GatewayIpfsRepository implementation is used`() {
+        assertThat(repository.javaClass)
+            .isEqualTo(GatewayIpfsRepository::class.java)
+    }
+
     @Test
     fun `must correctly fetch text file from IPFS`() {
         val fileContent = "test content"
@@ -40,11 +47,6 @@ class GatewayIpfsRepositoryIntegTest : IntegTestBase(), TestPropertyProvider {
 
         suppose("some file is stored in IPFS") {
             fileHash = client.uploadFileToIpfs(fileContent)
-        }
-
-        verify("GatewayIpfsRepository implementation is used") {
-            assertThat(repository.javaClass)
-                .isEqualTo(GatewayIpfsRepository::class.java)
         }
 
         verify("file is correctly fetched from IPFS") {
@@ -57,11 +59,6 @@ class GatewayIpfsRepositoryIntegTest : IntegTestBase(), TestPropertyProvider {
 
     @Test
     fun `must return error for non-existent IPFS text file`() {
-        verify("GatewayIpfsRepository implementation is used") {
-            assertThat(repository.javaClass)
-                .isEqualTo(GatewayIpfsRepository::class.java)
-        }
-
         verify("error is returned for non-existent IPFS file") {
             val result = repository.fetchTextFile(IntegTestUtils.NON_EXISTENT_IPFS_HASH)
 
@@ -82,11 +79,6 @@ class GatewayIpfsRepositoryIntegTest : IntegTestBase(), TestPropertyProvider {
             fileHash = client.uploadFileToIpfs(fileContent)
         }
 
-        verify("GatewayIpfsRepository implementation is used") {
-            assertThat(repository.javaClass)
-                .isEqualTo(GatewayIpfsRepository::class.java)
-        }
-
         verify("file is correctly fetched from IPFS") {
             val result = repository.fetchBinaryFile(fileHash)
 
@@ -100,11 +92,6 @@ class GatewayIpfsRepositoryIntegTest : IntegTestBase(), TestPropertyProvider {
 
     @Test
     fun `must return error for non-existent IPFS binary file`() {
-        verify("GatewayIpfsRepository implementation is used") {
-            assertThat(repository.javaClass)
-                .isEqualTo(GatewayIpfsRepository::class.java)
-        }
-
         verify("error is returned for non-existent IPFS file") {
             val result = repository.fetchBinaryFile(IntegTestUtils.NON_EXISTENT_IPFS_HASH)
 
@@ -126,11 +113,6 @@ class GatewayIpfsRepositoryIntegTest : IntegTestBase(), TestPropertyProvider {
             directoryHash = client.uploadFileToIpfsDirectory(fileName = fileName, fileContent = fileContent)
         }
 
-        verify("GatewayIpfsRepository implementation is used") {
-            assertThat(repository.javaClass)
-                .isEqualTo(GatewayIpfsRepository::class.java)
-        }
-
         verify("file is correctly fetched from IPFS") {
             val result = repository.fetchTextFileFromDirectory(directoryHash = directoryHash, fileName = fileName)
 
@@ -141,11 +123,6 @@ class GatewayIpfsRepositoryIntegTest : IntegTestBase(), TestPropertyProvider {
 
     @Test
     fun `must return error for non-existent IPFS text file in a directory`() {
-        verify("GatewayIpfsRepository implementation is used") {
-            assertThat(repository.javaClass)
-                .isEqualTo(GatewayIpfsRepository::class.java)
-        }
-
         verify("error is returned for non-existent IPFS file") {
             val fileName = "test"
             val result = repository.fetchTextFileFromDirectory(
@@ -171,11 +148,6 @@ class GatewayIpfsRepositoryIntegTest : IntegTestBase(), TestPropertyProvider {
             directoryHash = client.uploadFileToIpfsDirectory(fileName = fileName, fileContent = fileContent)
         }
 
-        verify("GatewayIpfsRepository implementation is used") {
-            assertThat(repository.javaClass)
-                .isEqualTo(GatewayIpfsRepository::class.java)
-        }
-
         verify("file is correctly fetched from IPFS") {
             val result = repository.fetchBinaryFileFromDirectory(directoryHash = directoryHash, fileName = fileName)
 
@@ -189,11 +161,6 @@ class GatewayIpfsRepositoryIntegTest : IntegTestBase(), TestPropertyProvider {
 
     @Test
     fun `must return error for non-existent IPFS binary file in a directory`() {
-        verify("GatewayIpfsRepository implementation is used") {
-            assertThat(repository.javaClass)
-                .isEqualTo(GatewayIpfsRepository::class.java)
-        }
-
         verify("error is returned for non-existent IPFS file") {
             val fileName = "test"
             val result = repository.fetchBinaryFileFromDirectory(
