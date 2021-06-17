@@ -9,3 +9,6 @@ micronaut:
       webui:
         paths: classpath:webui
         mapping: /webui/**
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
