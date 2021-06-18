@@ -104,8 +104,13 @@ interactively located in `examples/interactive-script.html`.
 
 ## Web UI
 
-Auditor node offers basic web UI for purposes of running auditing scripts and script development. The UI is available
-at the `/webui` endpoint when the application is running.
+Auditor node offers basic web UI for purposes of running auditing scripts and script development. The UI is available at
+the `/webui` endpoint when the application is running.
+
+## Documentation
+
+Aside from the documentation available in the `doc` folder, there is additional HTTP API documentation which can be
+accessed by starting the auditor application and navigating to `localhost:8080/documentation/http-api`.
 
 ## Program arguments
 
