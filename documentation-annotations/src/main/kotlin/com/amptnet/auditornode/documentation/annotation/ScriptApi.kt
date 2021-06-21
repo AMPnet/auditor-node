@@ -5,8 +5,12 @@ package com.amptnet.auditornode.documentation.annotation
 annotation class ScriptApi(
     val description: String,
     val category: ScriptApiCategory,
-    val hasStaticObject: Boolean,
-    val staticObjectName: String = "",
+    val hasStaticApi: Boolean,
+    val apiObjectName: String = "",
     val additionalFunctions: Array<ScriptFunction> = [],
-    val additionalFields: Array<ScriptField> = []
+    val additionalFields: Array<ScriptField> = [],
+    val functionsDocumentationHeader: String = "",
+    val fieldsDocumentationHeader: String = "",
+    val additionalFunctionsDocumentation: Array<String> = [],
+    val additionalFieldsDocumentation: Array<String> = []
 )

@@ -3,10 +3,34 @@ package com.ampnet.auditornode.script.api.objects
 import com.ampnet.auditornode.script.api.model.ListApi
 import com.ampnet.auditornode.script.api.model.MapApi
 import com.ampnet.auditornode.util.NativeReflection
+import com.amptnet.auditornode.documentation.annotation.ScriptApi
+import com.amptnet.auditornode.documentation.annotation.ScriptApiCategory
+import com.amptnet.auditornode.documentation.annotation.ScriptFunction
 import org.graalvm.polyglot.HostAccess.Export
 import org.graalvm.polyglot.Value
 import org.intellij.lang.annotations.Language
 
+@ScriptApi(
+    description = "Contains utility functions to convert values between JavaScript native objects and script models.",
+    category = ScriptApiCategory.UTILITY,
+    hasStaticApi = true,
+    additionalFunctions = [
+        ScriptFunction(
+            description = "Converts List model into a JavaScript array. If the provided argument is not a List " +
+                "model, this method will either return an empty array or throw an exception.",
+            exampleCall = "`{apiObjectName}.listToArray(someList);`",
+            nullable = false,
+            signature = "`listToArray(list: List<?>): Array<?>`"
+        ),
+        ScriptFunction(
+            description = "Converts Map model into a JavaScript object. If the provided argument is not a Map mode, " +
+                "this method will either return an empty object or throw an exception.",
+            exampleCall = "`{apiObjectName}.mapToObject(someMap);`",
+            nullable = false,
+            signature = "`mapToObject(map: Map<?, ?>): Object`"
+        )
+    ]
+)
 @NativeReflection
 object Converters : JavaScriptApiObject {
 
@@ -43,6 +67,13 @@ object Converters : JavaScriptApiObject {
 
     @Export
     @JvmStatic
+    @ScriptFunction(
+        description = "Converts JavaScript array into a List model. If the provided argument is not an array, " +
+            "empty list will be returned.",
+        exampleCall = "`{apiObjectName}.arrayToList([1, 2, 3]);`",
+        nullable = false,
+        signature = "`arrayToList(array: Array<?>): List<?>`"
+    )
     fun arrayToList(array: Value): ListApi<Value> {
         return if (array.hasArrayElements()) {
             ListApi((0 until array.arraySize).map { array.getArrayElement(it) })
@@ -53,6 +84,13 @@ object Converters : JavaScriptApiObject {
 
     @Export
     @JvmStatic
+    @ScriptFunction(
+        description = "Converts JavaScript object into a Map model. If the provided argument is not an object, " +
+            "empty map will be returned.",
+        exampleCall = "`{apiObjectName}.objectToMap({ example: true });`",
+        nullable = false,
+        signature = "`objectToMap(obj: Object): Map<String, ?>`"
+    )
     fun objectToMap(obj: Value): MapApi<String, Value> {
         return if (obj.hasMembers()) {
             return MapApi(obj.memberKeys.associateWith { obj.getMember(it) })

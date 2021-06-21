@@ -21,6 +21,7 @@ class DocumentationProcessor : AbstractProcessor() {
 
     companion object {
         const val DOCUMENTATION_OUTPUT_OPTION_NAME = "com.amptnet.auditornode.documentation.output"
+        const val RESOURCES_PATH_OPTION_NAME = "com.amptnet.auditornode.documentation.resources"
     }
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
@@ -32,22 +33,13 @@ class DocumentationProcessor : AbstractProcessor() {
     }
 
     override fun process(annotations: MutableSet<out TypeElement>?, roundEnv: RoundEnvironment?): Boolean {
-        val documentationOutputPath = processingEnv.options[DOCUMENTATION_OUTPUT_OPTION_NAME]
-            ?: throw IllegalArgumentException(
-                """Value for $DOCUMENTATION_OUTPUT_OPTION_NAME option is not set. You can set it by adding the following
-                   snippet to your build.gradle:
-
-                   kapt {
-                       arguments {
-                           arg("$DOCUMENTATION_OUTPUT_OPTION_NAME", "...")
-                       }
-                   }
-                """.trimIndent()
-            )
+        val documentationOutputPath = option(DOCUMENTATION_OUTPUT_OPTION_NAME)
         val outputPath = Paths.get(documentationOutputPath)
+        val resourcesPath = Paths.get(option(RESOURCES_PATH_OPTION_NAME))
 
         roundEnv?.getElementsAnnotatedWith(ScriptApi::class.java)
-            ?.map { ScriptApiProcessor.processElement(it) }
+            ?.filterIsInstance<TypeElement>()
+            ?.map { ScriptApiProcessor.processElement(it, resourcesPath) }
             ?.map { MarkdownFileGenerator.generateMarkdownFile(it) }
             ?.forEach {
                 val filePath = outputPath.resolve(it.outputFile)
@@ -56,5 +48,20 @@ class DocumentationProcessor : AbstractProcessor() {
             }
 
         return true
+    }
+
+    private fun option(optionName: String): String {
+        return processingEnv.options[optionName]
+            ?: throw IllegalArgumentException(
+                """Value for $optionName option is not set. You can set it by adding the following
+                   snippet to your build.gradle:
+
+                   kapt {
+                       arguments {
+                           arg("$optionName", "...")
+                       }
+                   }
+                """.trimIndent()
+            )
     }
 }
