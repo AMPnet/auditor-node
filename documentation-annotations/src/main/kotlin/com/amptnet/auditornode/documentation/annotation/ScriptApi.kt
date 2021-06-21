@@ -1,5 +1,6 @@
 package com.amptnet.auditornode.documentation.annotation
 
+@Suppress("LongParameterList")
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
 annotation class ScriptApi(

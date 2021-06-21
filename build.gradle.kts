@@ -29,6 +29,7 @@ plugins {
     id("io.micronaut.application").version(Versions.Plugins.micronaut)
     id("com.github.johnrengelman.shadow").version(Versions.Plugins.shadowJar)
     id("application")
+
     idea
     jacoco
 }

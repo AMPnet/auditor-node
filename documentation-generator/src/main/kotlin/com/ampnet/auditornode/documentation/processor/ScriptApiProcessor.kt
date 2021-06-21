@@ -118,7 +118,6 @@ object ScriptApiProcessor {
             }
         }
 
-
     private fun constructFieldSignature(fieldElement: VariableElement, nullable: Boolean): String {
         val fieldName = fieldElement.simpleName
         val fieldType = fieldElement.asType().simpleName + if (nullable) NULLABLE_SIGNATURE else ""

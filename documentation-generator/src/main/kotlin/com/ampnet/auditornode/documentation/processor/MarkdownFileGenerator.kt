@@ -9,7 +9,7 @@ object MarkdownFileGenerator {
 
     private val emptyLineList = listOf("")
     private const val API_OBJECT_NAME_PLACEHOLDER = "{apiObjectName}"
-    private const val STATIC_OBJECT_NAME = "Static object name: `${API_OBJECT_NAME_PLACEHOLDER}`"
+    private const val STATIC_OBJECT_NAME = "Static object name: `$API_OBJECT_NAME_PLACEHOLDER`"
     private const val NO_STATIC_OBJECT = "There is no static object available in the scripts."
     private const val NO_FIELDS = "There are no readable fields."
     private const val FIELDS_TABLE_HEADER = "| Field | Description |\n|| ----- | ----------- |\n"
