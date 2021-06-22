@@ -5,6 +5,5 @@ package com.amptnet.auditornode.documentation.annotation
 annotation class ScriptFunction(
     val description: String,
     val exampleCall: String,
-    val nullable: Boolean,
     val signature: String = ""
 )

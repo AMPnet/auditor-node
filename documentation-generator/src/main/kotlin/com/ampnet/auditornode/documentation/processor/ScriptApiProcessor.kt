@@ -6,12 +6,15 @@ import com.ampnet.auditornode.documentation.processor.model.ScriptApiModel
 import com.amptnet.auditornode.documentation.annotation.ScriptApi
 import com.amptnet.auditornode.documentation.annotation.ScriptField
 import com.amptnet.auditornode.documentation.annotation.ScriptFunction
+import org.jetbrains.annotations.NotNull
+import org.jetbrains.annotations.Nullable
 import java.nio.file.Path
 import java.nio.file.Paths
 import javax.lang.model.element.Element
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.TypeElement
 import javax.lang.model.element.VariableElement
+import javax.lang.model.type.TypeKind
 import javax.lang.model.type.TypeMirror
 
 object ScriptApiProcessor {
@@ -52,10 +55,10 @@ object ScriptApiProcessor {
         }
 
         val packagePath = element.qualifiedName.toString().substringBeforeLast('.').replace('.', '/')
-        val additionalFunctionsDocumentationPaths = scriptApiAnnotation.additionalFunctionsDocumentation.map {
+        val additionalFunctionsDocumentationPaths = scriptApiAnnotation.additionalFunctionDocumentationFiles.map {
             resourcesPath.resolve(Paths.get("$packagePath/$it"))
         }
-        val additionalFieldsDocumentationPaths = scriptApiAnnotation.additionalFieldsDocumentation.map {
+        val additionalFieldsDocumentationPaths = scriptApiAnnotation.additionalFieldDocumentationFiles.map {
             resourcesPath.resolve(Paths.get("$packagePath/$it"))
         }
 
@@ -68,8 +71,8 @@ object ScriptApiProcessor {
             fieldModels = annotatedFieldModels + additionalFieldModels,
             functionsDocumentationHeader = scriptApiAnnotation.functionsDocumentationHeader,
             fieldsDocumentationHeader = scriptApiAnnotation.fieldsDocumentationHeader,
-            additionalFunctionsDocumentationPaths = additionalFunctionsDocumentationPaths,
-            additionalFieldsDocumentationPaths = additionalFieldsDocumentationPaths
+            additionalFunctionDocumentationPaths = additionalFunctionsDocumentationPaths,
+            additionalFieldDocumentationPaths = additionalFieldsDocumentationPaths
         )
     }
 
@@ -82,7 +85,7 @@ object ScriptApiProcessor {
     private fun extractScriptFunctionElement(element: Element): FunctionModel? =
         element.getAnnotation(ScriptFunction::class.java)?.let {
             if (element is ExecutableElement) {
-                val signature = it.signature.trim().ifEmpty { constructFunctionSignature(element, it.nullable) }
+                val signature = it.signature.trim().ifEmpty { constructFunctionSignature(element) }
 
                 FunctionModel(
                     description = it.description,
@@ -94,12 +97,14 @@ object ScriptApiProcessor {
             }
         }
 
-    private fun constructFunctionSignature(functionElement: ExecutableElement, nullable: Boolean): String {
+    private fun constructFunctionSignature(functionElement: ExecutableElement): String {
         val functionName = functionElement.simpleName
-        val parameters = functionElement.parameters.map {
+        val parameters = functionElement.parameters.joinToString(separator = ", ") {
             "${it.simpleName}: ${it.asType().simpleName}"
-        }.joinToString(separator = ", ")
-        val returnType = functionElement.returnType.simpleName + if (nullable) NULLABLE_SIGNATURE else ""
+        }
+
+        val returnType = functionElement.returnType.simpleName +
+            if (functionElement.isNullable) NULLABLE_SIGNATURE else ""
 
         return "<code>$functionName($parameters): $returnType</code>"
     }
@@ -107,7 +112,7 @@ object ScriptApiProcessor {
     private fun extractScriptFieldElement(element: Element): FieldModel? =
         element.getAnnotation(ScriptField::class.java)?.let {
             if (element is VariableElement) {
-                val signature = it.signature.trim().ifEmpty { constructFieldSignature(element, it.nullable) }
+                val signature = it.signature.trim().ifEmpty { constructFieldSignature(element) }
 
                 FieldModel(
                     description = it.description,
@@ -118,10 +123,36 @@ object ScriptApiProcessor {
             }
         }
 
-    private fun constructFieldSignature(fieldElement: VariableElement, nullable: Boolean): String {
+    private fun constructFieldSignature(fieldElement: VariableElement): String {
         val fieldName = fieldElement.simpleName
-        val fieldType = fieldElement.asType().simpleName + if (nullable) NULLABLE_SIGNATURE else ""
+        val fieldType = fieldElement.asType().simpleName + if (fieldElement.isNullable) NULLABLE_SIGNATURE else ""
 
         return "<code>$fieldName: $fieldType</code>"
     }
+
+    private val Element.isNullable: Boolean
+        get() {
+            if (this.getAnnotation(Nullable::class.java) != null) {
+                return true
+            }
+
+            if (this.getAnnotation(NotNull::class.java) != null) {
+                return false
+            }
+
+            val isPrimitiveOrVoid = when (this) {
+                is ExecutableElement -> this.returnType.isPrimitiveOrVoid
+                is VariableElement -> this.asType().isPrimitiveOrVoid
+                else -> false
+            }
+
+            if (isPrimitiveOrVoid) {
+                return false
+            }
+
+            throw IllegalStateException("Cannot determine nullability for element: $this")
+        }
+
+    private val TypeMirror.isPrimitiveOrVoid: Boolean
+        get() = kind.isPrimitive || kind == TypeKind.VOID
 }

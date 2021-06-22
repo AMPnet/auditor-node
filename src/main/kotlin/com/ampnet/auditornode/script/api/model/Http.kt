@@ -15,35 +15,35 @@ import org.graalvm.polyglot.HostAccess.Export
 data class HttpCookie(
     @Export
     @JvmField
-    @ScriptField(description = "Name of the cookie.", nullable = false)
+    @ScriptField(description = "Name of the cookie.")
     val name: String,
     @Export
     @JvmField
-    @ScriptField(description = "Value of the cookie.", nullable = false)
+    @ScriptField(description = "Value of the cookie.")
     val value: String,
     @Export
     @JvmField
-    @ScriptField(description = "Cookie domain, if specified.", nullable = true)
+    @ScriptField(description = "Cookie domain, if specified.")
     val domain: String?,
     @Export
     @JvmField
-    @ScriptField(description = "Cookie path, if specified.", nullable = true)
+    @ScriptField(description = "Cookie path, if specified.")
     val path: String?,
     @Export
     @JvmField
-    @ScriptField(description = "Specifies whether the cookie is HTTP-only.", nullable = false)
+    @ScriptField(description = "Specifies whether the cookie is HTTP-only.")
     val httpOnly: Boolean,
     @Export
     @JvmField
-    @ScriptField(description = "Specifies whether the cookie is secure.", nullable = false)
+    @ScriptField(description = "Specifies whether the cookie is secure.")
     val secure: Boolean,
     @Export
     @JvmField
-    @ScriptField(description = "Maximum age of the cookie in seconds.", nullable = false)
+    @ScriptField(description = "Maximum age of the cookie in seconds.")
     val maxAge: Long,
     @Export
     @JvmField
-    @ScriptField(description = "`SameSite` attribute value of the cookie.", nullable = false)
+    @ScriptField(description = "`SameSite` attribute value of the cookie.")
     val sameSite: String
 )
 
@@ -56,22 +56,21 @@ data class HttpCookie(
 data class HttpResponse(
     @Export
     @JvmField
-    @ScriptField(description = "Response body.", nullable = true)
+    @ScriptField(description = "Response body.")
     val body: String?,
     @Export
     @JvmField
-    @ScriptField(description = "Response status code.", nullable = false)
+    @ScriptField(description = "Response status code.")
     val statusCode: Int,
     @Export
     @JvmField
     @ScriptField(
         description = "Response headers.",
-        signature = "`headers: Map<String, List<String>>`",
-        nullable = false
+        signature = "`headers: Map<String, List<String>>`"
     )
     val headers: MapApi<String, ListApi<String>>,
     @Export
     @JvmField
-    @ScriptField(description = "Response cookies.", signature = "`cookies: List<HttpCookie>`", nullable = false)
+    @ScriptField(description = "Response cookies.", signature = "`cookies: List<HttpCookie>`")
     val cookies: ListApi<HttpCookie>
 )

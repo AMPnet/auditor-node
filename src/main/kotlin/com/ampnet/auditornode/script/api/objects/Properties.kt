@@ -21,8 +21,7 @@ import javax.inject.Singleton
     additionalFields = [
         ScriptField(
             description = "Value of the property under `<propertyName>` key.",
-            signature = "`<propertyName>: String`",
-            nullable = false
+            signature = "`<propertyName>: String`"
         )
     ],
     fieldsDocumentationHeader = "The fields of this object are dynamic and depend on the available " +

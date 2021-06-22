@@ -25,8 +25,7 @@ object AuditResultApi : JavaScriptApiObject {
     @JvmStatic
     @ScriptFunction(
         description = "Used to create a successful `{apiObjectName}` object.",
-        exampleCall = "`{apiObjectName}.success();`",
-        nullable = false
+        exampleCall = "`{apiObjectName}.success();`"
     )
     fun success(): AuditResult = SuccessfulAudit
 
@@ -34,8 +33,7 @@ object AuditResultApi : JavaScriptApiObject {
     @JvmStatic
     @ScriptFunction(
         description = "Used to create a failed `{apiObjectName}` object with provided message.",
-        exampleCall = "`{apiObjectName}.failure(\"Owner mismatch\");`",
-        nullable = false
+        exampleCall = "`{apiObjectName}.failure(\"Owner mismatch\");`"
     )
     fun failure(message: String): AuditResult = FailedAudit(message)
 
@@ -43,8 +41,7 @@ object AuditResultApi : JavaScriptApiObject {
     @JvmStatic
     @ScriptFunction(
         description = "Used to create an aborted `{apiObjectName}` object with provided message.",
-        exampleCall = "`{apiObjectName}.aborted(\"Will be audited later\");`",
-        nullable = false
+        exampleCall = "`{apiObjectName}.aborted(\"Will be audited later\");`"
     )
     fun aborted(message: String): AuditResult = AbortedAudit(message)
 }

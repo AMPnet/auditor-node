@@ -19,14 +19,12 @@ import org.intellij.lang.annotations.Language
             description = "Converts List model into a JavaScript array. If the provided argument is not a List " +
                 "model, this method will either return an empty array or throw an exception.",
             exampleCall = "`{apiObjectName}.listToArray(someList);`",
-            nullable = false,
             signature = "`listToArray(list: List<?>): Array<?>`"
         ),
         ScriptFunction(
             description = "Converts Map model into a JavaScript object. If the provided argument is not a Map mode, " +
                 "this method will either return an empty object or throw an exception.",
             exampleCall = "`{apiObjectName}.mapToObject(someMap);`",
-            nullable = false,
             signature = "`mapToObject(map: Map<?, ?>): Object`"
         )
     ]
@@ -71,7 +69,6 @@ object Converters : JavaScriptApiObject {
         description = "Converts JavaScript array into a List model. If the provided argument is not an array, " +
             "empty list will be returned.",
         exampleCall = "`{apiObjectName}.arrayToList([1, 2, 3]);`",
-        nullable = false,
         signature = "`arrayToList(array: Array<?>): List<?>`"
     )
     fun arrayToList(array: Value): ListApi<Value> {
@@ -88,7 +85,6 @@ object Converters : JavaScriptApiObject {
         description = "Converts JavaScript object into a Map model. If the provided argument is not an object, " +
             "empty map will be returned.",
         exampleCall = "`{apiObjectName}.objectToMap({ example: true });`",
-        nullable = false,
         signature = "`objectToMap(obj: Object): Map<String, ?>`"
     )
     fun objectToMap(obj: Value): MapApi<String, Value> {

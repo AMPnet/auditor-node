@@ -19,17 +19,13 @@ data class ListApi<out E>(private val underlying: List<E>) {
     @Export
     @ScriptFunction(
         description = "Fetch an item at the specified index from the list.",
-        exampleCall = "`someList.get(0);`",
-        nullable = true
+        exampleCall = "`someList.get(0);`"
     )
     operator fun get(index: Int): E? = underlying.getOrNull(index)
 
     @Export
     @JvmField
-    @ScriptField(
-        description = "Number of elements in the list.",
-        nullable = false
-    )
+    @ScriptField(description = "Number of elements in the list.")
     val length: Int = underlying.size
 }
 
@@ -46,24 +42,19 @@ data class MapApi<K, out V>(private val underlying: Map<K, V>) {
     @Export
     @ScriptFunction(
         description = "Fetch an item for the specified key from the map.",
-        exampleCall = "`someMap.get(\"exampleKey\");`",
-        nullable = true
+        exampleCall = "`someMap.get(\"exampleKey\");`"
     )
     operator fun get(key: K): V? = underlying[key]
 
     @Export
     @JvmField
-    @ScriptField(
-        description = "Number of elements in the map.",
-        nullable = false
-    )
+    @ScriptField(description = "Number of elements in the map.")
     val size: Int = underlying.size
 
     @Export
     @ScriptFunction(
         description = "Returns a list of all the keys contained in the map.",
         exampleCall = "`someMap.keys();`",
-        nullable = false,
         signature = "`keys(): List<K>`"
     )
     fun keys(): ListApi<K> = ListApi(underlying.keys.toList())

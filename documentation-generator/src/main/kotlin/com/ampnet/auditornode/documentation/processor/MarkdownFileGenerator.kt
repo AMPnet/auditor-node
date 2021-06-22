@@ -44,7 +44,7 @@ object MarkdownFileGenerator {
             |
             |$fieldSectionLines
             |
-            |${loadResources(scriptApiModel.additionalFieldsDocumentationPaths)}
+            |${loadResources(scriptApiModel.additionalFieldDocumentationPaths)}
             |
             |###### Functions
             |
@@ -52,7 +52,7 @@ object MarkdownFileGenerator {
             |
             |$functionSectionLines
             |
-            |${loadResources(scriptApiModel.additionalFunctionsDocumentationPaths)}
+            |${loadResources(scriptApiModel.additionalFunctionDocumentationPaths)}
             |
             |</details>
         """.trimMargin()

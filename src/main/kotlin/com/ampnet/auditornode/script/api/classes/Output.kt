@@ -15,22 +15,19 @@ interface Output {
 
     @ScriptFunction(
         description = "Requests rendering of provided text.",
-        exampleCall = "`{apiObjectName}.renderText(\"example\");`",
-        nullable = false
+        exampleCall = "`{apiObjectName}.renderText(\"example\");`"
     )
     fun renderText(text: String)
 
     @ScriptFunction(
         description = "Requests rendering of provided HTML.",
-        exampleCall = "`{apiObjectName}.renderHtml(\"<p>example<p/>\");`",
-        nullable = false
+        exampleCall = "`{apiObjectName}.renderHtml(\"<p>example<p/>\");`"
     )
     fun renderHtml(html: String)
 
     @ScriptFunction(
         description = "Requests rendering of provided Markdown.",
-        exampleCall = "`{apiObjectName}.renderMarkdown(\"# Example\");`",
-        nullable = false
+        exampleCall = "`{apiObjectName}.renderMarkdown(\"# Example\");`"
     )
     fun renderMarkdown(markdown: String)
 }

@@ -12,6 +12,6 @@ data class ScriptApiModel(
     val fieldModels: List<FieldModel>,
     val functionsDocumentationHeader: String,
     val fieldsDocumentationHeader: String,
-    val additionalFunctionsDocumentationPaths: List<Path>,
-    val additionalFieldsDocumentationPaths: List<Path>
+    val additionalFunctionDocumentationPaths: List<Path>,
+    val additionalFieldDocumentationPaths: List<Path>
 )

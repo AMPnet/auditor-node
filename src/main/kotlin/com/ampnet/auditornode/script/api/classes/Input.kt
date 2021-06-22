@@ -12,31 +12,28 @@ import org.graalvm.polyglot.Value
         "documentation for more info on running scripts interactively.",
     category = ScriptApiCategory.API,
     hasStaticApi = true,
-    additionalFunctionsDocumentation = ["input-fields-description.md"]
+    additionalFunctionDocumentationFiles = ["input-fields-description.md"]
 )
 interface Input {
 
     @ScriptFunction(
         description = "Requests a boolean input from the user via web socket and returns the value when it becomes " +
             "available.",
-        exampleCall = "`{apiObjectName}.readBoolean(\"Did you check this box?\");`",
-        nullable = true
+        exampleCall = "`{apiObjectName}.readBoolean(\"Did you check this box?\");`"
     )
     fun readBoolean(message: String): Boolean?
 
     @ScriptFunction(
         description = "Requests a number input from the user via web socket and returns the value when it becomes " +
             "available. Returns `null` for invalid values.",
-        exampleCall = "`{apiObjectName}.readNumber(\"The answer is:\");`",
-        nullable = true
+        exampleCall = "`{apiObjectName}.readNumber(\"The answer is:\");`"
     )
     fun readNumber(message: String): Double?
 
     @ScriptFunction(
         description = "Requests a number input from the user via web socket and returns the value when it becomes " +
             "available.",
-        exampleCall = "`{apiObjectName}.readString(\"Name:\");`",
-        nullable = true
+        exampleCall = "`{apiObjectName}.readString(\"Name:\");`"
     )
     fun readString(message: String): String?
 
@@ -45,7 +42,6 @@ interface Input {
             "which is described below this table. The return value is a map which consists of field identifiers and " +
             "their values.",
         exampleCall = "Example given below.",
-        nullable = true,
         signature = "<code>readFields(fields: Object, message: String): Map&lt;String, Boolean &#124; Number &#124; " +
             "String&gt; &#124; null</code>"
     )
@@ -55,8 +51,7 @@ interface Input {
         description = "Requests button click from the user via web socket and blocks execution until the user clicks " +
             "on the button. Does not block execution and returns immediately if the script is not running " +
             "interactively.",
-        exampleCall = "`{apiObjectName}.button(\"Continue\");`",
-        nullable = false
+        exampleCall = "`{apiObjectName}.button(\"Continue\");`"
     )
     fun button(message: String)
 }

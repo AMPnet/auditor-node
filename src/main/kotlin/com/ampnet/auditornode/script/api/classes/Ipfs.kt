@@ -17,16 +17,14 @@ interface Ipfs {
     @ScriptFunction(
         description = "Reads content of the IPFS file with provided name. The file must be located in the IPFS " +
             "directory associated with the script. If the file cannot be found, `null` is returned.",
-        exampleCall = "`{apiObjectName}.getFile(\"example.html\");`",
-        nullable = true
+        exampleCall = "`{apiObjectName}.getFile(\"example.html\");`"
     )
     fun getFile(fileName: String): String?
 
     @ScriptFunction(
         description = "Creates a link relative to the application which can be used to fetch the specified file from " +
             "the IPFS directory associated with the script. If the IPFS directory is not set, `null` is returned.",
-        exampleCall = "`{apiObjectName}.linkToFile(\"example.html\");`",
-        nullable = true
+        exampleCall = "`{apiObjectName}.linkToFile(\"example.html\");`"
     )
     fun linkToFile(fileName: String): String?
 }

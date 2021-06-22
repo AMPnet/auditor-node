@@ -12,6 +12,6 @@ annotation class ScriptApi(
     val additionalFields: Array<ScriptField> = [],
     val functionsDocumentationHeader: String = "",
     val fieldsDocumentationHeader: String = "",
-    val additionalFunctionsDocumentation: Array<String> = [],
-    val additionalFieldsDocumentation: Array<String> = []
+    val additionalFunctionDocumentationFiles: Array<String> = [],
+    val additionalFieldDocumentationFiles: Array<String> = []
 )
