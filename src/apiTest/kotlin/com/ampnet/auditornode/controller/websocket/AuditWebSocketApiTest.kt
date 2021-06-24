@@ -126,7 +126,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
-            client.assertNextMessage(IpfsReadErrorMessage("HTTP error while fetching file via IPFS"))
+            client.assertNextMessage(IpfsReadErrorMessage("HTTP error while communicating with IPFS"))
             client.close()
         }
     }
@@ -409,7 +409,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
-            client.assertNextMessage(IpfsReadErrorMessage("HTTP error while fetching file via IPFS"))
+            client.assertNextMessage(IpfsReadErrorMessage("HTTP error while communicating with IPFS"))
             client.close()
         }
     }

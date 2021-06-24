@@ -1,18 +1,25 @@
 package com.ampnet.auditornode.controller
 
 import com.ampnet.auditornode.controller.documentation.IpfsControllerDocumentation
+import com.ampnet.auditornode.model.response.IpfsDirectoryUploadResponse
 import com.ampnet.auditornode.persistence.model.IpfsHash
+import com.ampnet.auditornode.persistence.model.NamedIpfsFile
 import com.ampnet.auditornode.persistence.repository.IpfsRepository
+import com.ampnet.auditornode.util.UuidProvider
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Controller
+import io.micronaut.http.multipart.CompletedFileUpload
 import mu.KotlinLogging
+import org.reactivestreams.Publisher
+import reactor.core.publisher.Flux
 import javax.inject.Inject
 
 private val logger = KotlinLogging.logger {}
 
 @Controller("/ipfs")
 class IpfsController @Inject constructor(
-    private val ipfsRepository: IpfsRepository
+    private val ipfsRepository: IpfsRepository,
+    private val uuidProvider: UuidProvider
 ) : IpfsControllerDocumentation {
 
     override fun getFile(hash: String): HttpResponse<ByteArray> {
@@ -20,7 +27,7 @@ class IpfsController @Inject constructor(
         return ipfsRepository.fetchBinaryFile(IpfsHash(hash))
             .fold(
                 ifLeft = {
-                    logger.error { "IPFS file not found: $hash" }
+                    logger.error(it) { "IPFS file not found: $hash" }
                     HttpResponse.notFound()
                 },
                 ifRight = { HttpResponse.ok(it.content) }
@@ -32,10 +39,29 @@ class IpfsController @Inject constructor(
         return ipfsRepository.fetchBinaryFileFromDirectory(IpfsHash(directoryHash), fileName)
             .fold(
                 ifLeft = {
-                    logger.error { "IPFS file from directory not found: $directoryHash/$fileName" }
+                    logger.error(it) { "IPFS file from directory not found: $directoryHash/$fileName" }
                     HttpResponse.notFound()
                 },
                 ifRight = { HttpResponse.ok(it.content) }
             )
+    }
+
+    override fun uploadFilesToDirectory(
+        files: Publisher<CompletedFileUpload>
+    ): Publisher<HttpResponse<IpfsDirectoryUploadResponse>> {
+        val filesFlux = Flux.from(files).map {
+            NamedIpfsFile(it.bytes, it.filename ?: uuidProvider.getUuid().toString())
+        }
+
+        return ipfsRepository.uploadFilesToDirectory(filesFlux)
+            .map { either ->
+                either.fold(
+                    ifLeft = {
+                        logger.error(it) { "Cannot upload files to IPFS" }
+                        HttpResponse.serverError()
+                    },
+                    ifRight = { HttpResponse.ok(it) }
+                )
+            }
     }
 }

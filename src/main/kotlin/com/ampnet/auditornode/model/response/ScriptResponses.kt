@@ -15,7 +15,6 @@ data class StoreScriptResponse(
     // to trick it into generating the documentation properly
     @Suppress("unused")
     @Schema(type = "string", format = "uuid")
-    @Deprecated("Use id field instead.", replaceWith = ReplaceWith("id"))
     fun id(): UUID = id.value
 }
 

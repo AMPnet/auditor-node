@@ -1,12 +1,14 @@
 package com.ampnet.auditornode.persistence.repository
 
 import assertk.assertThat
+import assertk.assertions.isNotNull
 import com.ampnet.auditornode.TestBase
 import com.ampnet.auditornode.configuration.properties.IpfsProperties
 import com.ampnet.auditornode.isLeftContaining
 import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.model.error.IpfsError.IpfsEmptyResponseError
 import com.ampnet.auditornode.model.error.IpfsError.IpfsHttpError
+import com.ampnet.auditornode.model.error.IpfsError.UnsupportedIpfsOperationError
 import com.ampnet.auditornode.persistence.model.IpfsBinaryFile
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.persistence.model.IpfsTextFile
@@ -22,6 +24,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
+import reactor.core.publisher.Flux
 
 class GatewayIpfsRepositoryUnitTest : TestBase() {
 
@@ -262,6 +265,16 @@ class GatewayIpfsRepositoryUnitTest : TestBase() {
         verify("correct file data is returned") {
             val result = ipfs.fetchBinaryFileFromDirectory(hash, fileName)
             assertThat(result).isRightContaining(IpfsBinaryFile(response))
+        }
+    }
+
+    @Test
+    fun `uploadFilesToDirectory() must return UnsupportedIpfsOperationError`() {
+        verify("UnsupportedIpfsOperationError is returned") {
+            val result = ipfs.uploadFilesToDirectory(Flux.empty()).block()
+            assertThat(result)
+                .isNotNull()
+                .isLeftContaining(UnsupportedIpfsOperationError)
         }
     }
 }

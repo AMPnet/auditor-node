@@ -1,18 +1,24 @@
 package com.ampnet.auditornode.controller
 
 import assertk.assertThat
+import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
 import assertk.assertions.isInstanceOf
+import assertk.assertions.isNotNull
 import com.ampnet.auditornode.IntegTestBase
 import com.ampnet.auditornode.IntegTestUtils
+import com.ampnet.auditornode.UnitTestUtils.parseIpfsDirectoryUploadResponse
+import com.ampnet.auditornode.model.response.IpfsDirectoryUploadResponse
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.testcontainers.IpfsTestContainer
 import com.ampnet.auditornode.testcontainers.IpfsTestContainer.uploadFileToIpfs
 import com.ampnet.auditornode.testcontainers.IpfsTestContainer.uploadFileToIpfsDirectory
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
+import io.micronaut.http.MediaType
 import io.micronaut.http.client.exceptions.HttpClientResponseException
+import io.micronaut.http.client.multipart.MultipartBody
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import io.micronaut.test.support.TestPropertyProvider
 import org.junit.jupiter.api.Test
@@ -24,7 +30,10 @@ class IpfsControllerIntegTest : IntegTestBase(), TestPropertyProvider {
 
     override fun getProperties(): MutableMap<String, String> =
         mutableMapOf(
-            "ipfs.gateway-url" to "http://localhost:${IpfsTestContainer.gatewayPort()}/ipfs/{ipfsHash}"
+            "auditor.use-local-ipfs" to "true",
+            "ipfs.local-client-port" to IpfsTestContainer.apiPort().toString(),
+            "micronaut.http.client.read-timeout" to "2s",
+            "micronaut.http.services.test-client.read-timeout" to "10s"
         )
 
     @Test
@@ -99,6 +108,61 @@ class IpfsControllerIntegTest : IntegTestBase(), TestPropertyProvider {
                 .given {
                     assertThat(it.status).isEqualTo(HttpStatus.NOT_FOUND)
                 }
+        }
+    }
+
+    @Test
+    fun `must return ok response when files are successfully stored`() {
+        val file1Content = "content1".toByteArray()
+        val file2Content = "content2".toByteArray()
+        var response: IpfsDirectoryUploadResponse? = null
+
+        verify("ok response for file upload is returned") {
+            val requestBody = MultipartBody.builder()
+                .addPart("files", "file1", file1Content)
+                .addPart("files", "file2", file2Content)
+                .build()
+            val request = HttpRequest.POST("/ipfs/upload", requestBody).apply {
+                contentType(MediaType.MULTIPART_FORM_DATA_TYPE)
+            }
+
+            response = client.toBlocking().retrieve(request, String::class.java)?.parseIpfsDirectoryUploadResponse()
+
+            assertThat(response?.directoryIpfsHash)
+                .isNotNull()
+            assertThat(response?.files)
+                .isNotNull()
+                .hasSize(2)
+            assertThat(response?.files?.get(0)?.fileName)
+                .isEqualTo("file1")
+            assertThat(response?.files?.get(1)?.fileName)
+                .isEqualTo("file2")
+        }
+
+        verify("files are correctly uploaded") {
+            assertThat(response)
+                .isNotNull()
+
+            val nonNullResponse = response!!
+            val directoryHash = nonNullResponse.directoryIpfsHash
+
+            val file1Name = nonNullResponse.files[0].fileName
+            val file1Response = client.toBlocking().retrieve(
+                HttpRequest.GET<ByteArray>("/ipfs/${directoryHash.value}/$file1Name"),
+                ByteArray::class.java
+            )
+
+            assertThat(file1Response)
+                .isEqualTo(file1Content)
+
+            val file2Name = nonNullResponse.files[1].fileName
+            val file2Response = client.toBlocking().retrieve(
+                HttpRequest.GET<ByteArray>("/ipfs/${directoryHash.value}/$file2Name"),
+                ByteArray::class.java
+            )
+
+            assertThat(file2Response)
+                .isEqualTo(file2Content)
         }
     }
 }
