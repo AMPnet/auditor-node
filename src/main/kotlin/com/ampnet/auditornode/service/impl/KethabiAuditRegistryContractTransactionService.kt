@@ -3,6 +3,7 @@ package com.ampnet.auditornode.service.impl
 import com.ampnet.auditornode.configuration.properties.AuditorProperties
 import com.ampnet.auditornode.contract.AuditRegistryContractTransactionGenerator
 import com.ampnet.auditornode.persistence.model.AssetContractAddress
+import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.persistence.model.UnsignedTransaction
 import com.ampnet.auditornode.script.api.model.AbortedAudit
 import com.ampnet.auditornode.script.api.model.AuditResult
@@ -27,7 +28,8 @@ class KethabiAuditRegistryContractTransactionService @Inject constructor(
 
     override fun generateTxForCastAuditVote(
         assetContractAddress: AssetContractAddress,
-        auditResult: AuditResult
+        auditResult: AuditResult,
+        directoryIpfsHash: IpfsHash // TODO currently unused, needs new contract ABI
     ): UnsignedTransaction? {
         logger.info {
             "Generating transaction for asset with address: $assetContractAddress, audit result: $auditResult"

@@ -9,8 +9,10 @@ import com.ampnet.auditornode.model.websocket.ExecutingInfoMessage
 import com.ampnet.auditornode.model.websocket.InvalidInputJsonErrorMessage
 import com.ampnet.auditornode.model.websocket.IpfsReadErrorMessage
 import com.ampnet.auditornode.model.websocket.RpcErrorMessage
+import com.ampnet.auditornode.model.websocket.SpecifyIpfsDirectoryHashCommand
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.persistence.model.UnsignedTransaction
+import com.ampnet.auditornode.script.api.model.AbortedAudit
 import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
@@ -415,6 +417,115 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
     }
 
     @Test
+    fun `must return audit result message for aborted script`() {
+        suppose("asset info IPFS hash is returned via RPC") {
+            wireMockServer.stubFor(
+                post(urlPathEqualTo("/rpc"))
+                    .withRequestBody(containing(assetInfoRpcCall))
+                    .willReturn(
+                        aResponse()
+                            .withBody(
+                                """
+                                    {
+                                        "jsonrpc": "2.0",
+                                        "id": 0,
+                                        "result": "$encodedTestHash"
+                                    }
+                                """.trimIndent()
+                            )
+                            .withHeader("Content-Type", MediaType.APPLICATION_JSON)
+                            .withStatus(200)
+                    )
+            )
+        }
+
+        suppose("asset info file with valid JSON is returned via IPFS") {
+            wireMockServer.stubFor(
+                get(urlPathEqualTo("/ipfs/${testHash.value}"))
+                    .willReturn(
+                        aResponse()
+                            .withBody("{\"example\":\"value\"}")
+                            .withHeader("Content-Type", MediaType.TEXT_PLAIN)
+                            .withStatus(200)
+                    )
+            )
+        }
+
+        suppose("asset category ID is returned via RPC") {
+            wireMockServer.stubFor(
+                post(urlPathEqualTo("/rpc"))
+                    .withRequestBody(containing(assetCategoryRpcCall))
+                    .willReturn(
+                        aResponse()
+                            .withBody(
+                                """
+                                    {
+                                        "jsonrpc": "2.0",
+                                        "id": 1,
+                                        "result": "$encodedTestAssetCategoryId"
+                                    }
+                                """.trimIndent()
+                            )
+                            .withHeader("Content-Type", MediaType.APPLICATION_JSON)
+                            .withStatus(200)
+                    )
+            )
+        }
+
+        suppose("auditing procedure directory IPFS hash is returned via RPC") {
+            wireMockServer.stubFor(
+                post(urlPathEqualTo("/rpc"))
+                    .withRequestBody(containing(auditingProcedureRpcCall))
+                    .willReturn(
+                        aResponse()
+                            .withBody(
+                                """
+                                    {
+                                        "jsonrpc": "2.0",
+                                        "id": 2,
+                                        "result": "$encodedTestHash"
+                                    }
+                                """.trimIndent()
+                            )
+                            .withHeader("Content-Type", MediaType.APPLICATION_JSON)
+                            .withStatus(200)
+                    )
+            )
+        }
+
+        suppose("auditing script file is returned via IPFS") {
+            @Language("JavaScript") val scriptSource = jsAssertions + """
+                function audit(auditData) {
+                    assertEquals("auditData.example", "value", auditData.example);
+                    return AuditResult.aborted("test");
+                }
+            """.trimIndent()
+
+            wireMockServer.stubFor(
+                get(urlPathEqualTo("/ipfs/${testHash.value}/audit.js"))
+                    .willReturn(
+                        aResponse()
+                            .withBody(scriptSource)
+                            .withHeader("Content-Type", MediaType.TEXT_PLAIN)
+                            .withStatus(200)
+                    )
+            )
+        }
+
+        verify("script execution is aborted") {
+            val client = webSocketClient.connect(
+                WebSocketTestClient::class.java,
+                "${webSocketPath()}/audit/a" // TODO re-write test for dynamic assets
+            )
+                .blockingFirst()
+            client.assertNextMessage(ConnectedInfoMessage)
+            client.assertNextMessage(ExecutingInfoMessage)
+            client.assertNextMessage(AuditResultResponse(AbortedAudit("test"), null))
+            client.close()
+        }
+    }
+
+    @Test
     fun `must return audit result message for successful script`() {
         suppose("asset info IPFS hash is returned via RPC") {
             wireMockServer.stubFor(
@@ -518,6 +629,8 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
             client.assertNextMessage(ExecutingInfoMessage)
+            client.assertNextMessage(SpecifyIpfsDirectoryHashCommand(SuccessfulAudit))
+            client.send("ipfsHash")
             client.assertNextMessage(
                 AuditResultResponse(
                     SuccessfulAudit,

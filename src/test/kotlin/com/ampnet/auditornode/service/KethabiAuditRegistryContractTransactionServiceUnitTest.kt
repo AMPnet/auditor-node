@@ -7,6 +7,7 @@ import assertk.assertions.isNull
 import com.ampnet.auditornode.TestBase
 import com.ampnet.auditornode.configuration.properties.AuditorProperties
 import com.ampnet.auditornode.persistence.model.AssetContractAddress
+import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.persistence.model.UnsignedTransaction
 import com.ampnet.auditornode.script.api.model.AbortedAudit
 import com.ampnet.auditornode.script.api.model.FailedAudit
@@ -33,7 +34,11 @@ class KethabiAuditRegistryContractTransactionServiceUnitTest : TestBase() {
     @Test
     fun `must correctly generate transaction for successful audit result`() {
         verify("correct transaction is generated for successful audit result") {
-            val transaction = service.generateTxForCastAuditVote(assetContractAddress, SuccessfulAudit)
+            val transaction = service.generateTxForCastAuditVote(
+                assetContractAddress,
+                SuccessfulAudit,
+                IpfsHash("") // TODO update after new contract ABI is available
+            )
 
             assertThat(transaction)
                 .isNotNull()
@@ -49,7 +54,11 @@ class KethabiAuditRegistryContractTransactionServiceUnitTest : TestBase() {
     @Test
     fun `must correctly generate transaction for failed audit result`() {
         verify("correct transaction is generated for failed audit result") {
-            val transaction = service.generateTxForCastAuditVote(assetContractAddress, FailedAudit("failed"))
+            val transaction = service.generateTxForCastAuditVote(
+                assetContractAddress,
+                FailedAudit("failed"),
+                IpfsHash("") // TODO update after new contract ABI is available
+            )
 
             assertThat(transaction)
                 .isNotNull()
@@ -65,7 +74,11 @@ class KethabiAuditRegistryContractTransactionServiceUnitTest : TestBase() {
     @Test
     fun `must not generate transaction for aborted audit result`() {
         verify("no transaction is generated for aborted audit result") {
-            val transaction = service.generateTxForCastAuditVote(assetContractAddress, AbortedAudit("aborted"))
+            val transaction = service.generateTxForCastAuditVote(
+                assetContractAddress,
+                AbortedAudit("aborted"),
+                IpfsHash("") // TODO update after new contract ABI is available
+            )
 
             assertThat(transaction)
                 .isNull()

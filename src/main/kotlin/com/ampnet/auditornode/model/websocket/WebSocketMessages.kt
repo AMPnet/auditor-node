@@ -31,6 +31,9 @@ data class ReadNumberCommand(val message: String) : WebSocketCommand("readNumber
 data class ReadStringCommand(val message: String) : WebSocketCommand("readString")
 
 @NativeReflection
+data class SpecifyIpfsDirectoryHashCommand(val payload: AuditResult) : WebSocketCommand("specifyIpfsDirectoryHash")
+
+@NativeReflection
 enum class InputType {
     BOOLEAN, NUMBER, STRING;
 

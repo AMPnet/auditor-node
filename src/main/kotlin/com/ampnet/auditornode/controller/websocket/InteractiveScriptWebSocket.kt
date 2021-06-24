@@ -17,6 +17,7 @@ import com.ampnet.auditornode.model.websocket.InvalidInputJsonErrorMessage
 import com.ampnet.auditornode.model.websocket.NotFoundErrorMessage
 import com.ampnet.auditornode.model.websocket.ReadInputJsonCommand
 import com.ampnet.auditornode.model.websocket.ReadyState
+import com.ampnet.auditornode.model.websocket.WaitingForIpfsHash
 import com.ampnet.auditornode.model.websocket.WebSocketApi
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.persistence.model.ScriptId
@@ -93,7 +94,7 @@ class InteractiveScriptWebSocket @Inject constructor(
         logger.info { "WebSocket message: $message" }
 
         when (session.scriptState) {
-            is InitState, is FinishedState -> Unit
+            is InitState, is FinishedState, is WaitingForIpfsHash -> Unit
             is ReadyState -> startScript(message, session)
             is ExecutingState -> session.scriptInput?.push(message)
         }
