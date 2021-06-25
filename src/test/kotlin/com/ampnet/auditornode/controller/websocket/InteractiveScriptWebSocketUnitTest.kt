@@ -112,7 +112,7 @@ class InteractiveScriptWebSocketUnitTest : TestBase() {
                 .put("Script", scriptSource)
             then(sessionAttributes)
                 .should(times(1))
-                .put("ScriptIpfsDirectoryHash", ipfsDirectoryHash)
+                .put("ScriptDirectoryIpfsHash", ipfsDirectoryHash)
             then(sessionAttributes)
                 .should(times(1))
                 .put("ScriptState", ReadyState)
@@ -206,7 +206,7 @@ class InteractiveScriptWebSocketUnitTest : TestBase() {
         val ipfsHash = IpfsHash("testHash")
 
         suppose("IPFS directory hash session variable is set") {
-            given(sessionAttributes["ScriptIpfsDirectoryHash", IpfsHash::class.java])
+            given(sessionAttributes["ScriptDirectoryIpfsHash", IpfsHash::class.java])
                 .willReturn(Optional.of(ipfsHash))
         }
 
@@ -264,7 +264,7 @@ class InteractiveScriptWebSocketUnitTest : TestBase() {
         }
 
         suppose("IPFS directory hash session variable is not set") {
-            given(sessionAttributes["ScriptIpfsDirectoryHash", IpfsHash::class.java])
+            given(sessionAttributes["ScriptDirectoryIpfsHash", IpfsHash::class.java])
                 .willReturn(Optional.empty())
         }
 
@@ -322,7 +322,7 @@ class InteractiveScriptWebSocketUnitTest : TestBase() {
         }
 
         suppose("IPFS directory hash session variable is not set") {
-            given(sessionAttributes["ScriptIpfsDirectoryHash", IpfsHash::class.java])
+            given(sessionAttributes["ScriptDirectoryIpfsHash", IpfsHash::class.java])
                 .willReturn(Optional.empty())
         }
 
@@ -379,7 +379,7 @@ class InteractiveScriptWebSocketUnitTest : TestBase() {
         }
 
         suppose("IPFS directory hash session variable is not set") {
-            given(sessionAttributes["ScriptIpfsDirectoryHash", IpfsHash::class.java])
+            given(sessionAttributes["ScriptDirectoryIpfsHash", IpfsHash::class.java])
                 .willReturn(Optional.empty())
         }
 
@@ -458,7 +458,7 @@ class InteractiveScriptWebSocketUnitTest : TestBase() {
         }
 
         suppose("IPFS directory hash session variable is not set") {
-            given(sessionAttributes["ScriptIpfsDirectoryHash", IpfsHash::class.java])
+            given(sessionAttributes["ScriptDirectoryIpfsHash", IpfsHash::class.java])
                 .willReturn(Optional.empty())
         }
 
