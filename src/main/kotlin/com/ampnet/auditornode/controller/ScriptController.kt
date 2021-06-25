@@ -35,10 +35,12 @@ class ScriptController @Inject constructor(
 
     override fun storeScript(scriptSource: String): StoreScriptResponse {
         val scriptId = scriptRepository.store(ScriptSource(scriptSource))
+        logger.info { "Script stored under ID: $scriptId" }
         return StoreScriptResponse(scriptId)
     }
 
     override fun loadScript(scriptId: UUID): HttpResponse<String> {
+        logger.info { "Load script request, script ID: $scriptId" }
         val scriptSource = scriptRepository.load(ScriptId(scriptId))
         return scriptSource?.let { HttpResponse.ok(it.content) } ?: HttpResponse.notFound()
     }

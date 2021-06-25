@@ -5,7 +5,10 @@ import com.ampnet.auditornode.controller.documentation.AssetControllerDocumentat
 import com.ampnet.auditornode.model.response.AssetListResponse
 import com.ampnet.auditornode.model.response.AssetResponse
 import io.micronaut.http.annotation.Controller
+import mu.KotlinLogging
 import javax.inject.Inject
+
+private val logger = KotlinLogging.logger {}
 
 @Controller("/assets") // TODO write tests after implementation is done
 class AssetController @Inject constructor(
@@ -13,6 +16,7 @@ class AssetController @Inject constructor(
 ) : AssetControllerDocumentation {
 
     override fun listAssets(): AssetListResponse { // TODO write actual implementation
+        logger.info { "Listing assets" }
         return AssetListResponse(
             listOf(
                 AssetResponse(

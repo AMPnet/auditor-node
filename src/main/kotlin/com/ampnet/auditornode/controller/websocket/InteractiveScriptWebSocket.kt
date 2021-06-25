@@ -94,9 +94,19 @@ class InteractiveScriptWebSocket @Inject constructor(
         logger.info { "WebSocket message: $message" }
 
         when (session.scriptState) {
-            is InitState, is FinishedState, is WaitingForIpfsHash -> Unit
-            is ReadyState -> startScript(message, session)
-            is ExecutingState -> session.scriptInput?.push(message)
+            is InitState, is FinishedState, is WaitingForIpfsHash -> {
+                logger.debug { "Web socket message discarded: $message" }
+            }
+
+            is ReadyState -> {
+                logger.debug { "Starting script, input JSON message: $message" }
+                startScript(message, session)
+            }
+
+            is ExecutingState -> {
+                logger.debug { "Script input pushed: $message" }
+                session.scriptInput?.push(message)
+            }
         }
     }
 

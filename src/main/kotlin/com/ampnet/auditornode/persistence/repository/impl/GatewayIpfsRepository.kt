@@ -58,7 +58,10 @@ class GatewayIpfsRepository @Inject constructor(
             val request = HttpRequest.GET<R>(fileUrl)
             blockingHttpClient.retrieve(request, bodyType)
         }
-            .mapLeft { IpfsHttpError(it) }
+            .mapLeft {
+                logger.error(it) { "IPFS HTTP error" }
+                IpfsHttpError(it)
+            }
             .flatMap { it?.right() ?: IpfsEmptyResponseError(hash).left() }
             .map { wrapper(it) }
 
@@ -75,7 +78,10 @@ class GatewayIpfsRepository @Inject constructor(
             val request = HttpRequest.GET<R>(fileUrl)
             blockingHttpClient.retrieve(request, bodyType)
         }
-            .mapLeft { IpfsHttpError(it) }
+            .mapLeft {
+                logger.error(it) { "IPFS HTTP error" }
+                IpfsHttpError(it)
+            }
             .flatMap { it?.right() ?: IpfsEmptyResponseError(directoryHash, fileName).left() }
             .map { wrapper(it) }
 }

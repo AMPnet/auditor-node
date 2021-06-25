@@ -57,7 +57,10 @@ class LocalIpfsRepository @Inject constructor(
         return files.collectList().flatMap {
             val requestBody = MultipartBody.builder()
 
-            it.forEach { upload -> requestBody.addPart("file", upload.fileName, upload.content) }
+            it.forEach { upload ->
+                logger.info { "Uploading file: ${upload.fileName}" }
+                requestBody.addPart("file", upload.fileName, upload.content)
+            }
 
             val request = HttpRequest.POST(
                 "http://localhost:${ipfsProperties.localClientPort}/api/v0/add" +
@@ -66,6 +69,8 @@ class LocalIpfsRepository @Inject constructor(
             ).apply {
                 contentType(MediaType.MULTIPART_FORM_DATA_TYPE)
             }
+
+            logger.info { "Sending file upload request to IPFS" }
 
             Mono.from(httpClient.retrieve(request, ByteArray::class.java))
                 .map<Try<IpfsDirectoryUploadResponse>> { response ->
@@ -80,19 +85,27 @@ class LocalIpfsRepository @Inject constructor(
                             if (fileName != null && ipfsHash != null) {
                                 IpfsFileUploadResponse(fileName, ipfsHash)
                             } else {
+                                logger.warn { "Missing file name or IPFS hash in JSON: $json" }
                                 null
                             }
                         }
 
+                    logger.info { "File upload response from IPFS: $responses" }
+
                     val (directoryResponse, fileResponses) = responses.partition { r -> r.fileName.isEmpty() }
 
                     if (directoryResponse.size != 1) {
-                        MissingUploadedIpfsDirectoryHash.left()
+                        val exception = MissingUploadedIpfsDirectoryHash
+                        logger.error(exception) { "Missing IPFS hash for uploaded directory" }
+                        exception.left()
                     } else {
                         IpfsDirectoryUploadResponse(fileResponses, directoryResponse[0].ipfsHash).right()
                     }
                 }
-                .onErrorResume { e -> Mono.just(IpfsHttpError(e).left()) }
+                .onErrorResume { e ->
+                    logger.error(e) { "IPFS HTTP error" }
+                    Mono.just(IpfsHttpError(e).left())
+                }
         }
     }
 
@@ -103,7 +116,10 @@ class LocalIpfsRepository @Inject constructor(
             val request = HttpRequest.POST(fileUrl, "")
             blockingHttpClient.retrieve(request, bodyType)
         }
-            .mapLeft { IpfsHttpError(it) }
+            .mapLeft {
+                logger.error(it) { "IPFS HTTP error" }
+                IpfsHttpError(it)
+            }
             .flatMap { it?.right() ?: IpfsEmptyResponseError(hash).left() }
             .map { wrapper(it) }
 
@@ -120,7 +136,10 @@ class LocalIpfsRepository @Inject constructor(
             val request = HttpRequest.POST(fileUrl, "")
             blockingHttpClient.retrieve(request, bodyType)
         }
-            .mapLeft { IpfsHttpError(it) }
+            .mapLeft {
+                logger.error(it) { "IPFS HTTP error" }
+                IpfsHttpError(it)
+            }
             .flatMap { it?.right() ?: IpfsEmptyResponseError(directoryHash, fileName).left() }
             .map { wrapper(it) }
 }

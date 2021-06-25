@@ -197,9 +197,17 @@ class AuditWebSocket @Inject constructor(
         logger.info { "WebSocket message: $message" }
 
         when (val scriptState = session.scriptState) {
-            is InitState, is ReadyState, is FinishedState -> Unit
-            is ExecutingState -> session.scriptInput?.push(message)
+            is InitState, is ReadyState, is FinishedState -> {
+                logger.debug { "Web socket message discarded: $message" }
+            }
+
+            is ExecutingState -> {
+                logger.debug { "Script input pushed: $message" }
+                session.scriptInput?.push(message)
+            }
+
             is WaitingForIpfsHash -> {
+                logger.debug { "Audit result directory IPFS hash: $message" }
                 session.scriptState = FinishedState
 
                 // TODO check if IPFS directory exists?

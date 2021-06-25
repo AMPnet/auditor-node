@@ -49,8 +49,12 @@ class IpfsController @Inject constructor(
     override fun uploadFilesToDirectory(
         files: Publisher<CompletedFileUpload>
     ): Publisher<HttpResponse<IpfsDirectoryUploadResponse>> {
+        logger.info { "Uploading files to IPFS" }
+
         val filesFlux = Flux.from(files).map {
-            NamedIpfsFile(it.bytes, it.filename ?: uuidProvider.getUuid().toString())
+            val namedFile = NamedIpfsFile(it.bytes, it.filename ?: uuidProvider.getUuid().toString())
+            logger.debug { "File to upload: ${namedFile.fileName}" }
+            namedFile
         }
 
         return ipfsRepository.uploadFilesToDirectory(filesFlux)
