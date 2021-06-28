@@ -6,3 +6,4 @@ The table below lists IPFS hashes of provided example folders.
 | ----------- | --------- |
 | example-auditing-script | `QmXXFKbcs8n2brZrs9rnbt8FUeow5NKJbHfqbzEWm28vnW` |
 | audit-croatia | `QmQuqZBPdEFY89LNc7FgHetR95GVkNJNZvaefgF1GRR5r4` |
+| audit-basic | `QmZd1FZqpvawNksF2tdwVQLgiMgRfuar1er83AYxxdXQod` |
