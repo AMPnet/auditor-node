@@ -3,6 +3,5 @@ ipfs:
 rpc:
   url: http://localhost:8090/rpc
 auditor:
-  asset-contract-address: "0x0000000000000000000000000000000000000001"
-  registry-contract-address: "0x0000000000000000000000000000000000000002"
-  audit-registry-contract-address: "0x0000000000000000000000000000000000000003"
+  apx-coordinator-contract-address: "0x0000000000000000000000000000000000000001"
+  auditing-procedure-directory-ipfs-hash: "procedureHash"

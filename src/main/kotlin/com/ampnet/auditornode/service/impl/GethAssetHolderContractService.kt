@@ -46,7 +46,7 @@ class GethAssetHolderContractService @Inject constructor(
         }
             .mapLeft { RpcConnectionError(rpcProperties.url, it) }
             .flatMap {
-                it ?: ContractReadError("Could not $valueName from asset contract").left()
+                it ?: ContractReadError("Could not fetch $valueName from asset contract").left()
             }
 
     override fun getAssetId(contractAddress: Address): Try<AssetId> =
