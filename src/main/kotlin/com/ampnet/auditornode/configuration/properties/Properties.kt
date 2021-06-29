@@ -26,7 +26,7 @@ interface IpfsProperties {
 
 @ConfigurationProperties("rpc")
 interface RpcProperties {
-    @get:Bindable(defaultValue = "https://ropsten.infura.io/v3/08664baf7af14eda956db2b71a79f12f")
+    @get:Bindable(defaultValue = "https://rpc.goerli.mudit.blog")
     val url: String
 }
 
