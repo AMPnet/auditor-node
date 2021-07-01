@@ -2,6 +2,7 @@ package com.ampnet.auditornode.controller.websocket
 
 import com.ampnet.auditornode.ApiTestWithPropertiesBase
 import com.ampnet.auditornode.jsAssertions
+import com.ampnet.auditornode.model.contract.ContractAddress
 import com.ampnet.auditornode.model.contract.UnsignedTransaction
 import com.ampnet.auditornode.model.websocket.AuditResultResponse
 import com.ampnet.auditornode.model.websocket.ConnectedInfoMessage
@@ -28,7 +29,6 @@ import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.kethereum.model.Address
 import javax.inject.Inject
 
 @MicronautTest(propertySources = ["audit-flow-test-properties.yaml"])
@@ -60,7 +60,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
     private val encodedPerformAuditMethodCall = "0a171092"
     private val encodedTrueBoolean = "0000000000000000000000000000000000000000000000000000000000000001"
 
-    private val assetAddress = Address("0xTestContractAddress")
+    private val assetAddress = ContractAddress("0xTestContractAddress")
 
     @BeforeEach
     fun beforeEach() {
@@ -88,7 +88,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
         verify("RPC error is returned") {
             val client = webSocketClient.connect(
                 WebSocketTestClient::class.java,
-                "${webSocketPath()}/audit/${assetAddress.hex}"
+                "${webSocketPath()}/audit/${assetAddress.value}"
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
@@ -134,7 +134,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
         verify("RPC error is returned") {
             val client = webSocketClient.connect(
                 WebSocketTestClient::class.java,
-                "${webSocketPath()}/audit/${assetAddress.hex}"
+                "${webSocketPath()}/audit/${assetAddress.value}"
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
@@ -200,7 +200,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
         verify("IPFS error is returned") {
             val client = webSocketClient.connect(
                 WebSocketTestClient::class.java,
-                "${webSocketPath()}/audit/${assetAddress.hex}"
+                "${webSocketPath()}/audit/${assetAddress.value}"
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
@@ -268,7 +268,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
         verify("invalid input JSON error is returned") {
             val client = webSocketClient.connect(
                 WebSocketTestClient::class.java,
-                "${webSocketPath()}/audit/${assetAddress.hex}"
+                "${webSocketPath()}/audit/${assetAddress.value}"
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
@@ -346,7 +346,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
         verify("IPFS error is returned") {
             val client = webSocketClient.connect(
                 WebSocketTestClient::class.java,
-                "${webSocketPath()}/audit/${assetAddress.hex}"
+                "${webSocketPath()}/audit/${assetAddress.value}"
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
@@ -433,7 +433,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
         verify("script execution is aborted") {
             val client = webSocketClient.connect(
                 WebSocketTestClient::class.java,
-                "${webSocketPath()}/audit/${assetAddress.hex}"
+                "${webSocketPath()}/audit/${assetAddress.value}"
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
@@ -521,7 +521,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
         verify("script is executed successfully") {
             val client = webSocketClient.connect(
                 WebSocketTestClient::class.java,
-                "${webSocketPath()}/audit/${assetAddress.hex}"
+                "${webSocketPath()}/audit/${assetAddress.value}"
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)
@@ -619,7 +619,7 @@ class AuditWebSocketApiTest : ApiTestWithPropertiesBase("audit-flow-test-propert
         verify("script is executed with failure") {
             val client = webSocketClient.connect(
                 WebSocketTestClient::class.java,
-                "${webSocketPath()}/audit/${assetAddress.hex}"
+                "${webSocketPath()}/audit/${assetAddress.value}"
             )
                 .blockingFirst()
             client.assertNextMessage(ConnectedInfoMessage)

@@ -12,7 +12,6 @@ object Versions {
     }
 
     object Plugins {
-        const val kethabi = "0.2.0"
         const val allOpen = Compile.kotlin
         const val ktlint = "10.0.0"
         const val detekt = "1.17.1"

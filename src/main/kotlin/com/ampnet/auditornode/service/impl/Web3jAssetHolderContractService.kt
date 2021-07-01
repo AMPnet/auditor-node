@@ -6,13 +6,13 @@ import arrow.core.right
 import com.ampnet.auditornode.configuration.properties.RpcProperties
 import com.ampnet.auditornode.contract.AssetHolder
 import com.ampnet.auditornode.model.contract.AssetId
+import com.ampnet.auditornode.model.contract.ContractAddress
 import com.ampnet.auditornode.model.error.RpcError.ContractReadError
 import com.ampnet.auditornode.model.error.RpcError.RpcConnectionError
 import com.ampnet.auditornode.model.error.Try
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.service.AssetHolderContractService
 import mu.KotlinLogging
-import org.kethereum.model.Address
 import org.web3j.protocol.Web3j
 import org.web3j.tx.ReadonlyTransactionManager
 import org.web3j.tx.exceptions.ContractCallException
@@ -28,15 +28,15 @@ class Web3jAssetHolderContractService @Inject constructor(
     private val rpcProperties: RpcProperties
 ) : AssetHolderContractService {
 
-    private class Contract(contractAddress: Address, web3j: Web3j) : AssetHolder(
-        contractAddress.hex,
+    private class Contract(contractAddress: ContractAddress, web3j: Web3j) : AssetHolder(
+        contractAddress.value,
         web3j,
-        ReadonlyTransactionManager(web3j, contractAddress.hex),
+        ReadonlyTransactionManager(web3j, contractAddress.value),
         DefaultGasProvider()
     )
 
     private fun <T, R> getValueFromContract(
-        contractAddress: Address,
+        contractAddress: ContractAddress,
         valueName: String,
         contractGetter: (Contract) -> T,
         wrapper: (T) -> R
@@ -60,9 +60,9 @@ class Web3jAssetHolderContractService @Inject constructor(
             }
             .flatten()
 
-    override fun getAssetId(contractAddress: Address): Try<AssetId> =
+    override fun getAssetId(contractAddress: ContractAddress): Try<AssetId> =
         getValueFromContract(contractAddress, "asset ID", { it.id().send() }, ::AssetId)
 
-    override fun getAssetInfoIpfsHash(contractAddress: Address): Try<IpfsHash> =
+    override fun getAssetInfoIpfsHash(contractAddress: ContractAddress): Try<IpfsHash> =
         getValueFromContract(contractAddress, "asset info IPFS hash", { it.info().send() }, ::IpfsHash)
 }

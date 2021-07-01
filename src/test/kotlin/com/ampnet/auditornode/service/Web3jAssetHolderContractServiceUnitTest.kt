@@ -11,13 +11,13 @@ import com.ampnet.auditornode.isLeftContaining
 import com.ampnet.auditornode.isLeftSatisfying
 import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.model.contract.AssetId
+import com.ampnet.auditornode.model.contract.ContractAddress
 import com.ampnet.auditornode.model.error.RpcError.ContractReadError
 import com.ampnet.auditornode.model.error.RpcError.RpcConnectionError
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.service.impl.Web3jAssetHolderContractService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.kethereum.model.Address
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
@@ -26,7 +26,7 @@ import java.math.BigInteger
 
 class Web3jAssetHolderContractServiceUnitTest : TestBase() {
 
-    private val contractAddress = Address("0xTestContractAddress")
+    private val contractAddress = ContractAddress("0xTestContractAddress")
     private val rpcProperties = mock<RpcProperties> {
         on { url } doReturn "http://localhost:8080/test-url"
     }

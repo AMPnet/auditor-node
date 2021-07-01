@@ -9,6 +9,7 @@ import com.ampnet.auditornode.controller.websocket.WebSocketSessionHelper.script
 import com.ampnet.auditornode.controller.websocket.WebSocketSessionHelper.scriptState
 import com.ampnet.auditornode.controller.websocket.WebSocketSessionHelper.scriptTask
 import com.ampnet.auditornode.model.contract.AssetId
+import com.ampnet.auditornode.model.contract.ContractAddress
 import com.ampnet.auditornode.model.error.ApplicationError
 import com.ampnet.auditornode.model.error.IpfsError
 import com.ampnet.auditornode.model.error.ParseError
@@ -55,7 +56,6 @@ import io.micronaut.websocket.annotation.ServerWebSocket
 import io.reactivex.Scheduler
 import io.reactivex.schedulers.Schedulers
 import mu.KotlinLogging
-import org.kethereum.model.Address
 import java.util.concurrent.ExecutorService
 import javax.inject.Inject
 import javax.inject.Named
@@ -93,7 +93,7 @@ class AuditWebSocket @Inject constructor(
         webSocketApi.sendInfoMessage(ConnectedInfoMessage)
 
         val result = either<ApplicationError, Triple<ScriptSource, ExecutionContext, AssetId>> {
-            val assetHolderContractAddress = Address(assetContractAddress)
+            val assetHolderContractAddress = ContractAddress(assetContractAddress)
             val assetId = assetHolderContractService.getAssetId(assetHolderContractAddress).bind()
             logger.info { "Asset ID: $assetId" }
 

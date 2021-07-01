@@ -5,18 +5,6 @@ import io.micronaut.gradle.MicronautTestRuntime
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
-buildscript {
-    repositories {
-        maven("https://jitpack.io")
-    }
-
-    dependencies {
-        classpath("com.github.komputing:kethabi:${Versions.Plugins.kethabi}")
-    }
-}
-
-apply(plugin = "kethabi")
-
 plugins {
     kotlin("jvm").version(Versions.Compile.kotlin)
     kotlin("kapt").version(Versions.Compile.kotlin)
