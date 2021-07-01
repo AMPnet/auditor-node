@@ -28,6 +28,7 @@ plugins {
     id("com.adarshr.test-logger").version(Versions.Plugins.testLogger)
     id("io.micronaut.application").version(Versions.Plugins.micronaut)
     id("com.github.johnrengelman.shadow").version(Versions.Plugins.shadowJar)
+    id("org.web3j").version(Versions.Plugins.web3j)
     id("application")
 
     idea
@@ -59,6 +60,18 @@ micronaut {
 
 testSets {
     Configurations.Tests.testSets.forEach { create(it) }
+}
+
+node {
+    nodeProjectDir.set(file("node/"))
+}
+
+solidity {
+    version = Versions.Tools.solidity
+}
+
+web3j {
+    generatedPackageName = "com.ampnet.auditornode.contract"
 }
 
 fun DependencyHandler.integTestImplementation(dependencyNotation: Any): Dependency? =
@@ -96,7 +109,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.squareup.okhttp3:okhttp:${Versions.Dependencies.okHttp}")
     implementation("org.graalvm.sdk:graal-sdk:${Versions.Dependencies.graalSdk}")
-    implementation("org.web3j:core:${Versions.Dependencies.web3jCore}")
+    implementation("org.web3j:core:${Versions.Dependencies.web3j}")
     implementation("io.arrow-kt:arrow-core:${Versions.Dependencies.arrowCore}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.Dependencies.kotlinCoroutines}")
     implementation("io.github.microutils:kotlin-logging-jvm:${Versions.Dependencies.kotlinLogging}")

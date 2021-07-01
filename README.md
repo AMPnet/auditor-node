@@ -116,7 +116,7 @@ accessed by starting the auditor application and navigating to `localhost:8080/d
 | `-rpc.url=<url>` | Ethereum RPC API URL. | `https://rpc.goerli.mudit.blog` |
 | `-ipfs.gateway-url=<url>` | IPFS gateway URL, not used when `--local-ipfs` is specified; must contain  `{ipfsHash}` placeholder. | `https://ipfs.io/ipfs/{ipfsHash}` |
 | `-ipfs.local-client-port=<port>` | Port of local IPFS client, used when `--local-ipfs` is specified. | `5001` |
-| `-auditor.apx-coordinator-contract-address=<address>` | Ethereum address of the APX coordinator contract. | `0xB1ef92A570A0b7Fa8f355e7e8E36B62e414A574c` |
+| `-auditor.apx-coordinator-contract-address=<address>` | Ethereum address of the APX coordinator contract. | `0x1cfca869dFb6085DAE18Ae2D6D9e6B9489cA0eB9` |
 | `-auditor.auditing-procedure-directory-ipfs-hash=<ipfsHash>` | IPFS has of the auditing procedure directory. | `QmZd1FZqpvawNksF2tdwVQLgiMgRfuar1er83AYxxdXQod` |
 | `--local-ipfs` | Use local IPFS client to fetch files. | Disabled by default. |
 | `-script.properties.<propertyName>=<propertyValue>` | Sets specified `<propertyName>` and `<propertyValue>` which is then visible inside auditing scripts via `Properties` object. All property names are converted into `kebab-case` and property values are always strings. See auditor script API specification for more info. | No properties are set by default. |
