@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.micronaut.context.annotation.Requires
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.MediaType
+import io.micronaut.http.MutableHttpRequest
 import io.micronaut.http.client.BlockingHttpClient
 import io.micronaut.http.client.HttpClient
 import io.micronaut.http.client.multipart.MultipartBody
@@ -53,55 +54,66 @@ class LocalIpfsRepository @Inject constructor(
     override fun fetchBinaryFileFromDirectory(directoryHash: IpfsHash, fileName: String): Try<IpfsBinaryFile> =
         fetchFileFromDirectory(directoryHash, fileName, ByteArray::class.java, ::IpfsBinaryFile)
 
+    private fun createUploadFilesRequestBody(files: List<NamedIpfsFile>): MultipartBody {
+        val requestBody = MultipartBody.builder()
+
+        files.forEach { upload ->
+            logger.info { "Uploading file: ${upload.fileName}" }
+            requestBody.addPart("file", upload.fileName, upload.content)
+        }
+
+        return requestBody.build()
+    }
+
+    private fun createUploadFilesRequest(requestBody: MultipartBody): MutableHttpRequest<MultipartBody> {
+        return HttpRequest.POST(
+            "http://localhost:${ipfsProperties.localClientPort}/api/v0/add" +
+                "?quieter=true&wrap-with-directory=true&pin=true",
+            requestBody
+        ).apply {
+            contentType(MediaType.MULTIPART_FORM_DATA_TYPE)
+        }
+    }
+
+    private fun handleIpfsUploadFilesResponse(response: ByteArray): Try<IpfsDirectoryUploadResponse> {
+        val responses = String(response).split("\n")
+            .map(String::trim)
+            .filter(String::isNotEmpty)
+            .map(objectMapper::readTree)
+            .mapNotNull { json ->
+                val fileName = json["Name"]?.asText()
+                val ipfsHash = json["Hash"]?.asText()?.let(::IpfsHash)
+
+                if (fileName != null && ipfsHash != null) {
+                    IpfsFileUploadResponse(fileName, ipfsHash)
+                } else {
+                    logger.warn { "Missing file name or IPFS hash in JSON: $json" }
+                    null
+                }
+            }
+
+        logger.info { "File upload response from IPFS: $responses" }
+
+        val (directoryResponse, fileResponses) = responses.partition { r -> r.fileName.isEmpty() }
+
+        return if (directoryResponse.size != 1) {
+            val exception = MissingUploadedIpfsDirectoryHash
+            logger.error(exception) { "Missing IPFS hash for uploaded directory" }
+            exception.left()
+        } else {
+            IpfsDirectoryUploadResponse(fileResponses, directoryResponse[0].ipfsHash).right()
+        }
+    }
+
     override fun uploadFilesToDirectory(files: Flux<NamedIpfsFile>): Mono<Try<IpfsDirectoryUploadResponse>> {
         return files.collectList().flatMap {
-            val requestBody = MultipartBody.builder()
-
-            it.forEach { upload ->
-                logger.info { "Uploading file: ${upload.fileName}" }
-                requestBody.addPart("file", upload.fileName, upload.content)
-            }
-
-            val request = HttpRequest.POST(
-                "http://localhost:${ipfsProperties.localClientPort}/api/v0/add" +
-                    "?quieter=true&wrap-with-directory=true&pin=true",
-                requestBody.build()
-            ).apply {
-                contentType(MediaType.MULTIPART_FORM_DATA_TYPE)
-            }
+            val requestBody = createUploadFilesRequestBody(it)
+            val request = createUploadFilesRequest(requestBody)
 
             logger.info { "Sending file upload request to IPFS" }
 
             Mono.from(httpClient.retrieve(request, ByteArray::class.java))
-                .map<Try<IpfsDirectoryUploadResponse>> { response ->
-                    val responses = String(response).split("\n")
-                        .map(String::trim)
-                        .filter(String::isNotEmpty)
-                        .map(objectMapper::readTree)
-                        .mapNotNull { json ->
-                            val fileName = json["Name"]?.asText()
-                            val ipfsHash = json["Hash"]?.asText()?.let(::IpfsHash)
-
-                            if (fileName != null && ipfsHash != null) {
-                                IpfsFileUploadResponse(fileName, ipfsHash)
-                            } else {
-                                logger.warn { "Missing file name or IPFS hash in JSON: $json" }
-                                null
-                            }
-                        }
-
-                    logger.info { "File upload response from IPFS: $responses" }
-
-                    val (directoryResponse, fileResponses) = responses.partition { r -> r.fileName.isEmpty() }
-
-                    if (directoryResponse.size != 1) {
-                        val exception = MissingUploadedIpfsDirectoryHash
-                        logger.error(exception) { "Missing IPFS hash for uploaded directory" }
-                        exception.left()
-                    } else {
-                        IpfsDirectoryUploadResponse(fileResponses, directoryResponse[0].ipfsHash).right()
-                    }
-                }
+                .map(::handleIpfsUploadFilesResponse)
                 .onErrorResume { e ->
                     logger.error(e) { "IPFS HTTP error" }
                     Mono.just(IpfsHttpError(e).left())
