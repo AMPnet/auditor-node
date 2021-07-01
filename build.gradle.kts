@@ -74,6 +74,10 @@ web3j {
     generatedPackageName = "com.ampnet.auditornode.contract"
 }
 
+sourceSets.main {
+    java.srcDirs("$buildDir/generated/sources/web3j/main/java")
+}
+
 fun DependencyHandler.integTestImplementation(dependencyNotation: Any): Dependency? =
     add("integTestImplementation", dependencyNotation)
 
