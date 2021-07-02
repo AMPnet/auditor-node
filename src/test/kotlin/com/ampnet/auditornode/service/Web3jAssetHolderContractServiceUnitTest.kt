@@ -1,18 +1,15 @@
 package com.ampnet.auditornode.service
 
 import assertk.assertThat
-import assertk.assertions.isInstanceOf
 import com.ampnet.auditornode.TestBase
 import com.ampnet.auditornode.UnitTestUtils.mocks
 import com.ampnet.auditornode.UnitTestUtils.web3jMockResponse
 import com.ampnet.auditornode.configuration.properties.RpcProperties
-import com.ampnet.auditornode.isLeftContaining
-import com.ampnet.auditornode.isLeftSatisfying
 import com.ampnet.auditornode.isRightContaining
+import com.ampnet.auditornode.model.contract.AssetAuditResult
 import com.ampnet.auditornode.model.contract.AssetId
 import com.ampnet.auditornode.model.contract.ContractAddress
-import com.ampnet.auditornode.model.error.RpcError.ContractReadError
-import com.ampnet.auditornode.model.error.RpcError.RpcConnectionError
+import com.ampnet.auditornode.model.contract.LatestAuditTimestamp
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.service.impl.Web3jAssetHolderContractService
 import org.junit.jupiter.api.BeforeEach
@@ -40,39 +37,53 @@ class Web3jAssetHolderContractServiceUnitTest : TestBase() {
     private val testAssetId = AssetId(BigInteger.valueOf(123L))
     private val encodedTestAssetId = "0x000000000000000000000000000000000000000000000000000000000000007b"
 
+    private val testAssetTypeId = AssetId(BigInteger.valueOf(456L))
+    private val encodedTestAssetTypeId = "0x00000000000000000000000000000000000000000000000000000000000001c8"
+
+    private val assetAuditResult = AssetAuditResult(
+        verified = true,
+        auditInfo = IpfsHash("test"),
+        timestamp = LatestAuditTimestamp(BigInteger.valueOf(789L))
+    )
+    private val encodedOffset = "0000000000000000000000000000000000000000000000000000000000000020"
+    private val encodedTrueBoolean = "0000000000000000000000000000000000000000000000000000000000000001"
+    private val encodedAuditInfoOffset = "0000000000000000000000000000000000000000000000000000000000000060"
+    private val encodedAuditInfo = "000000000000000000000000000000000000000000000000000000000000000474657374000000000" +
+        "00000000000000000000000000000000000000000000000"
+    private val encodedTimestamp = "0000000000000000000000000000000000000000000000000000000000000315"
+
     @BeforeEach
     fun beforeEach() {
         reset(web3j)
     }
 
     @Test
-    fun `must return RpcConnectionError when fetching asset info IPFS hash fails`() {
-        val exception = RuntimeException("rpc exception")
-
-        suppose("Web3j client will throw an exception when fetching asset info IPFS hash") {
-            web3j.mocks()
-                .willThrow(exception)
-        }
-
-        verify("RpcConnectionError is returned") {
-            val result = service.getAssetInfoIpfsHash(contractAddress)
-            assertThat(result).isLeftContaining(RpcConnectionError(rpcProperties.url, exception))
-        }
-    }
-
-    @Test
-    fun `must return ContractReadError when returned asset info IPFS hash is null`() {
-        suppose("Web3j client will return null value when fetching asset info IPFS hash") {
-            val response = web3jMockResponse("0x")
+    fun `must correctly return asset ID`() {
+        suppose("Web3j client will return some asset ID") {
+            val response = web3jMockResponse(encodedTestAssetId)
             web3j.mocks()
                 .willReturn(response)
         }
 
-        verify("ContractReadError is returned") {
-            val result = service.getAssetInfoIpfsHash(contractAddress)
-            assertThat(result).isLeftSatisfying {
-                assertThat(it).isInstanceOf(ContractReadError::class)
-            }
+        verify("correct asset category ID is returned") {
+            val result = service.getAssetId(contractAddress)
+            assertThat(result)
+                .isRightContaining(testAssetId)
+        }
+    }
+
+    @Test
+    fun `must correctly return asset type ID`() {
+        suppose("Web3j client will return some asset type ID") {
+            val response = web3jMockResponse(encodedTestAssetTypeId)
+            web3j.mocks()
+                .willReturn(response)
+        }
+
+        verify("correct asset category ID is returned") {
+            val result = service.getAssetId(contractAddress)
+            assertThat(result)
+                .isRightContaining(testAssetTypeId)
         }
     }
 
@@ -86,52 +97,27 @@ class Web3jAssetHolderContractServiceUnitTest : TestBase() {
 
         verify("correct asset info IPFS hash is returned") {
             val result = service.getAssetInfoIpfsHash(contractAddress)
-            assertThat(result).isRightContaining(testHash)
+            assertThat(result)
+                .isRightContaining(testHash)
         }
     }
 
     @Test
-    fun `must return RpcConnectionError when fetching asset ID fails`() {
-        val exception = RuntimeException("rpc exception")
+    fun `must correctly return latest asset audit`() {
+        suppose("Web3j client will return latest asset audit") {
+            val response = web3jMockResponse(
+                "0x$encodedOffset$encodedTrueBoolean$encodedAuditInfoOffset$encodedTimestamp$encodedAuditInfo"
+            )
 
-        suppose("Web3j client will throw an exception when fetching asset ID") {
-            web3j.mocks()
-                .willThrow(exception)
-        }
-
-        verify("RpcConnectionError is returned") {
-            val result = service.getAssetId(contractAddress)
-            assertThat(result).isLeftContaining(RpcConnectionError(rpcProperties.url, exception))
-        }
-    }
-
-    @Test
-    fun `must return ContractReadError when returned asset ID is null`() {
-        suppose("Web3j client will return null value when fetching asset ID") {
-            val response = web3jMockResponse("0x")
             web3j.mocks()
                 .willReturn(response)
         }
 
-        verify("ContractReadError is returned") {
-            val result = service.getAssetId(contractAddress)
-            assertThat(result).isLeftSatisfying {
-                assertThat(it).isInstanceOf(ContractReadError::class)
-            }
-        }
-    }
-
-    @Test
-    fun `must correctly return asset ID`() {
-        suppose("Web3j client will return some asset ID") {
-            val response = web3jMockResponse(encodedTestAssetId)
-            web3j.mocks()
-                .willReturn(response)
-        }
-
-        verify("correct asset category ID is returned") {
-            val result = service.getAssetId(contractAddress)
-            assertThat(result).isRightContaining(testAssetId)
+        verify("correct latest asset audit returned") {
+            val result = service.getLatestAudit(contractAddress)
+            println(result)
+            assertThat(result)
+                .isRightContaining(assetAuditResult)
         }
     }
 }
