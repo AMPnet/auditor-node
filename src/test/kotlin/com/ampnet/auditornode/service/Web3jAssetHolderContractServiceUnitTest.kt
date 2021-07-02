@@ -104,7 +104,7 @@ class Web3jAssetHolderContractServiceUnitTest : TestBase() {
 
     @Test
     fun `must correctly return latest asset audit`() {
-        suppose("Web3j client will return latest asset audit") {
+        suppose("Web3j client will return some latest asset audit") {
             val response = web3jMockResponse(
                 "0x$encodedOffset$encodedTrueBoolean$encodedAuditInfoOffset$encodedTimestamp$encodedAuditInfo"
             )

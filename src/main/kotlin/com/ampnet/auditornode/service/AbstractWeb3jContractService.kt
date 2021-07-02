@@ -11,6 +11,7 @@ import com.ampnet.auditornode.model.error.Try
 import mu.KLogger
 import org.web3j.tx.exceptions.ContractCallException
 
+@Suppress("UnnecessaryAbstractClass")
 abstract class AbstractWeb3jContractService(
     private val logger: KLogger,
     private val rpcProperties: RpcProperties

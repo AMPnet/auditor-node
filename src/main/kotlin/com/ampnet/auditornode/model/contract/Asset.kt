@@ -17,3 +17,12 @@ data class AssetAuditResult(
     val auditInfo: IpfsHash,
     val timestamp: LatestAuditTimestamp
 )
+
+data class AssetDescriptor(
+    val assetHolder: ContractAddress,
+    val tokenizedAsset: ContractAddress,
+    val id: AssetId,
+    val typeId: AssetTypeId,
+    val name: String,
+    val ticker: String
+)
