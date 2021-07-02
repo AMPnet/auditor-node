@@ -51,6 +51,7 @@ class Web3jAssetHolderContractService @Inject constructor(
             value
         }
             .mapLeft {
+                logger.error(it) { "RPC error" }
                 when (it) {
                     is ContractCallException, is NullPointerException -> ContractReadError(
                         "Could not fetch $valueName from asset contract"
