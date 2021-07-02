@@ -41,7 +41,7 @@ class Web3jApxCoordinatorContractServiceUnitTest : TestBase() {
         "00000000000"
 
     private val encodedTrueBoolean = "0000000000000000000000000000000000000000000000000000000000000001"
-    private val encodedFalseBoolean = "0000000000000000000000000000000000000000000000000000000000000000"
+    private val encodedFalseBoolean = "0".repeat(64)
 
     @BeforeEach
     fun beforeEach() {

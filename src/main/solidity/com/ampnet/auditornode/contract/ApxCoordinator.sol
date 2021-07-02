@@ -5,7 +5,7 @@ import "./shared/Structs.sol";
 
 interface ApxCoordinator {
 
-    // This dummy function this needed for Web3j to correctly generate structure class. This this because Web3j does not
+    // This dummy function is needed for Web3j to correctly generate structure class. This is because Web3j does not
     // generate structure classes when structure is used only in an array (e.g. for Structs.Auditor[]). We don't need
     // to do this for Structs.AuditorPool because we already have a function which uses that structure without an array:
     // function getPoolById(uint256 id) external view returns (Structs.AuditorPool memory);
