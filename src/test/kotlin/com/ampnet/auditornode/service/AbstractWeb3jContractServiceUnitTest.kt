@@ -35,6 +35,8 @@ class AbstractWeb3jContractServiceUnitTest : TestBase() {
             fun fetch(action: () -> String): String = action()
         }
 
+        override val contractName: String = "test"
+
         private val contract = TestContract(contractAddress)
 
         fun fetchFromContract(action: () -> String) =
@@ -71,7 +73,7 @@ class AbstractWeb3jContractServiceUnitTest : TestBase() {
         verify("ContractReadError is returned") {
             val result = service.fetchFromContract(action)
             assertThat(result)
-                .isLeftContaining(ContractReadError("Could not fetch value from asset contract"))
+                .isLeftContaining(ContractReadError("Could not fetch value from test contract"))
         }
     }
 
@@ -87,7 +89,7 @@ class AbstractWeb3jContractServiceUnitTest : TestBase() {
         verify("ContractReadError is returned") {
             val result = service.fetchFromContract(action)
             assertThat(result)
-                .isLeftContaining(ContractReadError("Could not fetch value from asset contract"))
+                .isLeftContaining(ContractReadError("Could not fetch value from test contract"))
         }
     }
 

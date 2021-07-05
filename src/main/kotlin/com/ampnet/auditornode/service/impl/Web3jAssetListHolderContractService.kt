@@ -21,7 +21,7 @@ private val logger = KotlinLogging.logger {}
 class Web3jAssetListHolderContractService constructor(
     web3j: Web3j,
     rpcProperties: RpcProperties,
-    contractAddress: ContractAddress
+    override val contractAddress: ContractAddress
 ) : AbstractWeb3jContractService(logger, rpcProperties), AssetListHolderContractService {
 
     private class Contract(override val contractAddress: ContractAddress, web3j: Web3j) : IContract, AssetListHolder(
@@ -30,6 +30,8 @@ class Web3jAssetListHolderContractService constructor(
         ReadonlyTransactionManager(web3j, contractAddress.value),
         DefaultGasProvider()
     )
+
+    override val contractName: String = "asset list holder"
 
     private val contract by lazy {
         Contract(contractAddress, web3j)

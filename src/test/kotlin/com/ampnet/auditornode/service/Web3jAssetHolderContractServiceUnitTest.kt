@@ -166,7 +166,6 @@ class Web3jAssetHolderContractServiceUnitTest : TestBase() {
 
         verify("correct latest asset audit returned") {
             val result = service.getLatestAudit(contractAddress)
-            println(result)
             assertThat(result)
                 .isRightContaining(assetAuditResult)
         }

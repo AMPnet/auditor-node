@@ -17,6 +17,8 @@ abstract class AbstractWeb3jContractService(
     private val rpcProperties: RpcProperties
 ) {
 
+    protected abstract val contractName: String
+
     protected interface IContract {
         val contractAddress: ContractAddress
     }
@@ -39,7 +41,7 @@ abstract class AbstractWeb3jContractService(
                 logger.error(it) { "RPC error" }
                 when (it) {
                     is ContractCallException, is NullPointerException -> ContractReadError(
-                        "Could not fetch $valueName from asset contract"
+                        "Could not fetch $valueName from $contractName contract"
                     )
                     else -> RpcConnectionError(rpcProperties.url, it)
                 }

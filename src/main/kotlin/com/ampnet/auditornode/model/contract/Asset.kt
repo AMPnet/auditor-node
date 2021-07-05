@@ -12,6 +12,9 @@ value class AssetTypeId(val value: BigInteger)
 @JvmInline
 value class LatestAuditTimestamp(val value: BigInteger)
 
+@JvmInline
+value class AssetAuditGapDuration(val value: BigInteger)
+
 data class AssetAuditResult(
     val verified: Boolean,
     val auditInfo: IpfsHash,

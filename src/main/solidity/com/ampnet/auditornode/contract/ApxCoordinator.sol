@@ -12,24 +12,16 @@ interface ApxCoordinator {
     function _define_struct_Auditor(Structs.Auditor memory auditor) external;
 
     // getters
+    function stablecoin() external view returns (address);
     function assetListHolder() external view returns (address);
     function auditGapDuration() external view returns (uint256);
     function usdcPerAudit() external view returns (uint256);
     function usdcPerList() external view returns (uint256);
-    function protocolFeePercentage() external view returns (uint256);
 
     // functions
-    function listAsset(
-        address tokenizedAsset,
-        uint256 typeId,
-        string memory name,
-        string memory ticker,
-        string memory info,
-        string memory listingInfo
-    ) external;
-    function performAudit(uint256 assetId, bool assetValid, string memory additionalInfo) external;
     function getPoolMemberships(address auditor) external view returns (uint256[] memory);
     function getPools() external view returns (Structs.AuditorPool[] memory);
     function getPoolById(uint256 id) external view returns (Structs.AuditorPool memory);
     function getPoolMembers(uint256 id) external view returns (Structs.Auditor[] memory);
+    function performAudit(uint256 assetId, bool assetValid, string memory additionalInfo) external;
 }

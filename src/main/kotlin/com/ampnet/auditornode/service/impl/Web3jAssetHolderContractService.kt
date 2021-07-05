@@ -35,6 +35,8 @@ class Web3jAssetHolderContractService @Inject constructor(
         DefaultGasProvider()
     )
 
+    override val contractName: String = "asset holder"
+
     override fun getAssetId(contractAddress: ContractAddress): Try<AssetId> =
         getValueFromContract("asset ID", Contract(contractAddress, web3j), { it.id().send() }, ::AssetId)
 

@@ -19,7 +19,7 @@ private val logger = KotlinLogging.logger {}
 class Web3jERC20ContractService constructor(
     web3j: Web3j,
     rpcProperties: RpcProperties,
-    contractAddress: ContractAddress
+    override val contractAddress: ContractAddress
 ) : AbstractWeb3jContractService(logger, rpcProperties), ERC20ContractService {
 
     private class Contract(override val contractAddress: ContractAddress, web3j: Web3j) : IContract, ERC20(
@@ -28,6 +28,8 @@ class Web3jERC20ContractService constructor(
         ReadonlyTransactionManager(web3j, contractAddress.value),
         DefaultGasProvider()
     )
+
+    override val contractName: String = "ERC20"
 
     private val contract by lazy {
         Contract(contractAddress, web3j)
