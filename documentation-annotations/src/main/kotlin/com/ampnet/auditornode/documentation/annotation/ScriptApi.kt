@@ -1,4 +1,4 @@
-package com.amptnet.auditornode.documentation.annotation
+package com.ampnet.auditornode.documentation.annotation
 
 @Suppress("LongParameterList")
 @Target(AnnotationTarget.CLASS)

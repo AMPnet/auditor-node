@@ -1,9 +1,9 @@
 package com.ampnet.auditornode.script.api.model
 
+import com.ampnet.auditornode.documentation.annotation.ScriptApi
+import com.ampnet.auditornode.documentation.annotation.ScriptApiCategory
+import com.ampnet.auditornode.documentation.annotation.ScriptField
 import com.ampnet.auditornode.util.NativeReflection
-import com.amptnet.auditornode.documentation.annotation.ScriptApi
-import com.amptnet.auditornode.documentation.annotation.ScriptApiCategory
-import com.amptnet.auditornode.documentation.annotation.ScriptField
 import org.graalvm.polyglot.HostAccess.Export
 
 @ScriptApi(

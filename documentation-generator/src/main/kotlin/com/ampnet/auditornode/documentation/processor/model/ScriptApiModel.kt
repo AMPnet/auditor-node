@@ -1,6 +1,6 @@
 package com.ampnet.auditornode.documentation.processor.model
 
-import com.amptnet.auditornode.documentation.annotation.ScriptApiCategory
+import com.ampnet.auditornode.documentation.annotation.ScriptApiCategory
 import java.nio.file.Path
 
 data class ScriptApiModel(

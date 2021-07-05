@@ -1,9 +1,9 @@
 package com.ampnet.auditornode.script.api.documentation
 
+import com.ampnet.auditornode.documentation.annotation.ScriptApi
+import com.ampnet.auditornode.documentation.annotation.ScriptApiCategory
+import com.ampnet.auditornode.documentation.annotation.ScriptFunction
 import com.ampnet.auditornode.script.api.model.HttpResponse
-import com.amptnet.auditornode.documentation.annotation.ScriptApi
-import com.amptnet.auditornode.documentation.annotation.ScriptApiCategory
-import com.amptnet.auditornode.documentation.annotation.ScriptFunction
 import org.graalvm.polyglot.Value
 
 @ScriptApi(

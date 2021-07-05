@@ -1,13 +1,13 @@
 package com.ampnet.auditornode.script.api.objects
 
+import com.ampnet.auditornode.documentation.annotation.ScriptApi
+import com.ampnet.auditornode.documentation.annotation.ScriptApiCategory
+import com.ampnet.auditornode.documentation.annotation.ScriptFunction
 import com.ampnet.auditornode.script.api.model.AbortedAudit
 import com.ampnet.auditornode.script.api.model.AuditResult
 import com.ampnet.auditornode.script.api.model.FailedAudit
 import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import com.ampnet.auditornode.util.NativeReflection
-import com.amptnet.auditornode.documentation.annotation.ScriptApi
-import com.amptnet.auditornode.documentation.annotation.ScriptApiCategory
-import com.amptnet.auditornode.documentation.annotation.ScriptFunction
 import org.graalvm.polyglot.HostAccess.Export
 
 @ScriptApi(

@@ -1,11 +1,11 @@
 package com.ampnet.auditornode.documentation.processor
 
+import com.ampnet.auditornode.documentation.annotation.ScriptApi
+import com.ampnet.auditornode.documentation.annotation.ScriptField
+import com.ampnet.auditornode.documentation.annotation.ScriptFunction
 import com.ampnet.auditornode.documentation.processor.model.FieldModel
 import com.ampnet.auditornode.documentation.processor.model.FunctionModel
 import com.ampnet.auditornode.documentation.processor.model.ScriptApiModel
-import com.amptnet.auditornode.documentation.annotation.ScriptApi
-import com.amptnet.auditornode.documentation.annotation.ScriptField
-import com.amptnet.auditornode.documentation.annotation.ScriptFunction
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
 import java.nio.file.Path

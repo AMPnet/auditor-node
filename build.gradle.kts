@@ -149,8 +149,8 @@ kapt {
         arg("micronaut.processing.annotations", "com.ampnet.auditornode.*")
         arg("micronaut.processing.group", "com.ampnet.auditornode")
         arg("micronaut.processing.module", "auditor-node")
-        arg("com.amptnet.auditornode.documentation.output", "$buildDir/documentation")
-        arg("com.amptnet.auditornode.documentation.resources", "$buildDir/resources/main")
+        arg("com.ampnet.auditornode.documentation.output", "$buildDir/documentation")
+        arg("com.ampnet.auditornode.documentation.resources", "$buildDir/resources/main")
     }
 }
 

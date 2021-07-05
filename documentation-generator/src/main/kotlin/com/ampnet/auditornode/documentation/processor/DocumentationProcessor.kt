@@ -1,6 +1,6 @@
 package com.ampnet.auditornode.documentation.processor
 
-import com.amptnet.auditornode.documentation.annotation.ScriptApi
+import com.ampnet.auditornode.documentation.annotation.ScriptApi
 import com.google.auto.service.AutoService
 import java.nio.file.Paths
 import javax.annotation.processing.AbstractProcessor
@@ -20,17 +20,13 @@ import kotlin.io.path.writeText
 class DocumentationProcessor : AbstractProcessor() {
 
     companion object {
-        const val DOCUMENTATION_OUTPUT_OPTION_NAME = "com.amptnet.auditornode.documentation.output"
-        const val RESOURCES_PATH_OPTION_NAME = "com.amptnet.auditornode.documentation.resources"
+        const val DOCUMENTATION_OUTPUT_OPTION_NAME = "com.ampnet.auditornode.documentation.output"
+        const val RESOURCES_PATH_OPTION_NAME = "com.ampnet.auditornode.documentation.resources"
     }
 
-    override fun getSupportedAnnotationTypes(): MutableSet<String> {
-        return mutableSetOf(ScriptApi::class.java.name)
-    }
+    override fun getSupportedAnnotationTypes(): MutableSet<String> = mutableSetOf(ScriptApi::class.java.name)
 
-    override fun getSupportedSourceVersion(): SourceVersion {
-        return SourceVersion.RELEASE_8
-    }
+    override fun getSupportedSourceVersion(): SourceVersion = SourceVersion.RELEASE_8
 
     override fun process(annotations: MutableSet<out TypeElement>?, roundEnv: RoundEnvironment?): Boolean {
         val documentationOutputPath = option(DOCUMENTATION_OUTPUT_OPTION_NAME)

@@ -1,4 +1,4 @@
-package com.amptnet.auditornode.documentation.annotation
+package com.ampnet.auditornode.documentation.annotation
 
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.SOURCE)

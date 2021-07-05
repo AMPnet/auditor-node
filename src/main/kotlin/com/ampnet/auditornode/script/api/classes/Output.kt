@@ -1,8 +1,8 @@
 package com.ampnet.auditornode.script.api.classes
 
-import com.amptnet.auditornode.documentation.annotation.ScriptApi
-import com.amptnet.auditornode.documentation.annotation.ScriptApiCategory
-import com.amptnet.auditornode.documentation.annotation.ScriptFunction
+import com.ampnet.auditornode.documentation.annotation.ScriptApi
+import com.ampnet.auditornode.documentation.annotation.ScriptApiCategory
+import com.ampnet.auditornode.documentation.annotation.ScriptFunction
 
 @ScriptApi(
     description = "Provides support for rendering text, HTML and Markdown when the script is running interactively " +
