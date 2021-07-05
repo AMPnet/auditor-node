@@ -8,6 +8,7 @@ import com.ampnet.auditornode.configuration.properties.RpcProperties
 import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.model.contract.AssetAuditResult
 import com.ampnet.auditornode.model.contract.AssetId
+import com.ampnet.auditornode.model.contract.AssetTypeId
 import com.ampnet.auditornode.model.contract.ContractAddress
 import com.ampnet.auditornode.model.contract.EthereumAddress
 import com.ampnet.auditornode.model.contract.LatestAuditTimestamp
@@ -38,7 +39,7 @@ class Web3jAssetHolderContractServiceUnitTest : TestBase() {
     private val testAssetId = AssetId(BigInteger.valueOf(123L))
     private val encodedTestAssetId = "0x000000000000000000000000000000000000000000000000000000000000007b"
 
-    private val testAssetTypeId = AssetId(BigInteger.valueOf(456L))
+    private val testAssetTypeId = AssetTypeId(BigInteger.valueOf(456L))
     private val encodedTestAssetTypeId = "0x00000000000000000000000000000000000000000000000000000000000001c8"
 
     private val testTokenizedAssetAddress = ContractAddress("0x0000000000000000000000000000000000000001")
@@ -87,7 +88,7 @@ class Web3jAssetHolderContractServiceUnitTest : TestBase() {
         }
 
         verify("correct asset category ID is returned") {
-            val result = service.getAssetId(contractAddress)
+            val result = service.getAssetTypeId(contractAddress)
             assertThat(result)
                 .isRightContaining(testAssetTypeId)
         }
