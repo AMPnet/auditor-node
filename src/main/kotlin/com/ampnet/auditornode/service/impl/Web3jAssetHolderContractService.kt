@@ -6,6 +6,7 @@ import com.ampnet.auditornode.model.contract.AssetAuditResult
 import com.ampnet.auditornode.model.contract.AssetId
 import com.ampnet.auditornode.model.contract.AssetTypeId
 import com.ampnet.auditornode.model.contract.ContractAddress
+import com.ampnet.auditornode.model.contract.EthereumAddress
 import com.ampnet.auditornode.model.contract.LatestAuditTimestamp
 import com.ampnet.auditornode.model.error.Try
 import com.ampnet.auditornode.persistence.model.IpfsHash
@@ -42,6 +43,30 @@ class Web3jAssetHolderContractService @Inject constructor(
 
     override fun getAssetInfoIpfsHash(contractAddress: ContractAddress): Try<IpfsHash> =
         getValueFromContract("asset info IPFS hash", Contract(contractAddress, web3j), { it.info().send() }, ::IpfsHash)
+
+    override fun getTokenizedAssetAddress(contractAddress: ContractAddress): Try<ContractAddress> =
+        getValueFromContract(
+            "tokenized asset address",
+            Contract(contractAddress, web3j),
+            { it.tokenizedAsset().send() },
+            ::ContractAddress
+        )
+
+    override fun getAssetListerAddress(contractAddress: ContractAddress): Try<EthereumAddress> =
+        getValueFromContract(
+            "asset lister address",
+            Contract(contractAddress, web3j),
+            { it.listedBy().send() },
+            ::EthereumAddress
+        )
+
+    override fun getListingInfoIpfsHash(contractAddress: ContractAddress): Try<IpfsHash> =
+        getValueFromContract(
+            "asset listing info IPFS hash",
+            Contract(contractAddress, web3j),
+            { it.listingInfo().send() },
+            ::IpfsHash
+        )
 
     override fun getLatestAudit(contractAddress: ContractAddress): Try<AssetAuditResult> =
         getValueFromContract("latest asset audit", Contract(contractAddress, web3j), { it.getLatestAudit().send() }) {

@@ -9,6 +9,7 @@ import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.model.contract.AssetAuditResult
 import com.ampnet.auditornode.model.contract.AssetId
 import com.ampnet.auditornode.model.contract.ContractAddress
+import com.ampnet.auditornode.model.contract.EthereumAddress
 import com.ampnet.auditornode.model.contract.LatestAuditTimestamp
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.service.impl.Web3jAssetHolderContractService
@@ -39,6 +40,11 @@ class Web3jAssetHolderContractServiceUnitTest : TestBase() {
 
     private val testAssetTypeId = AssetId(BigInteger.valueOf(456L))
     private val encodedTestAssetTypeId = "0x00000000000000000000000000000000000000000000000000000000000001c8"
+
+    private val testTokenizedAssetAddress = ContractAddress("0x0000000000000000000000000000000000000001")
+    private val encodedTestTokenizedAssetAddress = "0x0000000000000000000000000000000000000000000000000000000000000001"
+    private val testAssetListerAddress = EthereumAddress("0x0000000000000000000000000000000000000002")
+    private val encodedTestAssetListerAddress = "0x0000000000000000000000000000000000000000000000000000000000000002"
 
     private val assetAuditResult = AssetAuditResult(
         verified = true,
@@ -97,6 +103,51 @@ class Web3jAssetHolderContractServiceUnitTest : TestBase() {
 
         verify("correct asset info IPFS hash is returned") {
             val result = service.getAssetInfoIpfsHash(contractAddress)
+            assertThat(result)
+                .isRightContaining(testHash)
+        }
+    }
+
+    @Test
+    fun `must correctly return tokenized asset address`() {
+        suppose("Web3j client will return some tokenized asset address") {
+            val response = web3jMockResponse(encodedTestTokenizedAssetAddress)
+            web3j.mocks()
+                .willReturn(response)
+        }
+
+        verify("correct tokenized asset address is returned") {
+            val result = service.getTokenizedAssetAddress(contractAddress)
+            assertThat(result)
+                .isRightContaining(testTokenizedAssetAddress)
+        }
+    }
+
+    @Test
+    fun `must correctly return asset lister address`() {
+        suppose("Web3j client will return some asset lister address") {
+            val response = web3jMockResponse(encodedTestAssetListerAddress)
+            web3j.mocks()
+                .willReturn(response)
+        }
+
+        verify("correct asset lister address is returned") {
+            val result = service.getAssetListerAddress(contractAddress)
+            assertThat(result)
+                .isRightContaining(testAssetListerAddress)
+        }
+    }
+
+    @Test
+    fun `must correctly return listing info IPFS hash`() {
+        suppose("Web3j client will return some listing info IPFS hash") {
+            val response = web3jMockResponse(encodedTestHash)
+            web3j.mocks()
+                .willReturn(response)
+        }
+
+        verify("correct listing info IPFS hash is returned") {
+            val result = service.getListingInfoIpfsHash(contractAddress)
             assertThat(result)
                 .isRightContaining(testHash)
         }
