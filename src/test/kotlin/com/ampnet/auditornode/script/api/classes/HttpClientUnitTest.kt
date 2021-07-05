@@ -477,8 +477,6 @@ class HttpClientUnitTest : TestBase() {
 
         suppose("some HTTP response is returned") {
             val httpRequestMatcher: (HttpRequest<String>) -> Boolean = { arg ->
-                println(arg.contentType)
-                println(arg.body)
                 arg.uri.toString() == uri && arg.method == HttpMethod.CUSTOM && arg.methodName == "NON_STANDARD" &&
                     arg.body.isEmpty && arg.contentType.isEmpty
             }
@@ -545,8 +543,6 @@ class HttpClientUnitTest : TestBase() {
 
         suppose("some HTTP response is returned") {
             val httpRequestMatcher: (HttpRequest<String>) -> Boolean = { arg ->
-                println(arg.contentType)
-                println(arg.body)
                 arg.uri.toString() == uri && arg.method == HttpMethod.CUSTOM && arg.methodName == "NON_STANDARD" &&
                     arg.body == Optional.of("{}") && arg.contentType == Optional.of(MediaType.APPLICATION_JSON_TYPE)
             }

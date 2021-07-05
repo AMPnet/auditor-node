@@ -57,8 +57,6 @@ class Web3jAssetHolderContractServiceUnitTest : TestBase() {
 
         verify("RpcConnectionError is returned") {
             val result = service.getAssetInfoIpfsHash(contractAddress)
-            println(result)
-            println((result as Either.Left).value.cause)
             assertThat(result).isLeftContaining(RpcConnectionError(rpcProperties.url, exception))
         }
     }
