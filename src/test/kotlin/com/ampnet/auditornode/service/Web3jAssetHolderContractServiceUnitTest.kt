@@ -1,6 +1,5 @@
 package com.ampnet.auditornode.service
 
-import arrow.core.Either
 import assertk.assertThat
 import assertk.assertions.isInstanceOf
 import com.ampnet.auditornode.TestBase
