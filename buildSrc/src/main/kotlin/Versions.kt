@@ -12,7 +12,6 @@ object Versions {
     }
 
     object Plugins {
-        const val kethabi = "0.2.0"
         const val allOpen = Compile.kotlin
         const val ktlint = "10.0.0"
         const val detekt = "1.17.1"
@@ -20,18 +19,20 @@ object Versions {
         const val testLogger = "3.0.0"
         const val micronaut = "1.5.0"
         const val shadowJar = "6.1.0"
+        const val web3j = "4.8.4"
     }
 
     object Tools {
         const val ktlint = "0.41.0"
         const val micronaut = "2.5.4"
         const val jacoco = "0.8.7"
+        const val solidity = "0.8.0"
     }
 
     object Dependencies {
         const val okHttp = "4.9.1"
         const val graalSdk = "21.0.0.2"
-        const val web3jCore = "5.0.0"
+        const val web3j = Plugins.web3j
         const val arrowCore = "0.13.2"
         const val kotlinCoroutines = Compile.kotlin
         const val kotlinLogging = "2.0.6"

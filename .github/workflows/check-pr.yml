@@ -61,7 +61,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Build
-        run: ./gradlew clean build -x test -x integTest -x apiTest
+        run: ./gradlew clean build -x test -x integTest -x apiTest --stacktrace
       - name: Unit tests
         run: ./gradlew test
       - name: Integration tests
@@ -105,6 +105,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Build native image
-        run: ./gradlew clean build -x test -x integTest -x apiTest nativeImage
+        run: ./gradlew clean build -x test -x integTest -x apiTest nativeImage --stacktrace
       - name: Native image API tests
         run: ./gradlew apiTestNativeImage

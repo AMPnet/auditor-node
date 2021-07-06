@@ -7,6 +7,7 @@ import assertk.assertions.isEqualTo
 import com.ampnet.auditornode.TestBase
 import com.ampnet.auditornode.configuration.properties.AuditorProperties
 import com.ampnet.auditornode.model.contract.AssetId
+import com.ampnet.auditornode.model.contract.ContractAddress
 import com.ampnet.auditornode.model.contract.UnsignedTransaction
 import com.ampnet.auditornode.model.error.EvaluationError.ScriptExecutionError
 import com.ampnet.auditornode.model.error.IpfsError.IpfsEmptyResponseError
@@ -45,7 +46,6 @@ import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.kethereum.model.Address
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
@@ -78,7 +78,7 @@ class AuditWebSocketUnitTest : TestBase() {
         executorService
     )
 
-    private val assetAddress = Address("0xTestContractAddress")
+    private val assetAddress = ContractAddress("0xTestContractAddress")
     private val assetId = AssetId(BigInteger.valueOf(123L))
     private val procedureHash = IpfsHash("procedureHash")
 
@@ -120,7 +120,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen(assetAddress.hex, session)
+                controller.onOpen(assetAddress.value, session)
             }
 
             then(session)
@@ -168,7 +168,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen(assetAddress.hex, session)
+                controller.onOpen(assetAddress.value, session)
             }
 
             then(session)
@@ -221,7 +221,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen(assetAddress.hex, session)
+                controller.onOpen(assetAddress.value, session)
             }
 
             then(session)
@@ -281,7 +281,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen(assetAddress.hex, session)
+                controller.onOpen(assetAddress.value, session)
             }
 
             then(session)
@@ -346,7 +346,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen(assetAddress.hex, session)
+                controller.onOpen(assetAddress.value, session)
             }
 
             then(session)
@@ -410,7 +410,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen(assetAddress.hex, session)
+                controller.onOpen(assetAddress.value, session)
             }
 
             then(session)
@@ -500,7 +500,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen(assetAddress.hex, session)
+                controller.onOpen(assetAddress.value, session)
             }
 
             then(session)
@@ -596,7 +596,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen(assetAddress.hex, session)
+                controller.onOpen(assetAddress.value, session)
             }
 
             then(session)
@@ -711,7 +711,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen(assetAddress.hex, session)
+                controller.onOpen(assetAddress.value, session)
             }
 
             then(session)

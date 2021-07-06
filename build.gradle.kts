@@ -5,18 +5,6 @@ import io.micronaut.gradle.MicronautTestRuntime
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
-buildscript {
-    repositories {
-        maven("https://jitpack.io")
-    }
-
-    dependencies {
-        classpath("com.github.komputing:kethabi:${Versions.Plugins.kethabi}")
-    }
-}
-
-apply(plugin = "kethabi")
-
 plugins {
     kotlin("jvm").version(Versions.Compile.kotlin)
     kotlin("kapt").version(Versions.Compile.kotlin)
@@ -28,6 +16,7 @@ plugins {
     id("com.adarshr.test-logger").version(Versions.Plugins.testLogger)
     id("io.micronaut.application").version(Versions.Plugins.micronaut)
     id("com.github.johnrengelman.shadow").version(Versions.Plugins.shadowJar)
+    id("org.web3j").version(Versions.Plugins.web3j)
     id("application")
 
     idea
@@ -59,6 +48,22 @@ micronaut {
 
 testSets {
     Configurations.Tests.testSets.forEach { create(it) }
+}
+
+node {
+    nodeProjectDir.set(file("node/"))
+}
+
+solidity {
+    version = Versions.Tools.solidity
+}
+
+web3j {
+    generatedPackageName = "com.ampnet.auditornode.contract"
+}
+
+sourceSets.main {
+    java.srcDirs("$buildDir/generated/sources/web3j/main/java")
 }
 
 fun DependencyHandler.integTestImplementation(dependencyNotation: Any): Dependency? =
@@ -96,7 +101,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.squareup.okhttp3:okhttp:${Versions.Dependencies.okHttp}")
     implementation("org.graalvm.sdk:graal-sdk:${Versions.Dependencies.graalSdk}")
-    implementation("org.web3j:core:${Versions.Dependencies.web3jCore}")
+    implementation("org.web3j:core:${Versions.Dependencies.web3j}")
     implementation("io.arrow-kt:arrow-core:${Versions.Dependencies.arrowCore}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.Dependencies.kotlinCoroutines}")
     implementation("io.github.microutils:kotlin-logging-jvm:${Versions.Dependencies.kotlinLogging}")
@@ -151,7 +156,7 @@ kapt {
         arg("micronaut.processing.group", "com.ampnet.auditornode")
         arg("micronaut.processing.module", "auditor-node")
         arg("com.ampnet.auditornode.documentation.output", "$buildDir/documentation")
-        arg("com.ampnet.auditornode.documentation.resources", "$buildDir/resources/main")
+        arg("com.ampnet.auditornode.documentation.resources", "src/main/resources")
     }
 }
 

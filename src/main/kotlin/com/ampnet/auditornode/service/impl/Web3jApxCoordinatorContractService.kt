@@ -1,8 +1,9 @@
 package com.ampnet.auditornode.service.impl
 
 import com.ampnet.auditornode.configuration.properties.AuditorProperties
-import com.ampnet.auditornode.contract.coordinator.ApxCoordinatorContractTransactionGenerator
+import com.ampnet.auditornode.contract.ApxCoordinator
 import com.ampnet.auditornode.model.contract.AssetId
+import com.ampnet.auditornode.model.contract.ContractAddress
 import com.ampnet.auditornode.model.contract.UnsignedTransaction
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.script.api.model.AbortedAudit
@@ -11,20 +12,30 @@ import com.ampnet.auditornode.script.api.model.FailedAudit
 import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import com.ampnet.auditornode.service.ApxCoordinatorContractService
 import mu.KotlinLogging
-import org.kethereum.model.Address
-import org.komputing.khex.extensions.toHexString
+import org.web3j.protocol.Web3j
+import org.web3j.tx.ReadonlyTransactionManager
+import org.web3j.tx.gas.DefaultGasProvider
 import javax.inject.Inject
 import javax.inject.Singleton
 
 private val logger = KotlinLogging.logger {}
 
 @Singleton
-class GethApxCoordinatorContractService @Inject constructor(
-    auditorProperties: AuditorProperties
+class Web3jApxCoordinatorContractService @Inject constructor(
+    web3j: Web3j,
+    private val auditorProperties: AuditorProperties
 ) : ApxCoordinatorContractService {
 
-    private val contractAddress = Address(auditorProperties.apxCoordinatorContractAddress)
-    private val contractTransactionGenerator = ApxCoordinatorContractTransactionGenerator(contractAddress)
+    private class Contract(contractAddress: ContractAddress, web3j: Web3j) : ApxCoordinator(
+        contractAddress.value,
+        web3j,
+        ReadonlyTransactionManager(web3j, contractAddress.value),
+        DefaultGasProvider()
+    )
+
+    private val contract by lazy {
+        Contract(ContractAddress(auditorProperties.apxCoordinatorContractAddress), web3j)
+    }
 
     override fun generateTxForPerformAudit(
         assetId: AssetId,
@@ -42,18 +53,13 @@ class GethApxCoordinatorContractService @Inject constructor(
             is AbortedAudit -> null
         }
 
-        val kethabiTransaction = validAudit?.let {
-            contractTransactionGenerator.performAudit(
-                assetId = assetId.value,
-                assetValid = validAudit,
-                additionalInfo = directoryIpfsHash.value
-            )
-        }
+        val functionCall = validAudit?.let { contract.performAudit(assetId.value, validAudit, directoryIpfsHash.value) }
+            ?.encodeFunctionCall()
 
-        return kethabiTransaction?.let {
+        return functionCall?.let {
             UnsignedTransaction(
-                to = contractAddress.hex,
-                data = it.input.toHexString()
+                to = auditorProperties.apxCoordinatorContractAddress,
+                data = it
             )
         }
     }

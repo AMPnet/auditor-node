@@ -6,7 +6,7 @@ import io.micronaut.core.bind.annotation.Bindable
 @ConfigurationProperties("auditor")
 interface AuditorProperties {
 
-    @get:Bindable(defaultValue = "0xB1ef92A570A0b7Fa8f355e7e8E36B62e414A574c")
+    @get:Bindable(defaultValue = "0x1cfca869dFb6085DAE18Ae2D6D9e6B9489cA0eB9")
     val apxCoordinatorContractAddress: String
 
     @get:Bindable(defaultValue = "QmZd1FZqpvawNksF2tdwVQLgiMgRfuar1er83AYxxdXQod")
