@@ -1,2 +1,4 @@
 ipfs:
-  gateway-url: http://localhost:8090/ipfs/{ipfsHash}
+  local-client-port: 8090
+auditor:
+  use-local-ipfs: true

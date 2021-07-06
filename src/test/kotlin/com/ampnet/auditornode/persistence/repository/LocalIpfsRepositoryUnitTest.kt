@@ -1,19 +1,27 @@
 package com.ampnet.auditornode.persistence.repository
 
 import assertk.assertThat
+import assertk.assertions.isNotNull
 import com.ampnet.auditornode.TestBase
+import com.ampnet.auditornode.UnitTestUtils
 import com.ampnet.auditornode.configuration.properties.IpfsProperties
 import com.ampnet.auditornode.isLeftContaining
 import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.model.error.IpfsError.IpfsEmptyResponseError
 import com.ampnet.auditornode.model.error.IpfsError.IpfsHttpError
+import com.ampnet.auditornode.model.error.IpfsError.MissingUploadedIpfsDirectoryHash
+import com.ampnet.auditornode.model.response.IpfsDirectoryUploadResponse
+import com.ampnet.auditornode.model.response.IpfsFileUploadResponse
 import com.ampnet.auditornode.persistence.model.IpfsBinaryFile
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.persistence.model.IpfsTextFile
+import com.ampnet.auditornode.persistence.model.NamedIpfsFile
 import com.ampnet.auditornode.persistence.repository.impl.LocalIpfsRepository
 import io.micronaut.http.HttpMethod
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.client.BlockingHttpClient
+import io.micronaut.http.client.RxHttpClient
+import io.reactivex.Flowable
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
@@ -22,20 +30,24 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
+import reactor.core.publisher.Flux
 import java.util.Optional
 
 class LocalIpfsRepositoryUnitTest : TestBase() {
 
     private val properties = mock<IpfsProperties>()
-    private val client = mock<BlockingHttpClient>()
+    private val blockingClient = mock<BlockingHttpClient>()
+    private val reactiveClient = mock<RxHttpClient>()
     private val ipfs = LocalIpfsRepository(
         properties,
-        client
+        blockingClient,
+        reactiveClient,
+        UnitTestUtils.objectMapper
     )
 
     @BeforeEach
     fun beforeEach() {
-        reset(client, properties)
+        reset(blockingClient, properties)
     }
 
     @Test
@@ -43,7 +55,7 @@ class LocalIpfsRepositoryUnitTest : TestBase() {
         val exception = RuntimeException("http exception")
 
         suppose("HTTP client will throw an exception") {
-            given(client.retrieve(any<HttpRequest<String>>(), eq(String::class.java)))
+            given(blockingClient.retrieve(any<HttpRequest<String>>(), eq(String::class.java)))
                 .willThrow(exception)
             given(properties.localClientPort)
                 .willReturn(5001)
@@ -58,7 +70,7 @@ class LocalIpfsRepositoryUnitTest : TestBase() {
     @Test
     fun `fetchTextFile() must return IpfsEmptyResponseError when null response body is returned`() {
         suppose("HTTP client will return a null response") {
-            given(client.retrieve(any<HttpRequest<String>>(), eq(String::class.java)))
+            given(blockingClient.retrieve(any<HttpRequest<String>>(), eq(String::class.java)))
                 .willReturn(null)
             given(properties.localClientPort)
                 .willReturn(5001)
@@ -85,7 +97,7 @@ class LocalIpfsRepositoryUnitTest : TestBase() {
             }
             given(properties.localClientPort)
                 .willReturn(testPort)
-            given(client.retrieve(argThat(httpRequestMatcher), eq(String::class.java)))
+            given(blockingClient.retrieve(argThat(httpRequestMatcher), eq(String::class.java)))
                 .willReturn(response)
         }
 
@@ -100,7 +112,7 @@ class LocalIpfsRepositoryUnitTest : TestBase() {
         val exception = RuntimeException("http exception")
 
         suppose("HTTP client will throw an exception") {
-            given(client.retrieve(any<HttpRequest<ByteArray>>(), eq(ByteArray::class.java)))
+            given(blockingClient.retrieve(any<HttpRequest<ByteArray>>(), eq(ByteArray::class.java)))
                 .willThrow(exception)
             given(properties.localClientPort)
                 .willReturn(5001)
@@ -115,7 +127,7 @@ class LocalIpfsRepositoryUnitTest : TestBase() {
     @Test
     fun `fetchBinaryFile() must return IpfsEmptyResponseError when null response body is returned`() {
         suppose("HTTP client will return a null response") {
-            given(client.retrieve(any<HttpRequest<ByteArray>>(), eq(ByteArray::class.java)))
+            given(blockingClient.retrieve(any<HttpRequest<ByteArray>>(), eq(ByteArray::class.java)))
                 .willReturn(null)
             given(properties.localClientPort)
                 .willReturn(5001)
@@ -142,7 +154,7 @@ class LocalIpfsRepositoryUnitTest : TestBase() {
             }
             given(properties.localClientPort)
                 .willReturn(testPort)
-            given(client.retrieve(argThat(httpRequestMatcher), eq(ByteArray::class.java)))
+            given(blockingClient.retrieve(argThat(httpRequestMatcher), eq(ByteArray::class.java)))
                 .willReturn(response)
         }
 
@@ -157,7 +169,7 @@ class LocalIpfsRepositoryUnitTest : TestBase() {
         val exception = RuntimeException("http exception")
 
         suppose("HTTP client will throw an exception") {
-            given(client.retrieve(any<HttpRequest<String>>(), eq(String::class.java)))
+            given(blockingClient.retrieve(any<HttpRequest<String>>(), eq(String::class.java)))
                 .willThrow(exception)
             given(properties.localClientPort)
                 .willReturn(5001)
@@ -172,7 +184,7 @@ class LocalIpfsRepositoryUnitTest : TestBase() {
     @Test
     fun `fetchTextFileFromDirectory() must return IpfsEmptyResponseError when null response body is returned`() {
         suppose("HTTP client will return a null response") {
-            given(client.retrieve(any<HttpRequest<String>>(), eq(String::class.java)))
+            given(blockingClient.retrieve(any<HttpRequest<String>>(), eq(String::class.java)))
                 .willReturn(null)
             given(properties.localClientPort)
                 .willReturn(5001)
@@ -201,7 +213,7 @@ class LocalIpfsRepositoryUnitTest : TestBase() {
             }
             given(properties.localClientPort)
                 .willReturn(testPort)
-            given(client.retrieve(argThat(httpRequestMatcher), eq(String::class.java)))
+            given(blockingClient.retrieve(argThat(httpRequestMatcher), eq(String::class.java)))
                 .willReturn(response)
         }
 
@@ -216,7 +228,7 @@ class LocalIpfsRepositoryUnitTest : TestBase() {
         val exception = RuntimeException("http exception")
 
         suppose("HTTP client will throw an exception") {
-            given(client.retrieve(any<HttpRequest<ByteArray>>(), eq(ByteArray::class.java)))
+            given(blockingClient.retrieve(any<HttpRequest<ByteArray>>(), eq(ByteArray::class.java)))
                 .willThrow(exception)
             given(properties.localClientPort)
                 .willReturn(5001)
@@ -231,7 +243,7 @@ class LocalIpfsRepositoryUnitTest : TestBase() {
     @Test
     fun `fetchBinaryFileFromDirectory() must return IpfsEmptyResponseError when null response body is returned`() {
         suppose("HTTP client will return a null response") {
-            given(client.retrieve(any<HttpRequest<ByteArray>>(), eq(ByteArray::class.java)))
+            given(blockingClient.retrieve(any<HttpRequest<ByteArray>>(), eq(ByteArray::class.java)))
                 .willReturn(null)
             given(properties.localClientPort)
                 .willReturn(5001)
@@ -260,13 +272,81 @@ class LocalIpfsRepositoryUnitTest : TestBase() {
             }
             given(properties.localClientPort)
                 .willReturn(testPort)
-            given(client.retrieve(argThat(httpRequestMatcher), eq(ByteArray::class.java)))
+            given(blockingClient.retrieve(argThat(httpRequestMatcher), eq(ByteArray::class.java)))
                 .willReturn(response)
         }
 
         verify("correct file data is returned") {
             val result = ipfs.fetchBinaryFileFromDirectory(hash, fileName)
             assertThat(result).isRightContaining(IpfsBinaryFile(response))
+        }
+    }
+
+    @Test
+    fun `uploadFilesToDirectory() must return IpfsHttpError when HTTP request fails with an exception`() {
+        val exception = RuntimeException("http exception")
+
+        suppose("HTTP client will throw an exception") {
+            given(reactiveClient.retrieve(any<HttpRequest<String>>(), eq(ByteArray::class.java)))
+                .willReturn(Flowable.error(exception))
+            given(properties.localClientPort)
+                .willReturn(5001)
+        }
+
+        verify("IpfsHttpError is returned") {
+            val result = ipfs.uploadFilesToDirectory(Flux.just(NamedIpfsFile(ByteArray(0), "fileName"))).block()
+            assertThat(result)
+                .isNotNull()
+                .isLeftContaining(IpfsHttpError(exception))
+        }
+    }
+
+    @Test
+    fun `uploadFilesToDirectory() must return MissingUploadedIpfsDirectoryHash for unknown directory IPFS hash`() {
+        val fileName = "fileName"
+
+        suppose("HTTP client will not return IPFS directory hash") {
+            given(reactiveClient.retrieve(any<HttpRequest<String>>(), eq(ByteArray::class.java)))
+                .willReturn(Flowable.just("{\"Name\":\"$fileName\",\"Hash\":\"fileHash\"}".toByteArray()))
+            given(properties.localClientPort)
+                .willReturn(5001)
+        }
+
+        verify("MissingUploadedIpfsDirectoryHash is returned") {
+            val result = ipfs.uploadFilesToDirectory(Flux.just(NamedIpfsFile(ByteArray(0), fileName))).block()
+            assertThat(result)
+                .isNotNull()
+                .isLeftContaining(MissingUploadedIpfsDirectoryHash)
+        }
+    }
+
+    @Test
+    fun `uploadFilesToDirectory() must correctly upload files to IPFS directory`() {
+        val fileName = "testFile"
+        val fileHash = "fileHash"
+        val directoryHash = "directoryHash"
+
+        suppose("HTTP client will return IPFS hashes for uploaded file and wrapping directory") {
+            val json = "{\"Name\":\"$fileName\",\"Hash\":\"$fileHash\"}\n{\"Name\":\"\",\"Hash\":\"$directoryHash\"}"
+
+            given(reactiveClient.retrieve(any<HttpRequest<String>>(), eq(ByteArray::class.java)))
+                .willReturn(Flowable.just(json.toByteArray()))
+            given(properties.localClientPort)
+                .willReturn(5001)
+        }
+
+        verify("file upload response is returned") {
+            val result = ipfs.uploadFilesToDirectory(Flux.just(NamedIpfsFile(ByteArray(0), fileName))).block()
+            assertThat(result)
+                .isNotNull()
+                .isRightContaining(
+                    IpfsDirectoryUploadResponse(
+                        files = listOf(
+                            IpfsFileUploadResponse(fileName = fileName, ipfsHash = IpfsHash(fileHash))
+                        ),
+                        directoryIpfsHash = IpfsHash(directoryHash)
+                    )
+                )
         }
     }
 }

@@ -1,6 +1,9 @@
 package com.ampnet.auditornode
 
+import com.ampnet.auditornode.model.response.IpfsDirectoryUploadResponse
+import com.ampnet.auditornode.model.response.IpfsFileUploadResponse
 import com.ampnet.auditornode.model.websocket.WebSocketMessage
+import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.SingletonSupport
@@ -25,5 +28,20 @@ object UnitTestUtils {
             ?: fail("Response does not match regular expression: $responseRegex")
 
         return matchResult.groups[1]?.value?.let(UUID::fromString)
+    }
+
+    fun String.parseIpfsDirectoryUploadResponse(): IpfsDirectoryUploadResponse {
+        val rootNode = objectMapper.readTree(this)
+        val files = rootNode["files"].elements().asSequence().map {
+            IpfsFileUploadResponse(
+                fileName = it["fileName"].asText(),
+                ipfsHash = IpfsHash(it["ipfsHash"].asText())
+            )
+        }.toList()
+
+        return IpfsDirectoryUploadResponse(
+            files = files,
+            directoryIpfsHash = IpfsHash(rootNode["directoryIpfsHash"].asText())
+        )
     }
 }

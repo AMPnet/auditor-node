@@ -91,11 +91,11 @@ class WebSocketSessionHelperUnitTest : TestBase() {
 
             then(attributes)
                 .should(times(1))
-                .put("ScriptIpfsDirectoryHash", scriptIpfsDirectoryHash)
+                .put("ScriptDirectoryIpfsHash", scriptIpfsDirectoryHash)
         }
 
         verify("value is correctly read") {
-            given(attributes["ScriptIpfsDirectoryHash", IpfsHash::class.java])
+            given(attributes["ScriptDirectoryIpfsHash", IpfsHash::class.java])
                 .willReturn(Optional.of(scriptIpfsDirectoryHash))
 
             assertThat(webSocketSession.scriptIpfsDirectoryHash)

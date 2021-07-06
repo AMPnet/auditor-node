@@ -8,6 +8,7 @@ import com.ampnet.auditornode.configuration.properties.AuditorProperties
 import com.ampnet.auditornode.controller.websocket.WebSocketSessionHelper.scriptInput
 import com.ampnet.auditornode.controller.websocket.WebSocketSessionHelper.scriptState
 import com.ampnet.auditornode.controller.websocket.WebSocketSessionHelper.scriptTask
+import com.ampnet.auditornode.model.contract.AssetId
 import com.ampnet.auditornode.model.error.ApplicationError
 import com.ampnet.auditornode.model.error.IpfsError
 import com.ampnet.auditornode.model.error.ParseError
@@ -25,8 +26,10 @@ import com.ampnet.auditornode.model.websocket.InvalidInputJsonErrorMessage
 import com.ampnet.auditornode.model.websocket.IpfsReadErrorMessage
 import com.ampnet.auditornode.model.websocket.ReadyState
 import com.ampnet.auditornode.model.websocket.RpcErrorMessage
+import com.ampnet.auditornode.model.websocket.SpecifyIpfsDirectoryHashCommand
+import com.ampnet.auditornode.model.websocket.WaitingForIpfsHash
 import com.ampnet.auditornode.model.websocket.WebSocketApi
-import com.ampnet.auditornode.persistence.model.AssetContractAddress
+import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.persistence.model.IpfsTextFile
 import com.ampnet.auditornode.persistence.model.ScriptSource
 import com.ampnet.auditornode.persistence.repository.IpfsRepository
@@ -34,10 +37,10 @@ import com.ampnet.auditornode.script.api.ExecutionContext
 import com.ampnet.auditornode.script.api.classes.DirectoryBasedIpfs
 import com.ampnet.auditornode.script.api.classes.WebSocketInput
 import com.ampnet.auditornode.script.api.classes.WebSocketOutput
-import com.ampnet.auditornode.service.AssetContractService
-import com.ampnet.auditornode.service.AuditRegistryContractTransactionService
+import com.ampnet.auditornode.script.api.model.AuditStatus
+import com.ampnet.auditornode.service.ApxCoordinatorContractService
+import com.ampnet.auditornode.service.AssetHolderContractService
 import com.ampnet.auditornode.service.AuditingService
-import com.ampnet.auditornode.service.RegistryContractService
 import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -52,6 +55,7 @@ import io.micronaut.websocket.annotation.ServerWebSocket
 import io.reactivex.Scheduler
 import io.reactivex.schedulers.Schedulers
 import mu.KotlinLogging
+import org.kethereum.model.Address
 import java.util.concurrent.ExecutorService
 import javax.inject.Inject
 import javax.inject.Named
@@ -60,9 +64,8 @@ private val logger = KotlinLogging.logger {}
 
 @ServerWebSocket("/audit/{assetContractAddress}")
 class AuditWebSocket @Inject constructor(
-    private val assetContractService: AssetContractService,
-    private val registryContractService: RegistryContractService,
-    private val auditRegistryContractTransactionService: AuditRegistryContractTransactionService,
+    private val apxCoordinatorContractService: ApxCoordinatorContractService,
+    private val assetHolderContractService: AssetHolderContractService,
     private val auditingService: AuditingService,
     private val ipfsRepository: IpfsRepository,
     private val objectMapper: ObjectMapper,
@@ -78,7 +81,7 @@ class AuditWebSocket @Inject constructor(
 
     @OnOpen
     suspend fun onOpen(
-        @PathVariable("assetContractAddress") assetContractAddress: String, // TODO currently hard-coded
+        @PathVariable("assetContractAddress") assetContractAddress: String,
         session: WebSocketSession
     ) {
         logger.info {
@@ -89,8 +92,12 @@ class AuditWebSocket @Inject constructor(
 
         webSocketApi.sendInfoMessage(ConnectedInfoMessage)
 
-        val result = either<ApplicationError, Pair<ScriptSource, ExecutionContext>> {
-            val assetInfoIpfsHash = assetContractService.getAssetInfoIpfsHash().bind()
+        val result = either<ApplicationError, Triple<ScriptSource, ExecutionContext, AssetId>> {
+            val assetHolderContractAddress = Address(assetContractAddress)
+            val assetId = assetHolderContractService.getAssetId(assetHolderContractAddress).bind()
+            logger.info { "Asset ID: $assetId" }
+
+            val assetInfoIpfsHash = assetHolderContractService.getAssetInfoIpfsHash(assetHolderContractAddress).bind()
             logger.info { "Asset info IPFS hash: $assetInfoIpfsHash" }
 
             val assetInfoJson = ipfsRepository.fetchTextFile(assetInfoIpfsHash).bind()
@@ -99,12 +106,9 @@ class AuditWebSocket @Inject constructor(
             val auditDataJson = parseAuditInfo(assetInfoJson).bind()
             logger.info { "Successfully parsed asset info JSON" }
 
-            val assetCategoryId = assetContractService.getAssetCategoryId().bind()
-            logger.info { "Asset category ID: $assetCategoryId" }
-
-            val auditingProcedureDirectoryIpfsHash = registryContractService
-                .getAuditingProcedureDirectoryIpfsHash(assetCategoryId)
-                .bind()
+            // TODO for now we will use hard-coded auditing procedure directory IPFS hash since only qualified people
+            //  will perform the auditing procedure
+            val auditingProcedureDirectoryIpfsHash = IpfsHash(auditorProperties.auditingProcedureDirectoryIpfsHash)
             logger.info { "Auditing procedure directory IPFS hash: $auditingProcedureDirectoryIpfsHash" }
 
             val auditingScript = ipfsRepository
@@ -122,12 +126,15 @@ class AuditWebSocket @Inject constructor(
 
             session.scriptState = ReadyState
 
-            Pair(auditingScript, executionContext)
+            Triple(auditingScript, executionContext, assetId)
         }
 
         when (result) {
             is Either.Left -> handleOnOpenError(result.value, session, webSocketApi)
-            is Either.Right -> handleOnOpenSuccess(result.value.first, result.value.second, session, webSocketApi)
+            is Either.Right -> {
+                val (scriptSource, executionContext, assetId) = result.value
+                handleOnOpenSuccess(scriptSource, executionContext, assetId, session, webSocketApi)
+            }
         }
     }
 
@@ -151,6 +158,7 @@ class AuditWebSocket @Inject constructor(
     private fun handleOnOpenSuccess(
         scriptSource: ScriptSource,
         executionContext: ExecutionContext,
+        assetId: AssetId,
         session: WebSocketSession,
         webSocketApi: WebSocketApi
     ) {
@@ -163,20 +171,26 @@ class AuditWebSocket @Inject constructor(
             auditingService.evaluate(scriptSource.content, executionContext).fold(
                 ifLeft = {
                     logger.warn { "Script execution finished with error: ${it.message}" }
+                    session.scriptState = FinishedState
                     webSocketApi.sendResponse(ErrorResponse(it.message ?: ""))
+                    session.close(CloseReason.NORMAL)
                 },
                 ifRight = {
                     logger.info { "Script execution finished successfully, result: $it" }
-                    // TODO asset address will not be hard-coded in the future
-                    val transaction = auditRegistryContractTransactionService.generateTxForCastAuditVote(
-                        assetContractAddress = AssetContractAddress(auditorProperties.assetContractAddress),
-                        auditResult = it
-                    )
-                    webSocketApi.sendResponse(AuditResultResponse(it, transaction))
+
+                    when (it.status) {
+                        AuditStatus.ABORTED -> {
+                            session.scriptState = FinishedState
+                            webSocketApi.sendResponse(AuditResultResponse(it, null))
+                            session.close(CloseReason.NORMAL)
+                        }
+                        else -> {
+                            session.scriptState = WaitingForIpfsHash(it, assetId)
+                            webSocketApi.sendCommand(SpecifyIpfsDirectoryHashCommand(it))
+                        }
+                    }
                 }
             )
-            session.scriptState = FinishedState
-            session.close(CloseReason.NORMAL)
         }
 
         session.scriptTask = scriptTask
@@ -186,9 +200,31 @@ class AuditWebSocket @Inject constructor(
     fun onMessage(message: String, session: WebSocketSession) {
         logger.info { "WebSocket message: $message" }
 
-        when (session.scriptState) {
-            is InitState, is ReadyState, is FinishedState -> Unit
-            is ExecutingState -> session.scriptInput?.push(message)
+        when (val scriptState = session.scriptState) {
+            is InitState, is ReadyState, is FinishedState -> {
+                logger.debug { "Web socket message discarded: $message" }
+            }
+
+            is ExecutingState -> {
+                logger.debug { "Script input pushed: $message" }
+                session.scriptInput?.push(message)
+            }
+
+            is WaitingForIpfsHash -> {
+                logger.debug { "Audit result directory IPFS hash: $message" }
+                session.scriptState = FinishedState
+
+                // TODO check if IPFS directory exists?
+                val transaction = apxCoordinatorContractService.generateTxForPerformAudit(
+                    assetId = scriptState.assetId,
+                    auditResult = scriptState.auditResult,
+                    directoryIpfsHash = IpfsHash(message)
+                )
+                val webSocketApi = WebSocketApi(session, objectMapper)
+
+                webSocketApi.sendResponse(AuditResultResponse(scriptState.auditResult, transaction))
+                session.close(CloseReason.NORMAL)
+            }
         }
     }
 

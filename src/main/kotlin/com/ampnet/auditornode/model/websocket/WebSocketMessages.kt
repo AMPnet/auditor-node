@@ -1,6 +1,6 @@
 package com.ampnet.auditornode.model.websocket
 
-import com.ampnet.auditornode.persistence.model.UnsignedTransaction
+import com.ampnet.auditornode.model.contract.UnsignedTransaction
 import com.ampnet.auditornode.script.api.model.AuditResult
 import com.ampnet.auditornode.util.NativeReflection
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -29,6 +29,9 @@ data class ReadNumberCommand(val message: String) : WebSocketCommand("readNumber
 
 @NativeReflection
 data class ReadStringCommand(val message: String) : WebSocketCommand("readString")
+
+@NativeReflection
+data class SpecifyIpfsDirectoryHashCommand(val payload: AuditResult) : WebSocketCommand("specifyIpfsDirectoryHash")
 
 @NativeReflection
 enum class InputType {

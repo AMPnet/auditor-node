@@ -3,27 +3,27 @@
         "inputs": [
             {
                 "internalType": "address",
-                "name": "_creator",
+                "name": "_apxCoordinator",
                 "type": "address"
             },
             {
                 "internalType": "address",
-                "name": "_issuer",
+                "name": "_tokenizedAsset",
                 "type": "address"
             },
             {
-                "internalType": "enum AssetState",
-                "name": "_state",
-                "type": "uint8"
+                "internalType": "address",
+                "name": "_listedBy",
+                "type": "address"
             },
             {
                 "internalType": "uint256",
-                "name": "_categoryId",
+                "name": "_id",
                 "type": "uint256"
             },
             {
                 "internalType": "uint256",
-                "name": "_totalShares",
+                "name": "_typeId",
                 "type": "uint256"
             },
             {
@@ -33,7 +33,17 @@
             },
             {
                 "internalType": "string",
-                "name": "_symbol",
+                "name": "_ticker",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_info",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_listingInfo",
                 "type": "string"
             }
         ],
@@ -70,12 +80,12 @@
         "inputs": [
             {
                 "indexed": false,
-                "internalType": "uint256",
-                "name": "id",
-                "type": "uint256"
+                "internalType": "bool",
+                "name": "assetVerified",
+                "type": "bool"
             }
         ],
-        "name": "Snapshot",
+        "name": "AuditPerformed",
         "type": "event"
     },
     {
@@ -102,24 +112,6 @@
         ],
         "name": "Transfer",
         "type": "event"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "shareholder",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "addShareholder",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
     },
     {
         "inputs": [
@@ -170,6 +162,19 @@
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "apxCoordinator",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "address",
@@ -189,53 +194,16 @@
         "type": "function"
     },
     {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "snapshotId",
-                "type": "uint256"
-            }
-        ],
-        "name": "balanceOfAt",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [],
-        "name": "categoryId",
+        "name": "claim",
         "outputs": [
             {
-                "internalType": "uint256",
+                "internalType": "bool",
                 "name": "",
-                "type": "uint256"
+                "type": "bool"
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "creator",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -277,9 +245,45 @@
     },
     {
         "inputs": [],
-        "name": "finalize",
-        "outputs": [],
-        "stateMutability": "nonpayable",
+        "name": "getLatestAudit",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "bool",
+                        "name": "assetVerified",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "additionalInfo",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "timestamp",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct AuditResult",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "id",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -321,12 +325,48 @@
     },
     {
         "inputs": [],
-        "name": "issuer",
+        "name": "latestAudit",
         "outputs": [
             {
-                "internalType": "contract IIssuer",
+                "internalType": "bool",
+                "name": "assetVerified",
+                "type": "bool"
+            },
+            {
+                "internalType": "string",
+                "name": "additionalInfo",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "timestamp",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "listedBy",
+        "outputs": [
+            {
+                "internalType": "address",
                 "name": "",
                 "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "listingInfo",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
             }
         ],
         "stateMutability": "view",
@@ -348,71 +388,19 @@
     {
         "inputs": [
             {
-                "internalType": "address",
-                "name": "shareholder",
-                "type": "address"
+                "internalType": "bool",
+                "name": "assetVerified",
+                "type": "bool"
             },
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "removeShareholder",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_creator",
-                "type": "address"
-            }
-        ],
-        "name": "setCreator",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
                 "internalType": "string",
-                "name": "_info",
+                "name": "additionalInfo",
                 "type": "string"
             }
         ],
-        "name": "setInfo",
+        "name": "performAudit",
         "outputs": [],
         "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "snapshot",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "state",
-        "outputs": [
-            {
-                "internalType": "enum AssetState",
-                "name": "",
-                "type": "uint8"
-            }
-        ],
-        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -430,12 +418,12 @@
     },
     {
         "inputs": [],
-        "name": "totalShares",
+        "name": "tokenizedAsset",
         "outputs": [
             {
-                "internalType": "uint256",
+                "internalType": "address",
                 "name": "",
-                "type": "uint256"
+                "type": "address"
             }
         ],
         "stateMutability": "view",
@@ -444,25 +432,6 @@
     {
         "inputs": [],
         "name": "totalSupply",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "snapshotId",
-                "type": "uint256"
-            }
-        ],
-        "name": "totalSupplyAt",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -524,6 +493,19 @@
             }
         ],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "typeId",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     }
 ]

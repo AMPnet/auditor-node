@@ -32,7 +32,7 @@ Docker Compose. After that, you can add the file to IPFS like this:
 `docker exec ipfs-node ipfs add /export/<your-file-name>`. If you need to upload a directory instead, you can do so by
 adding the `-r` flag to the `ipfs add` command: `docker exec ipfs-node ipfs add -r /export/<your-directory-name>`.
 
-**IMPORTANT NOTE: when you start local Geth node, it may take up to 30 minutes to get it synced with Ropsten testnet.
+**IMPORTANT NOTE: when you start local Geth node, it may take up to 30 minutes to get it synced with Görli testnet.
 During this time it is possible that reading IPFS hash from the contract will fail because your local Geth node is not
 yet fully synchronized.**
 
@@ -83,17 +83,14 @@ While the Docker IPFS container is running, you can access its web-ui via `http:
 If you are running the desktop IPFS application, you can upload the directory through its interface. The hash of the
 directory will then be displayed there.
 
-When the application is started, it will listen to HTTP requests on port `8080`. Connecting to `/audit` via web socket
-will start the test audit procedure which will first try to fetch asset info IPFS hash stored in the Ethereum contract
-with address `0xcaA9f2F9d9137E2fB806ecDf731CdD927aA9d97F` on the Ropsten testnet. After that, asset category ID and will
-be fetched from the same contract address. Using the retrieved asset category ID, auditing procedure directory IPFS hash
-is retrieved from registry contract with address `0x9C1d4593148c26249624d334AA8316A3446a0cD2`. This directory hash is
-then used to fetch the `audit.js` script file which the IPFS directory contains. The script is then executed
-interactively via web socket. After the execution finishes, the result of the audit is returned via web socket - this
-will also include an unsigned transaction which can be used to write audit result to blockchain. The transaction will
-only be generated if the auditing process was not aborted, i.e. only if the auditing result finished with success or
-failure. The contract for which the transaction will be generated has address
-`0xE239E7a361e0C82A1CF9E8C8B53353186B616EB7` on Ropsten testnet.
+When the application is started, it will listen to HTTP requests on port `8080`. Connecting to
+`/audit/{assetContractAddress}` via web socket will start the audit procedure which will first try to fetch asset ID and
+asset info IPFS hash from the specified asset contract address. The auditing procedure directory IPFS hash is specified
+as a property under key `auditor.auditing-procedure-directory-ipfs-hash`. The directory hash is used to fetch the
+`audit.js` script file which the IPFS directory contains. The script is then executed interactively via web socket.
+After the execution finishes, the result of the audit is returned via web socket - this will also include an unsigned
+transaction which can be used to write audit result to blockchain. The transaction will only be generated if the
+auditing process was not aborted, i.e. only if the auditing result finished with success or failure.
 
 #### Scripts
 
@@ -116,12 +113,11 @@ accessed by starting the auditor application and navigating to `localhost:8080/d
 
 | Argument | Description | Default value |
 |:--------:|:-----------:|:-------------:|
-| `-rpc.url=<url>` | Ethereum RPC API URL. | `https://ropsten.infura.io/v3/08664baf7af14eda956db2b71a79f12f` |
+| `-rpc.url=<url>` | Ethereum RPC API URL. | `https://rpc.goerli.mudit.blog` |
 | `-ipfs.gateway-url=<url>` | IPFS gateway URL, not used when `--local-ipfs` is specified; must contain  `{ipfsHash}` placeholder. | `https://ipfs.io/ipfs/{ipfsHash}` |
 | `-ipfs.local-client-port=<port>` | Port of local IPFS client, used when `--local-ipfs` is specified. | `5001` |
-| `-auditor.asset-contract-address=<address>` | Ethereum address of the asset contract. | `0xcaA9f2F9d9137E2fB806ecDf731CdD927aA9d97F` |
-| `-auditor.registry-contract-address=<address>` | Ethereum address of the registry contract. | `0x9C1d4593148c26249624d334AA8316A3446a0cD2` |
-| `-auditor.audit-registry-contract-address=<address>` | Ethereum address of the audit registry contract. | `0xE239E7a361e0C82A1CF9E8C8B53353186B616EB7` |
+| `-auditor.apx-coordinator-contract-address=<address>` | Ethereum address of the APX coordinator contract. | `0xB1ef92A570A0b7Fa8f355e7e8E36B62e414A574c` |
+| `-auditor.auditing-procedure-directory-ipfs-hash=<ipfsHash>` | IPFS has of the auditing procedure directory. | `QmZd1FZqpvawNksF2tdwVQLgiMgRfuar1er83AYxxdXQod` |
 | `--local-ipfs` | Use local IPFS client to fetch files. | Disabled by default. |
 | `-script.properties.<propertyName>=<propertyValue>` | Sets specified `<propertyName>` and `<propertyValue>` which is then visible inside auditing scripts via `Properties` object. All property names are converted into `kebab-case` and property values are always strings. See auditor script API specification for more info. | No properties are set by default. |
 

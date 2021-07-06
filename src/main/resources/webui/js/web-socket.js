@@ -1,3 +1,4 @@
+const errorLabelClass = "error-label";
 const webSocketContext = {
     inputIndex: 0
 }
@@ -176,6 +177,102 @@ function render(value, attribute, elementType, outputDiv) {
     outputDiv.appendChild(document.createElement("br"));
 }
 
+async function uploadAuditFiles(auditResult, button, webSocket) {
+    const auditReasonElement = document.getElementById("audit-result-reason");
+    const filesElement = document.getElementById("audit-result-files");
+
+    button.disabled = true;
+    auditReasonElement.disabled = true;
+    filesElement.disabled = true;
+
+    const auditReason = (auditReasonElement.value ?? "").trim();
+    const responseElement = document.getElementById("audit-result-response");
+
+    if (auditReason.length === 0) {
+        responseElement.classList.add(errorLabelClass);
+        responseElement.innerText = "Audit reason must be specified.";
+        button.disabled = false;
+        auditReasonElement.disabled = false;
+        filesElement.disabled = false;
+        return;
+    }
+
+    const files = filesElement.files;
+
+    if (files.length === 0) {
+        responseElement.classList.add(errorLabelClass);
+        responseElement.innerText = "At least one file must be uploaded.";
+        button.disabled = false;
+        auditReasonElement.disabled = false;
+        filesElement.disabled = false;
+        return;
+    }
+
+    const formData = new FormData();
+
+    for (const file of files) {
+        if (file.name === "audit-reason.txt" || file.name === "audit-result.json") {
+            responseElement.classList.add(errorLabelClass);
+            responseElement.innerText = "\"audit-reason.txt\" and \"audit-result.json\" are restricted file " +
+                "names and cannot be used; please rename the files in order to upload them.";
+            button.disabled = false;
+            auditReasonElement.disabled = false;
+            filesElement.disabled = false;
+            return;
+        }
+
+        formData.append("files", file);
+    }
+
+    console.log(formData);
+    formData.append("files", new Blob([auditReason]), "audit-reason.txt");
+    formData.append("files", new Blob([auditResult]), "audit-result.json");
+    console.log(formData);
+
+    const result = await fetch("/ipfs/upload", {method: "POST", body: formData});
+
+    if (result.status === 200) {
+        const body = await result.json();
+
+        responseElement.classList.remove(errorLabelClass);
+        responseElement.innerText = "Files stored, IPFS directory hash: " + body.directoryIpfsHash;
+
+        webSocket.send(body.directoryIpfsHash);
+    } else {
+        responseElement.classList.add(errorLabelClass);
+        responseElement.innerText = "Error while uploading files to IPFS.";
+        button.disabled = false;
+        auditReasonElement.disabled = false;
+        filesElement.disabled = false;
+    }
+}
+
+function createFileUpload(payload, outputDiv, webSocket) {
+    const labelWrapperElement = document.createElement("p");
+    labelWrapperElement.innerHTML = "<label for='audit-result-reason'>Describe why the asset audit was marked as " +
+        payload.status + ":</label>";
+    outputDiv.appendChild(labelWrapperElement);
+
+    const textAreaWrapperElement = document.createElement("div");
+    textAreaWrapperElement.innerHTML = "<textarea id='audit-result-reason'></textarea>";
+    outputDiv.appendChild(textAreaWrapperElement);
+
+    const formWrapperElement = document.createElement("p");
+    formWrapperElement.innerHTML = "<form>" +
+        "<label for='audit-result-files'>Upload all files used to determine audit status:</label><br><br>" +
+        "<input id='audit-result-files' type='file' name='files'><br><br>" +
+        "<div id='audit-result-response'></div>" +
+        "</form>";
+    outputDiv.appendChild(formWrapperElement);
+
+    const submitFormButtonElement = document.createElement("button");
+    submitFormButtonElement.innerText = "Submit";
+    submitFormButtonElement.onclick = async function () {
+        await uploadAuditFiles(JSON.stringify(payload), submitFormButtonElement, webSocket);
+    };
+    outputDiv.appendChild(submitFormButtonElement);
+}
+
 function processCommandMessage(message, outputDiv, webSocket, inputJson) {
     switch (message.command) {
         case "readInputJson":
@@ -204,6 +301,9 @@ function processCommandMessage(message, outputDiv, webSocket, inputJson) {
             break;
         case "renderMarkdown":
             render(message.markdown, "innerText", "pre", outputDiv);
+            break;
+        case "specifyIpfsDirectoryHash":
+            createFileUpload(message.payload, outputDiv, webSocket);
             break;
         default:
             const textElement = document.createElement("p");

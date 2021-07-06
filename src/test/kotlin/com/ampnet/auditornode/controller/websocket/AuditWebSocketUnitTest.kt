@@ -6,6 +6,8 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.ampnet.auditornode.TestBase
 import com.ampnet.auditornode.configuration.properties.AuditorProperties
+import com.ampnet.auditornode.model.contract.AssetId
+import com.ampnet.auditornode.model.contract.UnsignedTransaction
 import com.ampnet.auditornode.model.error.EvaluationError.ScriptExecutionError
 import com.ampnet.auditornode.model.error.IpfsError.IpfsEmptyResponseError
 import com.ampnet.auditornode.model.error.ParseError.JsonParseError
@@ -21,19 +23,18 @@ import com.ampnet.auditornode.model.websocket.InvalidInputJsonErrorMessage
 import com.ampnet.auditornode.model.websocket.IpfsReadErrorMessage
 import com.ampnet.auditornode.model.websocket.ReadyState
 import com.ampnet.auditornode.model.websocket.RpcErrorMessage
+import com.ampnet.auditornode.model.websocket.SpecifyIpfsDirectoryHashCommand
+import com.ampnet.auditornode.model.websocket.WaitingForIpfsHash
 import com.ampnet.auditornode.model.websocket.WebSocketScriptState
-import com.ampnet.auditornode.persistence.model.AssetCategoryId
-import com.ampnet.auditornode.persistence.model.AssetContractAddress
 import com.ampnet.auditornode.persistence.model.IpfsHash
 import com.ampnet.auditornode.persistence.model.IpfsTextFile
-import com.ampnet.auditornode.persistence.model.UnsignedTransaction
 import com.ampnet.auditornode.persistence.repository.IpfsRepository
 import com.ampnet.auditornode.script.api.classes.WebSocketInput
+import com.ampnet.auditornode.script.api.model.AbortedAudit
 import com.ampnet.auditornode.script.api.model.SuccessfulAudit
-import com.ampnet.auditornode.service.AssetContractService
-import com.ampnet.auditornode.service.AuditRegistryContractTransactionService
+import com.ampnet.auditornode.service.ApxCoordinatorContractService
+import com.ampnet.auditornode.service.AssetHolderContractService
 import com.ampnet.auditornode.service.AuditingService
-import com.ampnet.auditornode.service.RegistryContractService
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
@@ -44,6 +45,7 @@ import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.kethereum.model.Address
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
@@ -59,18 +61,16 @@ import java.util.concurrent.ExecutorService
 
 class AuditWebSocketUnitTest : TestBase() {
 
-    private val assetContractService = mock<AssetContractService>()
-    private val registryContractService = mock<RegistryContractService>()
-    private val auditRegistryContractTransactionService = mock<AuditRegistryContractTransactionService>()
+    private val apxCoordinatorContractService = mock<ApxCoordinatorContractService>()
+    private val assetHolderContractService = mock<AssetHolderContractService>()
     private val auditingService = mock<AuditingService>()
     private val ipfsRepository = mock<IpfsRepository>()
     private val objectMapper = mock<ObjectMapper>()
     private val auditorProperties = mock<AuditorProperties>()
     private val executorService = mock<ExecutorService>()
     private val controller = AuditWebSocket(
-        assetContractService,
-        registryContractService,
-        auditRegistryContractTransactionService,
+        apxCoordinatorContractService,
+        assetHolderContractService,
         auditingService,
         ipfsRepository,
         objectMapper,
@@ -78,18 +78,64 @@ class AuditWebSocketUnitTest : TestBase() {
         executorService
     )
 
+    private val assetAddress = Address("0xTestContractAddress")
+    private val assetId = AssetId(BigInteger.valueOf(123L))
+    private val procedureHash = IpfsHash("procedureHash")
+
     @BeforeEach
     fun beforeEach() {
         reset(
-            assetContractService,
-            registryContractService,
-            auditRegistryContractTransactionService,
+            apxCoordinatorContractService,
+            assetHolderContractService,
             auditingService,
             ipfsRepository,
             objectMapper,
             auditorProperties,
             executorService
         )
+    }
+
+    @Test
+    fun `must return error when asset ID cannot be fetched`() {
+        val sessionAttributes = mock<MutableConvertibleValues<Any>>()
+        val session = mock<WebSocketSession> {
+            on { attributes } doReturn sessionAttributes
+        }
+
+        val connectedMessage = "connected"
+        val responseMessage = "error"
+        val exception = ContractReadError("test")
+
+        suppose("web socket messages will be serialized") {
+            given(objectMapper.writeValueAsString(ConnectedInfoMessage))
+                .willReturn(connectedMessage)
+            given(objectMapper.writeValueAsString(RpcErrorMessage(exception.message)))
+                .willReturn(responseMessage)
+        }
+
+        suppose("asset ID will not be fetched") {
+            given(assetHolderContractService.getAssetId(assetAddress))
+                .willReturn(exception.left())
+        }
+
+        verify("correct web socket messages are sent") {
+            runBlocking {
+                controller.onOpen(assetAddress.hex, session)
+            }
+
+            then(session)
+                .should(times(1))
+                .sendSync(connectedMessage)
+            then(session)
+                .should(times(1))
+                .sendSync(responseMessage)
+        }
+
+        verify("web socket session was closed") {
+            then(session)
+                .should(times(1))
+                .close(CloseReason.NORMAL)
+        }
     }
 
     @Test
@@ -110,14 +156,19 @@ class AuditWebSocketUnitTest : TestBase() {
                 .willReturn(responseMessage)
         }
 
+        suppose("asset ID will be fetched") {
+            given(assetHolderContractService.getAssetId(assetAddress))
+                .willReturn(assetId.right())
+        }
+
         suppose("asset info IPFS hash will not be fetched") {
-            given(assetContractService.getAssetInfoIpfsHash())
+            given(assetHolderContractService.getAssetInfoIpfsHash(assetAddress))
                 .willReturn(exception.left())
         }
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen("", session) // TODO re-write test for dynamic assets
+                controller.onOpen(assetAddress.hex, session)
             }
 
             then(session)
@@ -153,8 +204,13 @@ class AuditWebSocketUnitTest : TestBase() {
                 .willReturn(responseMessage)
         }
 
+        suppose("asset ID will be fetched") {
+            given(assetHolderContractService.getAssetId(assetAddress))
+                .willReturn(assetId.right())
+        }
+
         suppose("asset info IPFS hash will be fetched") {
-            given(assetContractService.getAssetInfoIpfsHash())
+            given(assetHolderContractService.getAssetInfoIpfsHash(assetAddress))
                 .willReturn(IpfsHash("testHash").right())
         }
 
@@ -165,7 +221,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen("", session) // TODO re-write test for dynamic assets
+                controller.onOpen(assetAddress.hex, session)
             }
 
             then(session)
@@ -203,8 +259,13 @@ class AuditWebSocketUnitTest : TestBase() {
                 .willReturn(responseMessage)
         }
 
+        suppose("asset ID will be fetched") {
+            given(assetHolderContractService.getAssetId(assetAddress))
+                .willReturn(assetId.right())
+        }
+
         suppose("asset info IPFS hash will be fetched") {
-            given(assetContractService.getAssetInfoIpfsHash())
+            given(assetHolderContractService.getAssetInfoIpfsHash(assetAddress))
                 .willReturn(IpfsHash("testHash").right())
         }
 
@@ -220,130 +281,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen("", session) // TODO re-write test for dynamic assets
-            }
-
-            then(session)
-                .should(times(1))
-                .sendSync(connectedMessage)
-            then(session)
-                .should(times(1))
-                .sendSync(responseMessage)
-        }
-
-        verify("web socket session was closed") {
-            then(session)
-                .should(times(1))
-                .close(CloseReason.NORMAL)
-        }
-    }
-
-    @Test
-    fun `must return error when asset category ID cannot be fetched`() {
-        val sessionAttributes = mock<MutableConvertibleValues<Any>>()
-        val session = mock<WebSocketSession> {
-            on { attributes } doReturn sessionAttributes
-        }
-
-        val connectedMessage = "connected"
-        val responseMessage = "error"
-        val exception = ContractReadError("test")
-
-        suppose("web socket messages will be serialized") {
-            given(objectMapper.writeValueAsString(ConnectedInfoMessage))
-                .willReturn(connectedMessage)
-            given(objectMapper.writeValueAsString(RpcErrorMessage(exception.message)))
-                .willReturn(responseMessage)
-        }
-
-        suppose("asset info IPFS hash will be fetched") {
-            given(assetContractService.getAssetInfoIpfsHash())
-                .willReturn(IpfsHash("testHash").right())
-        }
-
-        suppose("asset info file will be fetched") {
-            given(ipfsRepository.fetchTextFile(IpfsHash("testHash")))
-                .willReturn(IpfsTextFile("{}").right())
-        }
-
-        suppose("asset info JSON is valid") {
-            given(objectMapper.readTree("{}"))
-                .willReturn(ObjectNode(null))
-        }
-
-        suppose("asset category ID will not be fetched") {
-            given(assetContractService.getAssetCategoryId())
-                .willReturn(exception.left())
-        }
-
-        verify("correct web socket messages are sent") {
-            runBlocking {
-                controller.onOpen("", session) // TODO re-write test for dynamic assets
-            }
-
-            then(session)
-                .should(times(1))
-                .sendSync(connectedMessage)
-            then(session)
-                .should(times(1))
-                .sendSync(responseMessage)
-        }
-
-        verify("web socket session was closed") {
-            then(session)
-                .should(times(1))
-                .close(CloseReason.NORMAL)
-        }
-    }
-
-    @Test
-    fun `must return error when auditing procedure IPFS hash cannot be fetched`() {
-        val sessionAttributes = mock<MutableConvertibleValues<Any>>()
-        val session = mock<WebSocketSession> {
-            on { attributes } doReturn sessionAttributes
-        }
-
-        val connectedMessage = "connected"
-        val responseMessage = "error"
-        val exception = ContractReadError("test")
-
-        suppose("web socket messages will be serialized") {
-            given(objectMapper.writeValueAsString(ConnectedInfoMessage))
-                .willReturn(connectedMessage)
-            given(objectMapper.writeValueAsString(RpcErrorMessage(exception.message)))
-                .willReturn(responseMessage)
-        }
-
-        suppose("asset info IPFS hash will be fetched") {
-            given(assetContractService.getAssetInfoIpfsHash())
-                .willReturn(IpfsHash("testHash").right())
-        }
-
-        suppose("asset info file will be fetched") {
-            given(ipfsRepository.fetchTextFile(IpfsHash("testHash")))
-                .willReturn(IpfsTextFile("{}").right())
-        }
-
-        suppose("asset info JSON is valid") {
-            given(objectMapper.readTree("{}"))
-                .willReturn(ObjectNode(null))
-        }
-
-        val assetCategoryId = AssetCategoryId(BigInteger.valueOf(42L))
-
-        suppose("asset category ID will be fetched") {
-            given(assetContractService.getAssetCategoryId())
-                .willReturn(assetCategoryId.right())
-        }
-
-        suppose("auditing procedure IPFS hash will not be fetched") {
-            given(registryContractService.getAuditingProcedureDirectoryIpfsHash(assetCategoryId))
-                .willReturn(exception.left())
-        }
-
-        verify("correct web socket messages are sent") {
-            runBlocking {
-                controller.onOpen("", session) // TODO re-write test for dynamic assets
+                controller.onOpen(assetAddress.hex, session)
             }
 
             then(session)
@@ -379,8 +317,13 @@ class AuditWebSocketUnitTest : TestBase() {
                 .willReturn(responseMessage)
         }
 
+        suppose("asset ID will be fetched") {
+            given(assetHolderContractService.getAssetId(assetAddress))
+                .willReturn(assetId.right())
+        }
+
         suppose("asset info IPFS hash will be fetched") {
-            given(assetContractService.getAssetInfoIpfsHash())
+            given(assetHolderContractService.getAssetInfoIpfsHash(assetAddress))
                 .willReturn(IpfsHash("testHash").right())
         }
 
@@ -394,26 +337,16 @@ class AuditWebSocketUnitTest : TestBase() {
                 .willReturn(ObjectNode(null))
         }
 
-        val assetCategoryId = AssetCategoryId(BigInteger.valueOf(42L))
-
-        suppose("asset category ID will be fetched") {
-            given(assetContractService.getAssetCategoryId())
-                .willReturn(assetCategoryId.right())
-        }
-
-        suppose("auditing procedure IPFS hash will be fetched") {
-            given(registryContractService.getAuditingProcedureDirectoryIpfsHash(assetCategoryId))
-                .willReturn(IpfsHash("procedureHash").right())
-        }
-
         suppose("auditing procedure will not be fetched") {
-            given(ipfsRepository.fetchTextFileFromDirectory(IpfsHash("procedureHash"), "audit.js"))
+            given(auditorProperties.auditingProcedureDirectoryIpfsHash)
+                .willReturn(procedureHash.value)
+            given(ipfsRepository.fetchTextFileFromDirectory(procedureHash, "audit.js"))
                 .willReturn(exception.left())
         }
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen("", session) // TODO re-write test for dynamic assets
+                controller.onOpen(assetAddress.hex, session)
             }
 
             then(session)
@@ -448,8 +381,13 @@ class AuditWebSocketUnitTest : TestBase() {
                 .willReturn(executingMessage)
         }
 
+        suppose("asset ID will be fetched") {
+            given(assetHolderContractService.getAssetId(assetAddress))
+                .willReturn(assetId.right())
+        }
+
         suppose("asset info IPFS hash will be fetched") {
-            given(assetContractService.getAssetInfoIpfsHash())
+            given(assetHolderContractService.getAssetInfoIpfsHash(assetAddress))
                 .willReturn(IpfsHash("testHash").right())
         }
 
@@ -463,26 +401,16 @@ class AuditWebSocketUnitTest : TestBase() {
                 .willReturn(ObjectNode(null))
         }
 
-        val assetCategoryId = AssetCategoryId(BigInteger.valueOf(42L))
-
-        suppose("asset category ID will be fetched") {
-            given(assetContractService.getAssetCategoryId())
-                .willReturn(assetCategoryId.right())
-        }
-
-        suppose("auditing procedure IPFS hash will be fetched") {
-            given(registryContractService.getAuditingProcedureDirectoryIpfsHash(assetCategoryId))
-                .willReturn(IpfsHash("procedureHash").right())
-        }
-
         suppose("auditing procedure will be fetched") {
-            given(ipfsRepository.fetchTextFileFromDirectory(IpfsHash("procedureHash"), "audit.js"))
+            given(auditorProperties.auditingProcedureDirectoryIpfsHash)
+                .willReturn(procedureHash.value)
+            given(ipfsRepository.fetchTextFileFromDirectory(procedureHash, "audit.js"))
                 .willReturn(IpfsTextFile("script").right())
         }
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen("", session) // TODO re-write test for dynamic assets
+                controller.onOpen(assetAddress.hex, session)
             }
 
             then(session)
@@ -516,7 +444,7 @@ class AuditWebSocketUnitTest : TestBase() {
     }
 
     @Test
-    fun `must send correct response for successful auditing script`() {
+    fun `must send correct response for aborted auditing script`() {
         val sessionAttributes = mock<MutableConvertibleValues<Any>>()
         val session = mock<WebSocketSession> {
             on { attributes } doReturn sessionAttributes
@@ -525,22 +453,24 @@ class AuditWebSocketUnitTest : TestBase() {
         val connectedMessage = "connected"
         val executingMessage = "executing"
         val responseMessage = "response"
-        val transaction = UnsignedTransaction(
-            to = "to",
-            data = "data"
-        )
+        val auditResult = AbortedAudit("test")
 
         suppose("web socket messages will be serialized") {
             given(objectMapper.writeValueAsString(ConnectedInfoMessage))
                 .willReturn(connectedMessage)
             given(objectMapper.writeValueAsString(ExecutingInfoMessage))
                 .willReturn(executingMessage)
-            given(objectMapper.writeValueAsString(AuditResultResponse(SuccessfulAudit, transaction)))
+            given(objectMapper.writeValueAsString(AuditResultResponse(auditResult, null)))
                 .willReturn(responseMessage)
         }
 
+        suppose("asset ID will be fetched") {
+            given(assetHolderContractService.getAssetId(assetAddress))
+                .willReturn(assetId.right())
+        }
+
         suppose("asset info IPFS hash will be fetched") {
-            given(assetContractService.getAssetInfoIpfsHash())
+            given(assetHolderContractService.getAssetInfoIpfsHash(assetAddress))
                 .willReturn(IpfsHash("testHash").right())
         }
 
@@ -554,42 +484,23 @@ class AuditWebSocketUnitTest : TestBase() {
                 .willReturn(ObjectNode(null))
         }
 
-        val assetCategoryId = AssetCategoryId(BigInteger.valueOf(42L))
-
-        suppose("asset category ID will be fetched") {
-            given(assetContractService.getAssetCategoryId())
-                .willReturn(assetCategoryId.right())
-        }
-
-        suppose("auditing procedure IPFS hash will be fetched") {
-            given(registryContractService.getAuditingProcedureDirectoryIpfsHash(assetCategoryId))
-                .willReturn(IpfsHash("procedureHash").right())
-        }
-
         suppose("auditing procedure will be fetched") {
+            given(auditorProperties.auditingProcedureDirectoryIpfsHash)
+                .willReturn(procedureHash.value)
             given(ipfsRepository.fetchTextFileFromDirectory(IpfsHash("procedureHash"), "audit.js"))
                 .willReturn(IpfsTextFile("script").right())
         }
 
         suppose("script task will be executed immediately") {
             given(auditingService.evaluate(any(), any()))
-                .willReturn(SuccessfulAudit.right())
-            given(auditorProperties.assetContractAddress)
-                .willReturn("testAddress")
-            given(
-                auditRegistryContractTransactionService.generateTxForCastAuditVote(
-                    AssetContractAddress("testAddress"),
-                    SuccessfulAudit
-                )
-            )
-                .willReturn(transaction)
+                .willReturn(auditResult.right())
             given(executorService.submit(any<Callable<Any>>()))
                 .willAnswer { it.getArgument(0, Callable::class.java).call() } // call scheduled task directly
         }
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen("", session) // TODO re-write test for dynamic assets
+                controller.onOpen(assetAddress.hex, session)
             }
 
             then(session)
@@ -649,8 +560,13 @@ class AuditWebSocketUnitTest : TestBase() {
                 .willReturn(responseMessage)
         }
 
+        suppose("asset ID will be fetched") {
+            given(assetHolderContractService.getAssetId(assetAddress))
+                .willReturn(assetId.right())
+        }
+
         suppose("asset info IPFS hash will be fetched") {
-            given(assetContractService.getAssetInfoIpfsHash())
+            given(assetHolderContractService.getAssetInfoIpfsHash(assetAddress))
                 .willReturn(IpfsHash("testHash").right())
         }
 
@@ -664,19 +580,9 @@ class AuditWebSocketUnitTest : TestBase() {
                 .willReturn(ObjectNode(null))
         }
 
-        val assetCategoryId = AssetCategoryId(BigInteger.valueOf(42L))
-
-        suppose("asset category ID will be fetched") {
-            given(assetContractService.getAssetCategoryId())
-                .willReturn(assetCategoryId.right())
-        }
-
-        suppose("auditing procedure IPFS hash will be fetched") {
-            given(registryContractService.getAuditingProcedureDirectoryIpfsHash(assetCategoryId))
-                .willReturn(IpfsHash("procedureHash").right())
-        }
-
         suppose("auditing procedure will be fetched") {
+            given(auditorProperties.auditingProcedureDirectoryIpfsHash)
+                .willReturn(procedureHash.value)
             given(ipfsRepository.fetchTextFileFromDirectory(IpfsHash("procedureHash"), "audit.js"))
                 .willReturn(IpfsTextFile("script").right())
         }
@@ -690,7 +596,7 @@ class AuditWebSocketUnitTest : TestBase() {
 
         verify("correct web socket messages are sent") {
             runBlocking {
-                controller.onOpen("", session) // TODO re-write test for dynamic assets
+                controller.onOpen(assetAddress.hex, session)
             }
 
             then(session)
@@ -714,6 +620,130 @@ class AuditWebSocketUnitTest : TestBase() {
             then(sessionAttributes)
                 .should(times(1))
                 .put("ScriptState", ExecutingState)
+            then(sessionAttributes)
+                .should(times(1))
+                .put("ScriptState", FinishedState)
+            then(sessionAttributes)
+                .should(times(1))
+                .put(eq("ScriptTask"), any())
+        }
+
+        verify("web socket session was closed") {
+            then(session)
+                .should(times(1))
+                .close(CloseReason.NORMAL)
+        }
+    }
+
+    @Test
+    fun `must send correct response for successful auditing script`() {
+        val sessionAttributes = mock<MutableConvertibleValues<Any>>()
+        val session = mock<WebSocketSession> {
+            on { attributes } doReturn sessionAttributes
+        }
+
+        val connectedMessage = "connected"
+        val executingMessage = "executing"
+        val specifyIpfsDirectoryHashMessage = "specify"
+        val responseMessage = "response"
+        val transaction = UnsignedTransaction(
+            to = "to",
+            data = "data"
+        )
+        val auditResult = SuccessfulAudit
+
+        suppose("web socket messages will be serialized") {
+            given(objectMapper.writeValueAsString(ConnectedInfoMessage))
+                .willReturn(connectedMessage)
+            given(objectMapper.writeValueAsString(ExecutingInfoMessage))
+                .willReturn(executingMessage)
+            given(objectMapper.writeValueAsString(SpecifyIpfsDirectoryHashCommand(auditResult)))
+                .willReturn(specifyIpfsDirectoryHashMessage)
+            given(objectMapper.writeValueAsString(AuditResultResponse(auditResult, transaction)))
+                .willReturn(responseMessage)
+        }
+
+        suppose("asset ID will be fetched") {
+            given(assetHolderContractService.getAssetId(assetAddress))
+                .willReturn(assetId.right())
+        }
+
+        suppose("asset info IPFS hash will be fetched") {
+            given(assetHolderContractService.getAssetInfoIpfsHash(assetAddress))
+                .willReturn(IpfsHash("testHash").right())
+        }
+
+        suppose("asset info file will be fetched") {
+            given(ipfsRepository.fetchTextFile(IpfsHash("testHash")))
+                .willReturn(IpfsTextFile("{}").right())
+        }
+
+        suppose("asset info JSON is valid") {
+            given(objectMapper.readTree("{}"))
+                .willReturn(ObjectNode(null))
+        }
+
+        suppose("auditing procedure will be fetched") {
+            given(auditorProperties.auditingProcedureDirectoryIpfsHash)
+                .willReturn(procedureHash.value)
+            given(ipfsRepository.fetchTextFileFromDirectory(IpfsHash("procedureHash"), "audit.js"))
+                .willReturn(IpfsTextFile("script").right())
+        }
+
+        val ipfsHash = "ipfsHash"
+
+        suppose("script task will be executed immediately") {
+            given(auditingService.evaluate(any(), any()))
+                .willReturn(auditResult.right())
+            given(
+                apxCoordinatorContractService.generateTxForPerformAudit(
+                    assetId,
+                    auditResult,
+                    IpfsHash(ipfsHash)
+                )
+            )
+                .willReturn(transaction)
+            given(sessionAttributes.get("ScriptState", WebSocketScriptState::class.java))
+                .willReturn(Optional.of(WaitingForIpfsHash(auditResult, assetId)))
+            given(executorService.submit(any<Callable<Any>>()))
+                .willAnswer { it.getArgument(0, Callable::class.java).call() } // call scheduled task directly
+        }
+
+        verify("correct web socket messages are sent") {
+            runBlocking {
+                controller.onOpen(assetAddress.hex, session)
+            }
+
+            then(session)
+                .should(times(1))
+                .sendSync(connectedMessage)
+            then(session)
+                .should(times(1))
+                .sendSync(executingMessage)
+            then(session)
+                .should(times(1))
+                .sendSync(specifyIpfsDirectoryHashMessage)
+
+            controller.onMessage(ipfsHash, session)
+
+            then(session)
+                .should(times(1))
+                .sendSync(responseMessage)
+        }
+
+        verify("correct session variables are set") {
+            then(sessionAttributes)
+                .should(times(1))
+                .put(eq("ScriptInput"), any())
+            then(sessionAttributes)
+                .should(times(1))
+                .put("ScriptState", ReadyState)
+            then(sessionAttributes)
+                .should(times(1))
+                .put("ScriptState", ExecutingState)
+            then(sessionAttributes)
+                .should(times(1))
+                .put("ScriptState", WaitingForIpfsHash(auditResult, assetId))
             then(sessionAttributes)
                 .should(times(1))
                 .put("ScriptState", FinishedState)

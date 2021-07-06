@@ -101,7 +101,7 @@ web socket client:
 ```
 
 The top-level `success` field indicates if the script execution finished without any unhandled errors. When this value
-is `true`, then the `payload` will contain and object as in the example above. The `transaction` value is included only
+is `true`, then the `payload` will contain an object as in the example above. The `transaction` value is included only
 when the audit was not aborted, otherwise it will not be present. When the value is `false`, then the `payload` will
 contain a string - error message description instead of an object.
 
@@ -334,6 +334,28 @@ Requests rendering of the provided Markdown. Web socket message:
 ```
 
 No response should be sent by the web socket client.
+
+</details>
+
+### Other commands
+
+<details>
+<summary><b>SpecifyIpfsDirectoryHash command</b></summary>
+
+Requests IPFS hash of a directory which will be set as audit result directory. This command can only be received once
+per web socket client connection. Web socket message:
+
+```json
+{
+    "messageType": "COMMAND",
+    "command": "specifyIpfsDirectoryHash",
+    "payload": {
+        "success": true
+    }
+}
+```
+
+Response: web socket client should send IPFS hash of the directory which should be set as audit result directory.
 
 </details>
 

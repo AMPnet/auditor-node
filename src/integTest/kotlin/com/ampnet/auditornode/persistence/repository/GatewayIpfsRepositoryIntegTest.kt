@@ -3,8 +3,10 @@ package com.ampnet.auditornode.persistence.repository
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
+import assertk.assertions.isNotNull
 import com.ampnet.auditornode.IntegTestBase
 import com.ampnet.auditornode.IntegTestUtils
+import com.ampnet.auditornode.isLeftContaining
 import com.ampnet.auditornode.isLeftSatisfying
 import com.ampnet.auditornode.isRightContaining
 import com.ampnet.auditornode.isRightSatisfying
@@ -20,6 +22,7 @@ import io.micronaut.test.support.TestPropertyProvider
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import reactor.core.publisher.Flux
 import javax.inject.Inject
 
 @MicronautTest
@@ -31,7 +34,8 @@ class GatewayIpfsRepositoryIntegTest : IntegTestBase(), TestPropertyProvider {
 
     override fun getProperties(): MutableMap<String, String> =
         mutableMapOf(
-            "ipfs.gateway-url" to "http://localhost:${IpfsTestContainer.gatewayPort()}/ipfs/{ipfsHash}"
+            "ipfs.gateway-url" to "http://localhost:${IpfsTestContainer.gatewayPort()}/ipfs/{ipfsHash}",
+            "micronaut.http.services.test-client.read-timeout" to "10s"
         )
 
     @BeforeEach
@@ -173,6 +177,16 @@ class GatewayIpfsRepositoryIntegTest : IntegTestBase(), TestPropertyProvider {
                     assertThat(it)
                         .isInstanceOf(IpfsError.IpfsHttpError::class)
                 }
+        }
+    }
+
+    @Test
+    fun `must return error when uploading files to IPFS`() {
+        verify("error is returned when uploading files to IPFS") {
+            val result = repository.uploadFilesToDirectory(Flux.empty()).block()
+            assertThat(result)
+                .isNotNull()
+                .isLeftContaining(IpfsError.UnsupportedIpfsOperationError)
         }
     }
 }
