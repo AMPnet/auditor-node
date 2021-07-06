@@ -1,6 +1,7 @@
 package com.ampnet.auditornode.script.api.classes
 
 import com.ampnet.auditornode.model.error.EvaluationError.InvalidInputValueError
+import com.ampnet.auditornode.script.api.documentation.HttpClientDocumentation
 import com.ampnet.auditornode.script.api.model.HttpCookie
 import com.ampnet.auditornode.script.api.model.HttpResponse
 import com.ampnet.auditornode.script.api.model.ListApi
@@ -18,11 +19,13 @@ import javax.inject.Singleton
 
 @Singleton
 @NativeReflection
-class HttpClient(private val blockingHttpClient: BlockingHttpClient) {
+class HttpClient(private val blockingHttpClient: BlockingHttpClient) : HttpClientDocumentation {
 
     @Export
-    @JvmOverloads
-    fun get(url: String, headers: Value? = null): HttpResponse {
+    override fun get(url: String): HttpResponse = get(url, null)
+
+    @Export
+    override fun get(url: String, headers: Value?): HttpResponse {
         return httpRequest(
             headers = headers,
             request = HttpRequest.GET(url),
@@ -32,8 +35,13 @@ class HttpClient(private val blockingHttpClient: BlockingHttpClient) {
     }
 
     @Export
-    @JvmOverloads
-    fun post(url: String, body: String = "", headers: Value? = null): HttpResponse {
+    override fun post(url: String): HttpResponse = post(url, "")
+
+    @Export
+    override fun post(url: String, body: String): HttpResponse = post(url, body, null)
+
+    @Export
+    override fun post(url: String, body: String, headers: Value?): HttpResponse {
         return httpRequest(
             headers = headers,
             request = HttpRequest.POST(url, body).apply {
@@ -47,8 +55,13 @@ class HttpClient(private val blockingHttpClient: BlockingHttpClient) {
     }
 
     @Export
-    @JvmOverloads
-    fun request(url: String, method: String, body: String = "", headers: Value? = null): HttpResponse {
+    override fun request(url: String, method: String): HttpResponse = request(url, method, "")
+
+    @Export
+    override fun request(url: String, method: String, body: String): HttpResponse = request(url, method, body, null)
+
+    @Export
+    override fun request(url: String, method: String, body: String, headers: Value?): HttpResponse {
         val upperCaseMethod = method.uppercase()
         val httpMethod = HttpMethod.parse(upperCaseMethod)
         return httpRequest(

@@ -29,6 +29,7 @@ plugins {
     id("io.micronaut.application").version(Versions.Plugins.micronaut)
     id("com.github.johnrengelman.shadow").version(Versions.Plugins.shadowJar)
     id("application")
+
     idea
     jacoco
 }
@@ -42,10 +43,12 @@ version = Versions.project
 java.sourceCompatibility = Versions.Compile.sourceCompatibility
 java.targetCompatibility = Versions.Compile.targetCompatibility
 
-repositories {
-    mavenCentral()
-    jcenter()
-    maven(url = "https://jitpack.io")
+allprojects {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven(url = "https://jitpack.io")
+    }
 }
 
 micronaut {
@@ -75,6 +78,8 @@ dependencies {
     kapt("io.micronaut:micronaut-inject-java")
     kapt("io.micronaut:micronaut-validation")
     kapt("io.micronaut.openapi:micronaut-openapi")
+    kapt(project(":documentation-generator"))
+    implementation(project(":documentation-annotations"))
     implementation(platform("io.micronaut:micronaut-bom:${micronaut.version}"))
     implementation("io.micronaut:micronaut-inject")
     implementation("io.micronaut:micronaut-validation")
@@ -144,6 +149,8 @@ kapt {
         arg("micronaut.processing.annotations", "com.ampnet.auditornode.*")
         arg("micronaut.processing.group", "com.ampnet.auditornode")
         arg("micronaut.processing.module", "auditor-node")
+        arg("com.ampnet.auditornode.documentation.output", "$buildDir/documentation")
+        arg("com.ampnet.auditornode.documentation.resources", "$buildDir/resources/main")
     }
 }
 
