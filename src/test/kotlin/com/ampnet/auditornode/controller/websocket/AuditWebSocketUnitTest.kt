@@ -36,6 +36,7 @@ import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import com.ampnet.auditornode.service.ApxCoordinatorContractService
 import com.ampnet.auditornode.service.AssetHolderContractService
 import com.ampnet.auditornode.service.AuditingService
+import com.ampnet.auditornode.service.ContractProvider
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
@@ -62,7 +63,11 @@ import java.util.concurrent.ExecutorService
 class AuditWebSocketUnitTest : TestBase() {
 
     private val apxCoordinatorContractService = mock<ApxCoordinatorContractService>()
+    private val assetAddress = ContractAddress("0xTestContractAddress")
     private val assetHolderContractService = mock<AssetHolderContractService>()
+    private val contractProvider = mock<ContractProvider> {
+        on { getAssetHolderContract(assetAddress) } doReturn assetHolderContractService
+    }
     private val auditingService = mock<AuditingService>()
     private val ipfsRepository = mock<IpfsRepository>()
     private val objectMapper = mock<ObjectMapper>()
@@ -70,7 +75,7 @@ class AuditWebSocketUnitTest : TestBase() {
     private val executorService = mock<ExecutorService>()
     private val controller = AuditWebSocket(
         apxCoordinatorContractService,
-        assetHolderContractService,
+        contractProvider,
         auditingService,
         ipfsRepository,
         objectMapper,
@@ -78,7 +83,6 @@ class AuditWebSocketUnitTest : TestBase() {
         executorService
     )
 
-    private val assetAddress = ContractAddress("0xTestContractAddress")
     private val assetId = AssetId(BigInteger.valueOf(123L))
     private val procedureHash = IpfsHash("procedureHash")
 
@@ -114,7 +118,7 @@ class AuditWebSocketUnitTest : TestBase() {
         }
 
         suppose("asset ID will not be fetched") {
-            given(assetHolderContractService.getAssetId(assetAddress))
+            given(assetHolderContractService.getAssetId())
                 .willReturn(exception.left())
         }
 
@@ -157,12 +161,12 @@ class AuditWebSocketUnitTest : TestBase() {
         }
 
         suppose("asset ID will be fetched") {
-            given(assetHolderContractService.getAssetId(assetAddress))
+            given(assetHolderContractService.getAssetId())
                 .willReturn(assetId.right())
         }
 
         suppose("asset info IPFS hash will not be fetched") {
-            given(assetHolderContractService.getAssetInfoIpfsHash(assetAddress))
+            given(assetHolderContractService.getAssetInfoIpfsHash())
                 .willReturn(exception.left())
         }
 
@@ -205,12 +209,12 @@ class AuditWebSocketUnitTest : TestBase() {
         }
 
         suppose("asset ID will be fetched") {
-            given(assetHolderContractService.getAssetId(assetAddress))
+            given(assetHolderContractService.getAssetId())
                 .willReturn(assetId.right())
         }
 
         suppose("asset info IPFS hash will be fetched") {
-            given(assetHolderContractService.getAssetInfoIpfsHash(assetAddress))
+            given(assetHolderContractService.getAssetInfoIpfsHash())
                 .willReturn(IpfsHash("testHash").right())
         }
 
@@ -260,12 +264,12 @@ class AuditWebSocketUnitTest : TestBase() {
         }
 
         suppose("asset ID will be fetched") {
-            given(assetHolderContractService.getAssetId(assetAddress))
+            given(assetHolderContractService.getAssetId())
                 .willReturn(assetId.right())
         }
 
         suppose("asset info IPFS hash will be fetched") {
-            given(assetHolderContractService.getAssetInfoIpfsHash(assetAddress))
+            given(assetHolderContractService.getAssetInfoIpfsHash())
                 .willReturn(IpfsHash("testHash").right())
         }
 
@@ -318,12 +322,12 @@ class AuditWebSocketUnitTest : TestBase() {
         }
 
         suppose("asset ID will be fetched") {
-            given(assetHolderContractService.getAssetId(assetAddress))
+            given(assetHolderContractService.getAssetId())
                 .willReturn(assetId.right())
         }
 
         suppose("asset info IPFS hash will be fetched") {
-            given(assetHolderContractService.getAssetInfoIpfsHash(assetAddress))
+            given(assetHolderContractService.getAssetInfoIpfsHash())
                 .willReturn(IpfsHash("testHash").right())
         }
 
@@ -382,12 +386,12 @@ class AuditWebSocketUnitTest : TestBase() {
         }
 
         suppose("asset ID will be fetched") {
-            given(assetHolderContractService.getAssetId(assetAddress))
+            given(assetHolderContractService.getAssetId())
                 .willReturn(assetId.right())
         }
 
         suppose("asset info IPFS hash will be fetched") {
-            given(assetHolderContractService.getAssetInfoIpfsHash(assetAddress))
+            given(assetHolderContractService.getAssetInfoIpfsHash())
                 .willReturn(IpfsHash("testHash").right())
         }
 
@@ -465,12 +469,12 @@ class AuditWebSocketUnitTest : TestBase() {
         }
 
         suppose("asset ID will be fetched") {
-            given(assetHolderContractService.getAssetId(assetAddress))
+            given(assetHolderContractService.getAssetId())
                 .willReturn(assetId.right())
         }
 
         suppose("asset info IPFS hash will be fetched") {
-            given(assetHolderContractService.getAssetInfoIpfsHash(assetAddress))
+            given(assetHolderContractService.getAssetInfoIpfsHash())
                 .willReturn(IpfsHash("testHash").right())
         }
 
@@ -561,12 +565,12 @@ class AuditWebSocketUnitTest : TestBase() {
         }
 
         suppose("asset ID will be fetched") {
-            given(assetHolderContractService.getAssetId(assetAddress))
+            given(assetHolderContractService.getAssetId())
                 .willReturn(assetId.right())
         }
 
         suppose("asset info IPFS hash will be fetched") {
-            given(assetHolderContractService.getAssetInfoIpfsHash(assetAddress))
+            given(assetHolderContractService.getAssetInfoIpfsHash())
                 .willReturn(IpfsHash("testHash").right())
         }
 
@@ -664,12 +668,12 @@ class AuditWebSocketUnitTest : TestBase() {
         }
 
         suppose("asset ID will be fetched") {
-            given(assetHolderContractService.getAssetId(assetAddress))
+            given(assetHolderContractService.getAssetId())
                 .willReturn(assetId.right())
         }
 
         suppose("asset info IPFS hash will be fetched") {
-            given(assetHolderContractService.getAssetInfoIpfsHash(assetAddress))
+            given(assetHolderContractService.getAssetInfoIpfsHash())
                 .willReturn(IpfsHash("testHash").right())
         }
 

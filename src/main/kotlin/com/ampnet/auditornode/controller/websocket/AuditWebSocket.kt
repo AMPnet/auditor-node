@@ -40,8 +40,8 @@ import com.ampnet.auditornode.script.api.classes.WebSocketInput
 import com.ampnet.auditornode.script.api.classes.WebSocketOutput
 import com.ampnet.auditornode.script.api.model.AuditStatus
 import com.ampnet.auditornode.service.ApxCoordinatorContractService
-import com.ampnet.auditornode.service.AssetHolderContractService
 import com.ampnet.auditornode.service.AuditingService
+import com.ampnet.auditornode.service.ContractProvider
 import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -65,7 +65,7 @@ private val logger = KotlinLogging.logger {}
 @ServerWebSocket("/audit/{assetContractAddress}")
 class AuditWebSocket @Inject constructor(
     private val apxCoordinatorContractService: ApxCoordinatorContractService,
-    private val assetHolderContractService: AssetHolderContractService,
+    private val contractProvider: ContractProvider,
     private val auditingService: AuditingService,
     private val ipfsRepository: IpfsRepository,
     private val objectMapper: ObjectMapper,
@@ -94,10 +94,12 @@ class AuditWebSocket @Inject constructor(
 
         val result = either<ApplicationError, Triple<ScriptSource, ExecutionContext, AssetId>> {
             val assetHolderContractAddress = ContractAddress(assetContractAddress)
-            val assetId = assetHolderContractService.getAssetId(assetHolderContractAddress).bind()
+            val assetHolderContractService = contractProvider.getAssetHolderContract(assetHolderContractAddress)
+
+            val assetId = assetHolderContractService.getAssetId().bind()
             logger.info { "Asset ID: $assetId" }
 
-            val assetInfoIpfsHash = assetHolderContractService.getAssetInfoIpfsHash(assetHolderContractAddress).bind()
+            val assetInfoIpfsHash = assetHolderContractService.getAssetInfoIpfsHash().bind()
             logger.info { "Asset info IPFS hash: $assetInfoIpfsHash" }
 
             val assetInfoJson = ipfsRepository.fetchTextFile(assetInfoIpfsHash).bind()

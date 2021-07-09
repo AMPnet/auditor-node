@@ -9,11 +9,12 @@ import com.ampnet.auditornode.model.error.Try
 import com.ampnet.auditornode.persistence.model.IpfsHash
 
 interface AssetHolderContractService {
-    fun getAssetId(contractAddress: ContractAddress): Try<AssetId>
-    fun getAssetTypeId(contractAddress: ContractAddress): Try<AssetTypeId>
-    fun getAssetInfoIpfsHash(contractAddress: ContractAddress): Try<IpfsHash>
-    fun getTokenizedAssetAddress(contractAddress: ContractAddress): Try<ContractAddress>
-    fun getAssetListerAddress(contractAddress: ContractAddress): Try<EthereumAddress>
-    fun getListingInfoIpfsHash(contractAddress: ContractAddress): Try<IpfsHash>
-    fun getLatestAudit(contractAddress: ContractAddress): Try<AssetAuditResult>
+    val contractAddress: ContractAddress
+    fun getAssetId(): Try<AssetId>
+    fun getAssetTypeId(): Try<AssetTypeId>
+    fun getAssetInfoIpfsHash(): Try<IpfsHash>
+    fun getTokenizedAssetAddress(): Try<ContractAddress>
+    fun getAssetListerAddress(): Try<EthereumAddress>
+    fun getListingInfoIpfsHash(): Try<IpfsHash>
+    fun getLatestAudit(): Try<AssetAuditResult>
 }

@@ -17,15 +17,14 @@ import org.web3j.protocol.Web3j
 import org.web3j.tx.ReadonlyTransactionManager
 import org.web3j.tx.gas.DefaultGasProvider
 import javax.inject.Inject
-import javax.inject.Singleton
 
 private val logger = KotlinLogging.logger {}
 
-@Singleton
 @Suppress("UsePropertyAccessSyntax")
 class Web3jAssetHolderContractService @Inject constructor(
-    private val web3j: Web3j,
-    rpcProperties: RpcProperties
+    web3j: Web3j,
+    rpcProperties: RpcProperties,
+    override val contractAddress: ContractAddress
 ) : AbstractWeb3jContractService(logger, rpcProperties), AssetHolderContractService {
 
     private class Contract(override val contractAddress: ContractAddress, web3j: Web3j) : IContract, AssetHolder(
@@ -35,43 +34,32 @@ class Web3jAssetHolderContractService @Inject constructor(
         DefaultGasProvider()
     )
 
+    private val contract by lazy {
+        Contract(contractAddress, web3j)
+    }
+
     override val contractName: String = "asset holder"
 
-    override fun getAssetId(contractAddress: ContractAddress): Try<AssetId> =
-        getValueFromContract("asset ID", Contract(contractAddress, web3j), { it.id().send() }, ::AssetId)
+    override fun getAssetId(): Try<AssetId> =
+        getValueFromContract("asset ID", contract, { it.id().send() }, ::AssetId)
 
-    override fun getAssetTypeId(contractAddress: ContractAddress): Try<AssetTypeId> =
-        getValueFromContract("asset type ID", Contract(contractAddress, web3j), { it.typeId().send() }, ::AssetTypeId)
+    override fun getAssetTypeId(): Try<AssetTypeId> =
+        getValueFromContract("asset type ID", contract, { it.typeId().send() }, ::AssetTypeId)
 
-    override fun getAssetInfoIpfsHash(contractAddress: ContractAddress): Try<IpfsHash> =
-        getValueFromContract("asset info IPFS hash", Contract(contractAddress, web3j), { it.info().send() }, ::IpfsHash)
+    override fun getAssetInfoIpfsHash(): Try<IpfsHash> =
+        getValueFromContract("asset info IPFS hash", contract, { it.info().send() }, ::IpfsHash)
 
-    override fun getTokenizedAssetAddress(contractAddress: ContractAddress): Try<ContractAddress> =
-        getValueFromContract(
-            "tokenized asset address",
-            Contract(contractAddress, web3j),
-            { it.tokenizedAsset().send() },
-            ::ContractAddress
-        )
+    override fun getTokenizedAssetAddress(): Try<ContractAddress> =
+        getValueFromContract("tokenized asset address", contract, { it.tokenizedAsset().send() }, ::ContractAddress)
 
-    override fun getAssetListerAddress(contractAddress: ContractAddress): Try<EthereumAddress> =
-        getValueFromContract(
-            "asset lister address",
-            Contract(contractAddress, web3j),
-            { it.listedBy().send() },
-            ::EthereumAddress
-        )
+    override fun getAssetListerAddress(): Try<EthereumAddress> =
+        getValueFromContract("asset lister address", contract, { it.listedBy().send() }, ::EthereumAddress)
 
-    override fun getListingInfoIpfsHash(contractAddress: ContractAddress): Try<IpfsHash> =
-        getValueFromContract(
-            "asset listing info IPFS hash",
-            Contract(contractAddress, web3j),
-            { it.listingInfo().send() },
-            ::IpfsHash
-        )
+    override fun getListingInfoIpfsHash(): Try<IpfsHash> =
+        getValueFromContract("asset listing info IPFS hash", contract, { it.listingInfo().send() }, ::IpfsHash)
 
-    override fun getLatestAudit(contractAddress: ContractAddress): Try<AssetAuditResult> =
-        getValueFromContract("latest asset audit", Contract(contractAddress, web3j), { it.getLatestAudit().send() }) {
+    override fun getLatestAudit(): Try<AssetAuditResult> =
+        getValueFromContract("latest asset audit", contract, { it.getLatestAudit().send() }) {
             AssetAuditResult(
                 verified = it.assetVerified,
                 auditInfo = IpfsHash(it.additionalInfo),

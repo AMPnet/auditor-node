@@ -51,7 +51,8 @@ class Web3jApxCoordinatorContractServiceUnitTest : TestBase() {
         on { apxCoordinatorContractAddress } doReturn "0xTestContractAddress"
     }
     private val web3j = mock<Web3j>()
-    private val service = Web3jApxCoordinatorContractService(web3j, rpcProperties, auditorProperties)
+    private val contractProvider = mock<ContractProvider>()
+    private val service = Web3jApxCoordinatorContractService(web3j, contractProvider, rpcProperties, auditorProperties)
 
     private val encodedPerformAuditMethodCall = "0a171092"
 
@@ -167,6 +168,11 @@ class Web3jApxCoordinatorContractServiceUnitTest : TestBase() {
                 .willReturn(response)
         }
 
+        suppose("contract provider will return stable coin contract") {
+            given(contractProvider.getERC20Contract(testContractAddress))
+                .willReturn(Web3jERC20ContractService(web3j, rpcProperties, testContractAddress))
+        }
+
         verify("correct stable coin contract is returned") {
             val result = service.getStableCoinContract()
             assertThat(result)
@@ -179,7 +185,7 @@ class Web3jApxCoordinatorContractServiceUnitTest : TestBase() {
 
     @Test
     fun `must correctly return stable coin contract when first fetch fails`() {
-        val localService = Web3jApxCoordinatorContractService(web3j, rpcProperties, auditorProperties)
+        val localService = Web3jApxCoordinatorContractService(web3j, contractProvider, rpcProperties, auditorProperties)
 
         suppose("Web3j client will throw an exception") {
             web3j.mocks()
@@ -202,6 +208,11 @@ class Web3jApxCoordinatorContractServiceUnitTest : TestBase() {
                 .willReturn(response)
         }
 
+        suppose("contract provider will return stable coin contract") {
+            given(contractProvider.getERC20Contract(testContractAddress))
+                .willReturn(Web3jERC20ContractService(web3j, rpcProperties, testContractAddress))
+        }
+
         verify("correct stable coin contract is returned") {
             val result = localService.getStableCoinContract()
             assertThat(result)
@@ -220,6 +231,11 @@ class Web3jApxCoordinatorContractServiceUnitTest : TestBase() {
                 .willReturn(response)
         }
 
+        suppose("contract provider will return asset list holder contract") {
+            given(contractProvider.getAssetListHolderContract(testContractAddress))
+                .willReturn(Web3jAssetListHolderContractService(web3j, rpcProperties, testContractAddress))
+        }
+
         verify("correct asset list holder contract is returned") {
             val result = service.getAssetListHolderContract()
             assertThat(result)
@@ -232,7 +248,7 @@ class Web3jApxCoordinatorContractServiceUnitTest : TestBase() {
 
     @Test
     fun `must correctly return asset list holder contract when first fetch fails`() {
-        val localService = Web3jApxCoordinatorContractService(web3j, rpcProperties, auditorProperties)
+        val localService = Web3jApxCoordinatorContractService(web3j, contractProvider, rpcProperties, auditorProperties)
 
         suppose("Web3j client will throw an exception") {
             web3j.mocks()
@@ -253,6 +269,11 @@ class Web3jApxCoordinatorContractServiceUnitTest : TestBase() {
             val response = web3jMockResponse(encodedTestContractAddress)
             given(web3j.ethCall(any(), any()))
                 .willReturn(response)
+        }
+
+        suppose("contract provider will return asset list holder contract") {
+            given(contractProvider.getAssetListHolderContract(testContractAddress))
+                .willReturn(Web3jAssetListHolderContractService(web3j, rpcProperties, testContractAddress))
         }
 
         verify("correct asset list holder contract is returned") {

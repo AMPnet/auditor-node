@@ -16,7 +16,6 @@ import org.web3j.tx.gas.DefaultGasProvider
 
 private val logger = KotlinLogging.logger {}
 
-// intentionally not annotated with @Singleton - should be instantiated manually by ApxCoordinator
 @Suppress("UsePropertyAccessSyntax")
 class Web3jAssetListHolderContractService constructor(
     web3j: Web3j,

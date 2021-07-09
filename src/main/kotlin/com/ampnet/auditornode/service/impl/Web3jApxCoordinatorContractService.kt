@@ -23,6 +23,7 @@ import com.ampnet.auditornode.script.api.model.SuccessfulAudit
 import com.ampnet.auditornode.service.AbstractWeb3jContractService
 import com.ampnet.auditornode.service.ApxCoordinatorContractService
 import com.ampnet.auditornode.service.AssetListHolderContractService
+import com.ampnet.auditornode.service.ContractProvider
 import com.ampnet.auditornode.service.ERC20ContractService
 import mu.KotlinLogging
 import org.web3j.protocol.Web3j
@@ -37,8 +38,9 @@ private val logger = KotlinLogging.logger {}
 @Singleton
 @Suppress("UsePropertyAccessSyntax", "TooManyFunctions")
 class Web3jApxCoordinatorContractService @Inject constructor(
-    private val web3j: Web3j,
-    private val rpcProperties: RpcProperties,
+    web3j: Web3j,
+    contractProvider: ContractProvider,
+    rpcProperties: RpcProperties,
     private val auditorProperties: AuditorProperties
 ) : AbstractWeb3jContractService(logger, rpcProperties), ApxCoordinatorContractService {
 
@@ -59,7 +61,7 @@ class Web3jApxCoordinatorContractService @Inject constructor(
         cacheableContract(
             "stable coin contract address",
             { it.stablecoin().send() },
-            { Web3jERC20ContractService(web3j, rpcProperties, it) }
+            contractProvider::getERC20Contract
         )
     }
 
@@ -67,7 +69,7 @@ class Web3jApxCoordinatorContractService @Inject constructor(
         cacheableContract(
             "asset list holder contract address",
             { it.assetListHolder().send() },
-            { Web3jAssetListHolderContractService(web3j, rpcProperties, it) }
+            contractProvider::getAssetListHolderContract
         )
     }
 

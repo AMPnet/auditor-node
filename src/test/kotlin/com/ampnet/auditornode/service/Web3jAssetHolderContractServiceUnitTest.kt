@@ -29,7 +29,7 @@ class Web3jAssetHolderContractServiceUnitTest : TestBase() {
         on { url } doReturn "http://localhost:8080/test-url"
     }
     private val web3j = mock<Web3j>()
-    private val service = Web3jAssetHolderContractService(web3j, rpcProperties)
+    private val service = Web3jAssetHolderContractService(web3j, rpcProperties, contractAddress)
 
     private val testHash = IpfsHash("testHash")
     private val encodedTestHash =
@@ -73,7 +73,7 @@ class Web3jAssetHolderContractServiceUnitTest : TestBase() {
         }
 
         verify("correct asset category ID is returned") {
-            val result = service.getAssetId(contractAddress)
+            val result = service.getAssetId()
             assertThat(result)
                 .isRightContaining(testAssetId)
         }
@@ -88,7 +88,7 @@ class Web3jAssetHolderContractServiceUnitTest : TestBase() {
         }
 
         verify("correct asset category ID is returned") {
-            val result = service.getAssetTypeId(contractAddress)
+            val result = service.getAssetTypeId()
             assertThat(result)
                 .isRightContaining(testAssetTypeId)
         }
@@ -103,7 +103,7 @@ class Web3jAssetHolderContractServiceUnitTest : TestBase() {
         }
 
         verify("correct asset info IPFS hash is returned") {
-            val result = service.getAssetInfoIpfsHash(contractAddress)
+            val result = service.getAssetInfoIpfsHash()
             assertThat(result)
                 .isRightContaining(testHash)
         }
@@ -118,7 +118,7 @@ class Web3jAssetHolderContractServiceUnitTest : TestBase() {
         }
 
         verify("correct tokenized asset address is returned") {
-            val result = service.getTokenizedAssetAddress(contractAddress)
+            val result = service.getTokenizedAssetAddress()
             assertThat(result)
                 .isRightContaining(testTokenizedAssetAddress)
         }
@@ -133,7 +133,7 @@ class Web3jAssetHolderContractServiceUnitTest : TestBase() {
         }
 
         verify("correct asset lister address is returned") {
-            val result = service.getAssetListerAddress(contractAddress)
+            val result = service.getAssetListerAddress()
             assertThat(result)
                 .isRightContaining(testAssetListerAddress)
         }
@@ -148,7 +148,7 @@ class Web3jAssetHolderContractServiceUnitTest : TestBase() {
         }
 
         verify("correct listing info IPFS hash is returned") {
-            val result = service.getListingInfoIpfsHash(contractAddress)
+            val result = service.getListingInfoIpfsHash()
             assertThat(result)
                 .isRightContaining(testHash)
         }
@@ -166,7 +166,7 @@ class Web3jAssetHolderContractServiceUnitTest : TestBase() {
         }
 
         verify("correct latest asset audit returned") {
-            val result = service.getLatestAudit(contractAddress)
+            val result = service.getLatestAudit()
             assertThat(result)
                 .isRightContaining(assetAuditResult)
         }
